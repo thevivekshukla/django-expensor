@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+
+{% if request.GET.q %}
+<h4>Total for search "{{ request.GET.q }}": {{ object_total }}</h4>
+{% elif object_total %}
+<h4>Total: {{ object_total }}</h4>
+{% endif %}
+
+
+{% if goto_total %}
+  <div class="jumbotron">
+    <h4 style="float:left">Total: {{ goto_total }}</h4>
+  </div>
+{% endif %}
+
+
+{% if objects %}
+
+{% include 'expense_table.html' %}
+
+
+{% include 'paginator.html' %}
+
+{% if goto_total %}
+  <div class="jumbotron">
+    <h4 style="float:right">Total: {{ goto_total }}</h4>
+  </div>
+{% endif %}
+
+{% else %}
+<h1>Nothing found</h1><hr>
+{% endif %}
+
+
+
+{% endblock body %}
+
+
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+$(function(){
+
+  update();
+});
+
+</script>
+
+{% endblock js %}

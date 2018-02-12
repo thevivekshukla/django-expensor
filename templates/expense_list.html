@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+
+{% if request.GET.q %}
+<h4>Total for search "{{ request.GET.q }}": {{ object_total }}</h4>
+{% elif object_total %}
+<h4>Total: {{ object_total }}</h4>
+{% endif %}
+
+
+
+{% if objects %}
+
+{% include 'expense_table.html' %}
+
+
+{% if goto_total %}
+  <div class="jumbotron">
+    <h4 style="float:right">Total: {{ goto_total }}</h4>
+  </div>
+{% endif %}
+
+
+{% include 'paginator.html' %}
+
+{% else %}
+<h1>Nothing found</h1><hr>
+{% endif %}
+
+
+
+
+{% if total %}
+<div class="jumbotron">
+  <h2>Stats:</h2>
+
+  <h4>Total expenses of today: <u>{{ total.day }}</u></h4>
+
+  <h4>Total expenses of this month ({% now "M" %}): <u>{{ total.month }}</u></h4>
+
+  {%if total.last_month %}
+  <h4>Total expenses of last month: <u>{{ total.last_month }}</u></h4>
+  {% endif %}
+
+  <h4>Total expenses of {% now "Y" %}: <u>{{ total.year }}</u></h4>
+
+  <h4>Total expenses of all time {% if first_date %}(since {{ first_date }}){% endif %}: <u>{{ total.all }}</u></h4>
+
+</div>
+{% endif %}
+
+
+{% endblock body %}
+
+
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+$(function(){
+
+  update();
+});
+
+</script>
+
+{% endblock js %}

@@ -1,0 +1,13 @@
+**/*_initial.py
+**/__pycache__/
+**/*.pyc
+**/*_auto_*
+**/.idea/
+venv/
+env
+static/
+staticfiles/
+**/settings/__init__.py
+celerybeat**
+.vscode
+.env
