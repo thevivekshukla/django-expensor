@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+
+
+{% if objects %}
+
+<table class="table table-striped">
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Source</th>
+      <th>Action</th>
+    </tr>
+    {% for object in objects %}
+    <tr>
+      <td>{{ object.timestamp }}</td>
+      <td>{{ object.amount }}</td>
+      <td>{% if object.source %}{{ object.source }}{% endif %}</td>
+      <td><a href="{% url "expense:update_expense" id=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  
+
+
+{% include 'paginator.html' %}
+
+{% else %}
+<h1>Nothing found</h1><hr>
+{% endif %}
+
+
+
+{% endblock body %}
+
