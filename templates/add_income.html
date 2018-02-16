@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block body %}
+
+<div class="row">
+<div class="ui-widget col-sm-12 col-md-6 col-lg-6">
+  <form method="post" id="id_add_income" action="">
+    {% csrf_token %}
+    {{ income_form|crispy }}
+    <input type="submit" class="btn btn-primary" value="{{ title }}">
+  </form>
+</div>
+</div>
+
+<br>
+<div class="row">
+<div class="col-sm-12 col-md-6 col-lg-6">
+  <p id="id_success" class="alert alert-success" style="display:none;"></p>
+  <p id="id_error" class="alert alert-danger" style="display:none;"></p>
+</div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $("#id_source").autocomplete({
+      source: "{% url 'income:get-source' %}",
+    });
+
+    var today = new Date();
+    month = today.getMonth() + 1;
+    day = today.getDate();
+    year = today.getFullYear();
+    date = month + "/" + day + "/" + year
+    $("#id_timestamp").val(date);
+
+    $("#id_timestamp").datepicker();
+
+    var form = $("#id_add_income");
+
+    form.submit(function(){
+      $.ajax({
+        type: form.attr('method'),
+        url: form.attr('action'),
+        data: form.serialize(),
+        success: function(data){
+          $("#id_error").css("display", "none");
+          form[0].reset();
+          $("#id_timestamp").val(date);
+          $("#id_success").text("Added successfully.");
+          $("#id_success").css("display", "inline-block");
+
+          setTimeout(function() {
+            $("#id_success").hide();
+          }, 5000);
+        },
+        error: function(data){
+          $("#id_success").css("display", "none");
+          $("#id_error").text("Some error has occured. Failed to save.");
+          $("#id_error").css("display", "inline-block");
+        }
+      });
+      return false;
+    });
+  });
+
+
+</script>
+{% endblock js %}
