@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.views import View
+from django.http import HttpResponse
+
+import json
 
 from .models import Income, Source
 from .forms import IncomeForm
@@ -34,3 +37,17 @@ class IncomeAdd(View):
         }
 
         return render(request, self.template_name, context)
+
+
+class SourceView(View):
+
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get('term', '')
+        source = Source.objects.filter(name__icontains=term)
+        result = []
+
+        for s in source:
+            result.append(s.name)
+        data = json.dumps(result)
+        
+        return HttpResponse(data, content_type='application/json')
