@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'dbbackup',
     'storages',
+    'income',
 ]
 
 MIDDLEWARE = [
