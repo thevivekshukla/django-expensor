@@ -15,6 +15,7 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="">Expense
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
+            <li><a class="navbar-link" href="{% url "expense:add_expense" %}">Add Expense</a></li>
             <li><a class="navbar-link" href="{% url "expense:expense_list" %}">All Expenses</a></li>
             <li><a class="navbar-link" href="{% url "expense:month-wise-expense" %}">Monthly Expense</a></li>
             <li><a class="navbar-link" href="{% url "expense:day-wise-expense" %}">Daily Expense</a></li>
@@ -32,7 +33,13 @@
         
         {% endif %}
 
-        <li><a class="navbar-link" href="{% url "expense:add_expense" %}">Add Expense</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="">Income
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a class="navbar-link" href="{% url "income:income-list" %}">All Income</a></li>
+          </ul>
+        </li>
       </ul>
 
       <form class="navbar-form navbar-left" action="{% url "expense:expense_list" %}" method="GET">
