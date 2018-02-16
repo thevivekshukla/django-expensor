@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^account/', include('account.urls')),
     url(r'^', include('expense.urls')),
+    url(r'^income/', include('income.urls')),
 ]
 
 if settings.DEBUG:
