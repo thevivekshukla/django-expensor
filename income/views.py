@@ -30,13 +30,38 @@ class IncomeAdd(View):
     form_class = IncomeForm
 
     def get(self, request, *args, **kwargs):
-
         context = {
             'income_form': self.form_class,
             'title' : 'Add Income',
         }
-
         return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data.get('amount')
+            timestamp = form.cleaned_data.get('timestamp')
+            source_name = form.cleaned_data.get('source')
+            if source_name:
+                try:
+                    source = Source.objects.get(name=source_name)
+                except Source.DoesNotExist:
+                    source = Source.objects.create(name=source_name)
+                income = Income.objects.create(
+                    user=request.user,
+                    amount=amount,
+                    timestamp=timestamp,
+                    source=source
+                )
+            else:
+                income = Income.objects.create(
+                    user=request.user,
+                    amount=amount,
+                    timestamp=timestamp
+                )
+            return HttpResponse(status=201)
+        else:
+            return HttpResponse(status=400)
 
 
 class SourceView(View):
