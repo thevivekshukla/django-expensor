@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 import json
 
@@ -14,9 +16,12 @@ from .forms import IncomeForm
 class IncomeList(ListView):
 
     template_name = 'income_list.html'
-    model = Income
     paginate_by = 15
     context_object_name = 'objects'
+
+    def get_queryset(self, *args, **kwargs):
+        qs = Income.objects.filter(user=self.request.user)
+        return qs
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -28,6 +33,10 @@ class IncomeAdd(View):
 
     template_name = 'add_income.html'
     form_class = IncomeForm
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = {
@@ -72,9 +81,18 @@ class IncomeUpdateView(View):
         'title': 'Update Income',
     }
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         pk = int(kwargs['pk'])
         income = get_object_or_404(Income, id=pk)
+
+        #checking if user own the object
+        if income.user != request.user:
+            raise Http404
+
         initial_data = {
             'amount': income.amount,
             'source': income.source,
@@ -88,6 +106,11 @@ class IncomeUpdateView(View):
     def post(self, request, *args, **kwargs):
         pk = int(kwargs['pk'])
         income = get_object_or_404(Income, id=pk)
+
+        #checking if user own the object
+        if income.user != request.user:
+            raise Http404
+
         form = self.form_class(request.POST)
 
         if form.is_valid():
@@ -111,6 +134,10 @@ class IncomeUpdateView(View):
 
 
 class SourceView(View):
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term', '')
