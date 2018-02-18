@@ -24,3 +24,6 @@ class Income(models.Model):
 
     def __str__(self):
         return "{} : {}".format(self.user, self.source)
+
+    class Meta():
+        ordering = ('-timestamp', )

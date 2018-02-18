@@ -7,7 +7,7 @@
 
 <div class="row">
 <div class="ui-widget col-sm-12 col-md-6 col-lg-6">
-  <form method="post" id="id_add_income" action="">
+  <form method="post" id="id_update_income" action="">
     {% csrf_token %}
     {{ income_form|crispy }}
     <input type="submit" class="btn btn-primary" value="{{ title }}">
@@ -38,16 +38,9 @@
       source: "{% url 'income:get-source' %}",
     });
 
-    var today = new Date();
-    month = today.getMonth() + 1;
-    day = today.getDate();
-    year = today.getFullYear();
-    date = month + "/" + day + "/" + year
-    $("#id_timestamp").val(date);
-
     $("#id_timestamp").datepicker();
 
-    var form = $("#id_add_income");
+    var form = $("#id_update_income");
 
     form.submit(function(){
       $.ajax({
@@ -56,9 +49,7 @@
         data: form.serialize(),
         success: function(data){
           $("#id_error").css("display", "none");
-          form[0].reset();
-          $("#id_timestamp").val(date);
-          $("#id_success").text("Added successfully.");
+          $("#id_success").text("Updated successfully.");
           $("#id_success").css("display", "inline-block");
 
           setTimeout(function() {

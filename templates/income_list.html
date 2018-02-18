@@ -19,7 +19,7 @@
       <td>{{ object.timestamp }}</td>
       <td>{{ object.amount }}</td>
       <td>{% if object.source %}{{ object.source }}{% endif %}</td>
-      <td><a href="{% url "expense:update_expense" id=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
+      <td><a href="{% url "income:update-income" pk=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
         <span class="glyphicon glyphicon-pencil"></span> Edit
         </a>
       </td>
