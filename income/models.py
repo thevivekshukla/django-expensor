@@ -8,6 +8,7 @@ User = get_user_model()
 
 class Source(models.Model):
 
+    user = models.ForeignKey(User)
     name = models.CharField(max_length=30)
 
     def __str__(self):
