@@ -19,6 +19,10 @@ class IncomeList(ListView):
     paginate_by = 15
     context_object_name = 'objects'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get_queryset(self, *args, **kwargs):
         qs = Income.objects.filter(user=self.request.user)
         return qs
@@ -53,9 +57,9 @@ class IncomeAdd(View):
             source_name = form.cleaned_data.get('source')
             if source_name:
                 try:
-                    source = Source.objects.get(name=source_name)
+                    source = Source.objects.get(name=source_name, user=request.user)
                 except Source.DoesNotExist:
-                    source = Source.objects.create(name=source_name)
+                    source = Source.objects.create(name=source_name, user=request.user)
                 income = Income.objects.create(
                     user=request.user,
                     amount=amount,
@@ -87,7 +91,7 @@ class IncomeUpdateView(View):
 
     def get(self, request, *args, **kwargs):
         pk = int(kwargs['pk'])
-        income = get_object_or_404(Income, id=pk)
+        income = get_object_or_404(Income, id=pk, user=request.user)
 
         #checking if user own the object
         if income.user != request.user:
@@ -105,7 +109,7 @@ class IncomeUpdateView(View):
 
     def post(self, request, *args, **kwargs):
         pk = int(kwargs['pk'])
-        income = get_object_or_404(Income, id=pk)
+        income = get_object_or_404(Income, id=pk, user=request.user)
 
         #checking if user own the object
         if income.user != request.user:
@@ -119,9 +123,9 @@ class IncomeUpdateView(View):
             source_name = form.cleaned_data.get('source', None)
             if source_name:
                 try:
-                    source = Source.objects.get(name=source_name)
+                    source = Source.objects.get(name=source_name, user=request.user)
                 except Source.DoesNotExist:
-                    source = Source.objects.create(name=source_name)
+                    source = Source.objects.create(name=source_name, user=request.user)
                 income.source = source
 
             income.amount = amount
@@ -141,7 +145,7 @@ class SourceView(View):
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term', '')
-        source = Source.objects.filter(name__icontains=term)
+        source = Source.objects.filter(name__icontains=term, user=request.user)
         result = []
 
         for s in source:
