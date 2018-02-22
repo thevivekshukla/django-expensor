@@ -293,7 +293,3 @@ def get_year(request):
 
     return HttpResponse(data, content_type='application/json')
 
-
-def robots(request):
-
-    return render(request, "robots.txt", {})

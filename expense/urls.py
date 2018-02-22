@@ -18,6 +18,5 @@ urlpatterns = [
         url(r'^day-wise-expense/$', views.DayWiseExpense.as_view(), name='day-wise-expense'),
         url(r'^months/$', views.MonthWiseExpense.as_view(), name='month-wise-expense'),
         url(r'^years/$', views.get_year, name='years'),
-        url(r'^robots.txt', views.robots, name='robots'),
         url(r'^$', views.add_expense, name='add_expense'),
 ]
