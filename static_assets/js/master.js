@@ -20,12 +20,12 @@ function update(){
 
 
 function years(){
-  $("#dropdown").on('click', function(){
+  $("#year-dropdown").on('click mouseenter', function(){
     $.get("/years/", function(data){
-      $("#year-dropdown").html("");
+      $("#year-content-dropdown").html("");
 
       for (i=0; i<data.length; i++){
-        $("#year-dropdown").append('<li><a href="/'+data[i]+'/">'+ data[i] +'</a></li>');
+        $("#year-content-dropdown").append('<li><a href="/'+data[i]+'/">'+ data[i] +'</a></li>');
       }
 
     });
