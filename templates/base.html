@@ -33,17 +33,6 @@
 
     {% include "js_files.html" %}
 
-    <script type="text/javascript">
-      $(document).ready(function(){
-        $("#id_search").autocomplete({
-          source: "{% url 'expense:get_remark' %}",
-        });
-
-        years();
-      });
-
-    </script>
-
     {% block js %} {% endblock js %}
   </body>
 </html>

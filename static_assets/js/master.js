@@ -1,4 +1,14 @@
 
+$(document).ready(function(){
+  $("#id_search").autocomplete({
+    source: "{% url 'expense:get_remark' %}",
+  });
+
+  years();
+});
+
+
+
 function update(){
   $(".edit").on("click", function(e){
     e.preventDefault();
