@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
   $("#id_search").autocomplete({
-    source: "{% url 'expense:get_remark' %}",
+    source: "/autocomplete/get_remark/",
   });
 
   years();
