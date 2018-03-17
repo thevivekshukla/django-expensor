@@ -11,7 +11,7 @@ User = get_user_model()
 
 class RegisterUserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
-    password2 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
     def clean_password2(self, *args, **kwargs):
         password = self.cleaned_data.get("password")
