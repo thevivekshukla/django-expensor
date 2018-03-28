@@ -222,35 +222,50 @@ def search(request):
     return render(request, "search.html", context)
 
 
-@login_required
-def goto_expense(request, year=None, month=None, day=None):
-    if day:
-        objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
-    elif month:
-        objects = Expense.objects.this_month(user=request.user, year=year, month=month)
-    elif year:
-        objects = Expense.objects.this_year(user=request.user, year=year)
+class GoToExpense(View):
+    """
+    provies expenses for particular day, month or year.
+    """
+    
+    template_name = 'goto.html'
 
-    goto_total = objects.aggregate(Sum('amount'))['amount__sum']
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-    paginator = Paginator(objects, 50)
+    
+    def get(self, request, *args, **kwargs):
+        day = kwargs.get('day')
+        month = kwargs.get('month')
+        year = kwargs.get('year')
+        
+        if day:
+            objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
+        elif month:
+            objects = Expense.objects.this_month(user=request.user, year=year, month=month)
+        elif year:
+            objects = Expense.objects.this_year(user=request.user, year=year)
 
-    page = request.GET.get('page')
+        goto_total = objects.aggregate(Sum('amount'))['amount__sum']
 
-    try:
-        objects = paginator.page(page)
-    except PageNotAnInteger:
-        objects = paginator.page(1)
-    except EmptyPage:
-        objects = paginator.page(paginator.num_pages)
+        paginator = Paginator(objects, 50)
 
-    context = {
-        "title": "Expenses",
-        "objects": objects,
-        "goto_total": goto_total,
-    }
+        page = request.GET.get('page')
 
-    return render(request, "goto.html", context)
+        try:
+            objects = paginator.page(page)
+        except PageNotAnInteger:
+            objects = paginator.page(1)
+        except EmptyPage:
+            objects = paginator.page(paginator.num_pages)
+
+        context = {
+            "title": "Expenses",
+            "objects": objects,
+            "goto_total": goto_total,
+        }
+
+        return render(request, self.template_name, context)
 
 
 
