@@ -254,28 +254,35 @@ def goto_expense(request, year=None, month=None, day=None):
 
 
 
+class GetRemark(View):
+    """
+    will be used to autocomplete the remarks
+    """
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-#autocomplete remark field
-@login_required
-def get_remark(request):
 
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        remarks = Expense.objects.all(user=request.user).filter(remark__icontains=q).order_by().values_list('remark', flat=True).distinct()
-        results = []
-        for remark in remarks:
-            remark_json = {}
-            remark_json['value'] = remark
-            results.append(remark_json)
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            q = request.GET.get('term', '')
+            remarks = Expense.objects.all(user=request.user).filter(remark__icontains=q).order_by(
+                      ).values_list('remark', flat=True).distinct()
+            results = []
+            for remark in remarks:
+                remark_json = {}
+                remark_json['value'] = remark
+                results.append(remark_json)
+            data = json.dumps(results)
+        else:
+            data = 'fail'
+        mimetype = 'application/json'
+        return HttpResponse(data, mimetype)
+
 
 
 class GetYear(View):
-
+    
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
