@@ -226,7 +226,7 @@ class GoToExpense(View):
     """
     provies expenses for particular day, month or year.
     """
-    
+
     template_name = 'goto.html'
 
     @method_decorator(login_required)
@@ -297,6 +297,9 @@ class GetRemark(View):
 
 
 class GetYear(View):
+    """
+    return all the year in which expenses are registered.
+    """
     
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
