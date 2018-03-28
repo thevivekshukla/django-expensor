@@ -274,22 +274,25 @@ def get_remark(request):
     return HttpResponse(data, mimetype)
 
 
-@login_required
-def get_year(request):
+class GetYear(View):
 
-    cache_key = 'expense_year'
-    cache_time = 15768000 # 182.5 days
-    data = cache.get(cache_key)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-    if not data:
-        years = Expense.objects.all(user=request.user).dates('timestamp', 'year')
-        result = []
+    def get(self, request, *args, **kwargs):
+        cache_key = 'expense_year'
+        cache_time = 15768000 # 182.5 days
+        data = cache.get(cache_key)
 
-        for y in years:
-            result.append(y.year)
-        data = json.dumps(result)
+        if not data:
+            years = Expense.objects.all(user=request.user).dates('timestamp', 'year')
+            result = []
 
-    cache.set(cache_key, data, cache_time)
+            for y in years:
+                result.append(y.year)
+            data = json.dumps(result)
 
-    return HttpResponse(data, content_type='application/json')
+        cache.set(cache_key, data, cache_time)
 
+        return HttpResponse(data, content_type='application/json')
