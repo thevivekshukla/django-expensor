@@ -21,28 +21,30 @@ from .models import Expense
 
 
 
-@login_required
-def add_expense(request):
+class AddExpense(View):
+    form_class = ExpenseForm
+    template_name = "add_expense.html"
+    context = {
+        'form': form_class,
+        'title': "Add expense"
+    }
 
-    form = ExpenseForm(request.POST or None)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-    if request.POST:
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            # messages.success(request, "Expense successfully added.")
-            # form = ExpenseForm()
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
-
-    context = {
-        "title": "Add expense",
-        "form": form,
-    }
-
-    return render(request, "add_expense.html", context)
 
 
 @login_required
