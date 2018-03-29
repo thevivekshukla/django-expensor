@@ -4,7 +4,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Sum
 from django.db.models import Q
 from django.http import HttpResponse, Http404, JsonResponse
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.cache import cache
 from django.views import View
@@ -16,6 +15,7 @@ import json
 
 from .forms import ExpenseForm, SelectDateExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense
+from decorators import login_required_message
 
 # Create your views here.
 
@@ -29,7 +29,7 @@ class AddExpense(View):
         'title': "Add expense"
     }
 
-    @method_decorator(login_required)
+    @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -47,7 +47,7 @@ class AddExpense(View):
             return HttpResponse(status=400)
 
 
-@login_required
+@login_required_message
 def update_expense(request, id):
     # instance = get_object_or_404(Expense, id=id)
     instance = Expense.objects.all(user=request.user).filter(id=id).first()
@@ -81,7 +81,7 @@ def update_expense(request, id):
 
 
 
-@login_required
+@login_required_message
 def expense_list(request):
     objects_list = Expense.objects.all(user=request.user)
     first_date = None
@@ -156,7 +156,7 @@ class DayWiseExpense(View):
         'title': 'Day Wise Expense',
     }
 
-    @method_decorator(login_required)
+    @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -179,7 +179,7 @@ class MonthWiseExpense(View):
         'title': 'Monthly Expense',
     }
 
-    @method_decorator(login_required)
+    @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -195,7 +195,7 @@ class MonthWiseExpense(View):
         return render(request, self.template_name, self.context)
 
 
-@login_required
+@login_required_message
 def search(request):
     date_form = SelectDateExpenseForm(request.POST or None)
     range_form = SelectDateRangeExpenseForm(request.POST or None)
@@ -234,7 +234,7 @@ class GoToExpense(View):
 
     template_name = 'goto.html'
 
-    @method_decorator(login_required)
+    @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -278,7 +278,7 @@ class GetRemark(View):
     """
     will be used to autocomplete the remarks
     """
-    @method_decorator(login_required)
+    @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -306,7 +306,7 @@ class GetYear(View):
     return all the year in which expenses are registered.
     """
     
-    @method_decorator(login_required)
+    @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
