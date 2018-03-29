@@ -62,11 +62,14 @@ def update_expense(request, id):
 
     form = ExpenseForm(request.POST or None, instance=instance)
 
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
-        messages.success(request, "Expense successfully updated.")
-        form = ExpenseForm()
+    if request.POST:
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            messages.success(request, "Expense successfully updated.")
+            form = ExpenseForm()
+        else:
+            return HttpResponse(status=400)
 
     context = {
         "title": "Update expense",
