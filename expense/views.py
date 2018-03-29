@@ -47,37 +47,46 @@ class AddExpense(View):
             return HttpResponse(status=400)
 
 
-@login_required_message
-def update_expense(request, id):
-    # instance = get_object_or_404(Expense, id=id)
-    instance = Expense.objects.all(user=request.user).filter(id=id).first()
-
-    if instance.user != request.user:
-        raise Http404
-
-    # three_day = date.today() - timedelta(days=3)
-    thirty_day = date.today() - timedelta(days=30)
-    if not instance.timestamp >= thirty_day:
-        return HttpResponse("Too late! Cannot be changed now.", status=400)
-
-    form = ExpenseForm(request.POST or None, instance=instance)
-
-    if request.POST:
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.save()
-            messages.success(request, "Expense successfully updated.")
-            form = ExpenseForm()
-        else:
-            return HttpResponse(status=400)
-
+class UpdateExpense(View):
+    form_class = ExpenseForm
+    template_name = "update_expense.html"
     context = {
-        "title": "Update expense",
-        "form": form,
+        "title": "Update expense"
     }
 
-    return render(request, "update_expense.html", context)
+    @method_decorator(login_required_message)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
+    def get_object(self, request, *args, **kwargs):
+        id = int(kwargs['id'])
+        instance = Expense.objects.all(user=request.user).filter(id=id).first()
+
+        if instance.user != request.user:
+            raise Http404
+        return instance
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object(request, *args, **kwargs)
+
+        thirty_day = date.today() - timedelta(days=30)
+        if not instance.timestamp >= thirty_day:
+            return HttpResponse("Too late! Cannot be changed now.", status=400)
+
+        form = self.form_class(instance=instance)
+        self.context['form'] = form
+        return render(request, self.template_name, self.context)
+
+
+    def post(self, request, *args, **kwargs):
+        instance = self.get_object(request, *args, **kwargs)
+
+        form = self.form_class(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=400)
 
 
 
