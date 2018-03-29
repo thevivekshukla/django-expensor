@@ -62,7 +62,7 @@ class UpdateExpense(View):
         id = int(kwargs['id'])
         instance = Expense.objects.all(user=request.user).filter(id=id).first()
 
-        if instance.user != request.user:
+        if not instance:
             raise Http404
         return instance
 
@@ -90,45 +90,52 @@ class UpdateExpense(View):
 
 
 
-@login_required_message
-def expense_list(request):
-    objects_list = Expense.objects.all(user=request.user)
-    first_date = None
+class ExpenseList(View):
+    template_name = "expense_list.html"
 
-    if objects_list:
-        first_date = objects_list.last().timestamp or None
+    @method_decorator(login_required_message)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-    q = request.GET.get("q")
-    object_total = None
-    if q:
-        objects_list = objects_list.filter(
-                    Q(remark__icontains=q) |
-                    Q(amount__icontains=q)
-                    ).distinct()
-        object_total = objects_list.aggregate(Sum('amount'))['amount__sum']
 
-    paginator = Paginator(objects_list, 15)
+    def get(self, request, *args, **kwargs):
+        objects_list = Expense.objects.all(user=request.user)
+        first_date = None
 
-    page = request.GET.get('page')
+        if objects_list:
+            first_date = objects_list.last().timestamp or None
 
-    try:
-        objects = paginator.page(page)
-    except PageNotAnInteger:
-        objects = paginator.page(1)
-    except EmptyPage:
-        objects = paginator.page(paginator.num_pages)
+        q = request.GET.get("q")
+        object_total = None
+        if q:
+            objects_list = objects_list.filter(
+                        Q(remark__icontains=q) |
+                        Q(amount__icontains=q)
+                        ).distinct()
+            object_total = objects_list.aggregate(Sum('amount'))['amount__sum']
 
-    total = Expense.objects.amount_sum(user=request.user)
+        paginator = Paginator(objects_list, 15)
 
-    context = {
-        "title": "Expenses",
-        "objects": objects,
-        "total": total,
-        "first_date": first_date,
-        "object_total": object_total,
-    }
+        page = request.GET.get('page')
 
-    return render(request, "expense_list.html", context)
+        try:
+            objects = paginator.page(page)
+        except PageNotAnInteger:
+            objects = paginator.page(1)
+        except EmptyPage:
+            objects = paginator.page(paginator.num_pages)
+
+        total = Expense.objects.amount_sum(user=request.user)
+
+        context = {
+            "title": "Expenses",
+            "objects": objects,
+            "total": total,
+            "first_date": first_date,
+            "object_total": object_total,
+        }
+
+        return render(request, self.template_name, context)
 
 
 # class DayWiseExpense(ListView):
