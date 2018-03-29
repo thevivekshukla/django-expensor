@@ -13,10 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import (
+    url, include, handler400, handler403, handler404, handler500
+)
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+
+from expense import views
 
 urlpatterns = [
     url(r'^account/', include('account.urls')),
@@ -26,3 +30,10 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_DIR, document_root=settings.STATIC_ROOT)
+
+
+
+handler404 = views.Error404.as_view()
+handler500 = views.Error500.as_view()
+handler400 = views.Error400.as_view()
+handler403 = views.Error403.as_view()
