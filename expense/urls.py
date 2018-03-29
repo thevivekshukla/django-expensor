@@ -8,7 +8,7 @@ app_name = 'expense'
 
 urlpatterns = [
         url(r'^update/(?P<id>\d+)/$', views.UpdateExpense.as_view(), name='update_expense'),
-        url(r'^search/$', views.search, name='search'),
+        url(r'^search/$', views.DateSearch.as_view(), name='search'),
         url(r'^(?P<year>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),
         url(r'^(?P<year>\d+)/(?P<month>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),
         url(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),

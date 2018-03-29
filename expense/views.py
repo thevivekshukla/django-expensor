@@ -47,6 +47,7 @@ class AddExpense(View):
             return HttpResponse(status=400)
 
 
+
 class UpdateExpense(View):
     form_class = ExpenseForm
     template_name = "update_expense.html"
@@ -188,8 +189,8 @@ class DayWiseExpense(View):
         return render(request, self.template_name, self.context)
 
 
+
 class MonthWiseExpense(View):
-    
     template_name = "month-expense.html"
     context = {
         'title': 'Monthly Expense',
@@ -211,50 +212,69 @@ class MonthWiseExpense(View):
         return render(request, self.template_name, self.context)
 
 
-@login_required_message
-def search(request):
-    date_form = SelectDateExpenseForm(request.POST or None)
-    range_form = SelectDateRangeExpenseForm(request.POST or None)
 
-    objects = None
-
-    if range_form.is_valid():
-        f_dt = range_form.cleaned_data.get('from_date')
-        t_dt = range_form.cleaned_data.get('to_date')
-        objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
-
-    if date_form.is_valid():
-        dt = date_form.cleaned_data.get('date')
-        objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
-
-    if objects:
-        object_total = objects.aggregate(Sum('amount'))['amount__sum']
-    else:
-        object_total = None
-
+class DateSearch(View):
+    date_form_class = SelectDateExpenseForm
+    range_form_class = SelectDateRangeExpenseForm
+    template_name = "search.html"
     context = {
-        "title": "Search",
-        "date_form": date_form,
-        "range_form": range_form,
-        "objects": objects,
-        "object_total": object_total,
+        "title": "Search"
     }
 
-    return render(request, "search.html", context)
+    @method_decorator(login_required_message)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.context['date_form'] = self.date_form_class()
+        self.context['range_form'] = self.range_form_class()
+
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        date_form = self.date_form_class(request.POST)
+        range_form = self.range_form_class(request.POST)
+
+        objects = None
+
+        if range_form.is_valid():
+            f_dt = range_form.cleaned_data.get('from_date')
+            t_dt = range_form.cleaned_data.get('to_date')
+            objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
+        else:
+            range_form = self.range_form_class()
+
+        if date_form.is_valid():
+            dt = date_form.cleaned_data.get('date')
+            objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
+        else:
+            date_form = self.date_form_class()
+
+        if objects:
+            object_total = objects.aggregate(Sum('amount'))['amount__sum']
+        else:
+            object_total = None
+
+        
+        self.context['date_form'] = date_form
+        self.context['range_form'] = range_form
+        self.context['objects'] = objects
+        self.context['object_total'] = object_total
+
+        return render(request, self.template_name, self.context)
+
 
 
 class GoToExpense(View):
     """
     provies expenses for particular day, month or year.
     """
-
     template_name = 'goto.html'
 
     @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-    
     def get(self, request, *args, **kwargs):
         day = kwargs.get('day')
         month = kwargs.get('month')
@@ -298,7 +318,6 @@ class GetRemark(View):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             q = request.GET.get('term', '')
@@ -321,7 +340,6 @@ class GetYear(View):
     """
     return all the year in which expenses are registered.
     """
-    
     @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
