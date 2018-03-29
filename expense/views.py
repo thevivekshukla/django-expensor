@@ -238,15 +238,21 @@ class DateSearch(View):
         objects = None
 
         if range_form.is_valid():
+            remark = range_form.cleaned_data.get('remark')
             f_dt = range_form.cleaned_data.get('from_date')
             t_dt = range_form.cleaned_data.get('to_date')
             objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
+            if remark:
+                objects = objects.filter(remark__icontains=remark)
         else:
             range_form = self.range_form_class()
 
         if date_form.is_valid():
+            remark = date_form.cleaned_data.get('remark')
             dt = date_form.cleaned_data.get('date')
             objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
+            if remark:
+                objects = objects.filter(remark__icontains=remark)
         else:
             date_form = self.date_form_class()
 
