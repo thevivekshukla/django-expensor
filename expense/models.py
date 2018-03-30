@@ -56,11 +56,20 @@ class ExpenseManager(models.Manager):
 
 
 
+class Remark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    name = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Expense(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     amount = models.PositiveIntegerField()
     remark = models.CharField(max_length=100, blank=True, null=True)
+    remark2 = models.ForeignKey(Remark, null=True, blank=True)
     timestamp = models.DateField()
 
     objects = ExpenseManager()
@@ -73,7 +82,7 @@ class Expense(models.Model):
 
 
 def capitalize_remark(instance, sender, *args, **kwargs):
-    if instance.remark:
-        instance.remark = instance.remark.title()
+    if instance.name:
+        instance.name = instance.name.title()
 
-pre_save.connect(capitalize_remark, sender=Expense)
+pre_save.connect(capitalize_remark, sender=Remark)

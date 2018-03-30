@@ -14,7 +14,7 @@ from datetime import date, timedelta
 import json
 
 from .forms import ExpenseForm, SelectDateExpenseForm, SelectDateRangeExpenseForm
-from .models import Expense
+from .models import Expense, Remark
 from decorators import login_required_message
 
 # Create your views here.
@@ -39,9 +39,21 @@ class AddExpense(View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            instance = form.save(commit=False)
-            instance.user = request.user
-            instance.save()
+            amount = form.cleaned_data.get('amount')
+            remark = form.cleaned_data.get('remark').title()
+            timestamp = form.cleaned_data.get('timestamp')
+            if remark:
+                try:
+                    rem = Remark.objects.get(user=request.user, name=remark)
+                except:
+                    rem = Remark.objects.create(user=request.user, name=remark)
+            Expense.objects.create(
+                user = request.user,
+                amount = amount,
+                remark2 = rem,
+                timestamp = timestamp
+            )
+
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
@@ -72,9 +84,14 @@ class UpdateExpense(View):
 
         thirty_day = date.today() - timedelta(days=30)
         if not instance.timestamp >= thirty_day:
-            return HttpResponse("Too late! Cannot be changed now.", status=400)
+            return HttpResponse("<h3>Too late! Cannot be changed now.</h3>", status=400)
 
-        form = self.form_class(instance=instance)
+        initial_data = {
+            'amount': instance.amount,
+            'remark': instance.remark2,
+            'timestamp': instance.timestamp
+        }
+        form = self.form_class(initial=initial_data)
         self.context['form'] = form
         return render(request, self.template_name, self.context)
 
@@ -82,9 +99,21 @@ class UpdateExpense(View):
     def post(self, request, *args, **kwargs):
         instance = self.get_object(request, *args, **kwargs)
 
-        form = self.form_class(request.POST, instance=instance)
+        form = self.form_class(request.POST)
         if form.is_valid():
-            form.save()
+            amount = form.cleaned_data.get('amount')
+            remark = form.cleaned_data.get('remark').title()
+            timestamp = form.cleaned_data.get('timestamp')
+            if remark:
+                try:
+                    rem = Remark.objects.get(user=request.user, name=remark)
+                except:
+                    rem = Remark.objects.create(user=request.user, name=remark)
+            instance.amount = amount
+            instance.remark2 = rem
+            instance.timestamp = timestamp
+            instance.save()
+
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
@@ -110,7 +139,7 @@ class ExpenseList(View):
         object_total = None
         if q:
             objects_list = objects_list.filter(
-                        Q(remark__icontains=q) |
+                        Q(remark2__name__icontains=q) |
                         Q(amount__icontains=q)
                         ).distinct()
             object_total = objects_list.aggregate(Sum('amount'))['amount__sum']
@@ -243,7 +272,7 @@ class DateSearch(View):
             t_dt = range_form.cleaned_data.get('to_date')
             objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
             if remark:
-                objects = objects.filter(remark__icontains=remark)
+                objects = objects.filter(remark2__name__icontains=remark)
         else:
             range_form = self.range_form_class()
 
@@ -252,7 +281,7 @@ class DateSearch(View):
             dt = date_form.cleaned_data.get('date')
             objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
             if remark:
-                objects = objects.filter(remark__icontains=remark)
+                objects = objects.filter(remark2__name__icontains=remark)
         else:
             date_form = self.date_form_class()
 
@@ -327,8 +356,10 @@ class GetRemark(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             q = request.GET.get('term', '')
-            remarks = Expense.objects.all(user=request.user).filter(remark__icontains=q).order_by(
-                      ).values_list('remark', flat=True).distinct()
+            # remarks = Expense.objects.all(user=request.user).filter(remark__icontains=q).order_by(
+            #           ).values_list('remark', flat=True).distinct()
+            remarks = Remark.objects.filter(user=request.user).filter(name__icontains=q).order_by(
+                        ).values_list('name', flat=True)
             results = []
             for remark in remarks:
                 remark_json = {}

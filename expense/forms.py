@@ -7,13 +7,15 @@ from datetime import date, timedelta
 from .models import Expense
 
 
-class ExpenseForm(forms.ModelForm):
+class ExpenseForm(forms.Form):
 
+    amount = forms.IntegerField()
+    remark = forms.CharField(required=False)
     timestamp = forms.DateField(initial=date.today())
 
-    class Meta():
-        model = Expense
-        fields = ["amount", "remark", "timestamp"]
+    # class Meta():
+    #     model = Expense
+    #     fields = ["amount", "remark", "timestamp"]
 
     def clean_timestamp(self, *args, **kwargs):
         timestamp = self.cleaned_data.get('timestamp')
