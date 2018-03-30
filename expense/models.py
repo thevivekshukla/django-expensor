@@ -58,7 +58,7 @@ class ExpenseManager(models.Manager):
 
 class Remark(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
 
     def __str__(self):
         return self.name
@@ -68,7 +68,7 @@ class Expense(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     amount = models.PositiveIntegerField()
-    remark = models.CharField(max_length=100, blank=True, null=True)
+    remark_old = models.CharField(max_length=100, blank=True, null=True)
     remark2 = models.ForeignKey(Remark, null=True, blank=True)
     timestamp = models.DateField()
 
