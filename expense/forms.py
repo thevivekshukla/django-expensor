@@ -35,9 +35,8 @@ class ExpenseForm(forms.Form):
 
 
 class SelectDateExpenseForm(forms.Form):
-    remark = forms.CharField(
+    remark = forms.CharField(required=False,
         widget=forms.TextInput(attrs={
-            'required':False,
             'class': 'remark',
         })
     )
@@ -45,9 +44,8 @@ class SelectDateExpenseForm(forms.Form):
 
 
 class SelectDateRangeExpenseForm(forms.Form):
-    remark = forms.CharField(
+    remark = forms.CharField(required=False,
         widget=forms.TextInput(attrs={
-            'required':False,
             'class': 'remark',
         })
     )
