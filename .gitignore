@@ -2,6 +2,7 @@
 **/__pycache__/
 **/*.pyc
 **/*_auto_*
+**/migrations/*_remove_*.py
 **/.idea/
 venv/
 env

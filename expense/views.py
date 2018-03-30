@@ -50,7 +50,7 @@ class AddExpense(View):
             Expense.objects.create(
                 user = request.user,
                 amount = amount,
-                remark2 = rem,
+                remark = rem,
                 timestamp = timestamp
             )
 
@@ -88,7 +88,7 @@ class UpdateExpense(View):
 
         initial_data = {
             'amount': instance.amount,
-            'remark': instance.remark2,
+            'remark': instance.remark,
             'timestamp': instance.timestamp
         }
         form = self.form_class(initial=initial_data)
@@ -110,7 +110,7 @@ class UpdateExpense(View):
                 except:
                     rem = Remark.objects.create(user=request.user, name=remark)
             instance.amount = amount
-            instance.remark2 = rem
+            instance.remark = rem
             instance.timestamp = timestamp
             instance.save()
 
@@ -139,7 +139,7 @@ class ExpenseList(View):
         object_total = None
         if q:
             objects_list = objects_list.filter(
-                        Q(remark2__name__icontains=q) |
+                        Q(remark__name__icontains=q) |
                         Q(amount__icontains=q)
                         ).distinct()
             object_total = objects_list.aggregate(Sum('amount'))['amount__sum']
@@ -272,7 +272,7 @@ class DateSearch(View):
             t_dt = range_form.cleaned_data.get('to_date')
             objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
             if remark:
-                objects = objects.filter(remark2__name__icontains=remark)
+                objects = objects.filter(remark__name__icontains=remark)
         else:
             range_form = self.range_form_class()
 
@@ -281,7 +281,7 @@ class DateSearch(View):
             dt = date_form.cleaned_data.get('date')
             objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
             if remark:
-                objects = objects.filter(remark2__name__icontains=remark)
+                objects = objects.filter(remark__name__icontains=remark)
         else:
             date_form = self.date_form_class()
 
