@@ -35,11 +35,21 @@ class ExpenseForm(forms.Form):
 
 
 class SelectDateExpenseForm(forms.Form):
-    remark = forms.CharField(required=False)
+    remark = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'required':False,
+            'class': 'remark',
+        })
+    )
     date = forms.DateField(initial=date.today())
 
 
 class SelectDateRangeExpenseForm(forms.Form):
-    remark = forms.CharField(required=False)
+    remark = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'required':False,
+            'class': 'remark',
+        })
+    )
     from_date = forms.DateField(initial=date.today()-timedelta(days=30))
     to_date = forms.DateField(initial=date.today())

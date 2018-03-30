@@ -57,6 +57,10 @@
 
 <script type="text/javascript">
 
+$(".remark").autocomplete({
+    source: "/autocomplete/get_remark/",
+  });
+
 $(function(){
   $("#id_date").datepicker();
   $("#id_from_date").datepicker();

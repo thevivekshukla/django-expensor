@@ -10,7 +10,7 @@
   <tr>
     <td>{{ object.timestamp }}</td>
     <td>{{ object.amount }}</td>
-    <td>{% if object.remark2 %}{{ object.remark2 }}{% endif %}</td>
+    <td>{% if object.remark %}{{ object.remark }}{% endif %}</td>
     <td><a href="{% url "expense:update_expense" id=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
       <span class="glyphicon glyphicon-pencil"></span> Edit
       </a>
