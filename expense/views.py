@@ -40,19 +40,23 @@ class AddExpense(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
-            remark = form.cleaned_data.get('remark').title()
+            remark = form.cleaned_data.get('remark', '').title()
             timestamp = form.cleaned_data.get('timestamp')
+
+            expense = Expense.objects.create(
+                user = request.user,
+                amount = amount,
+                timestamp = timestamp
+            )
+
             if remark:
                 try:
                     rem = Remark.objects.get(user=request.user, name=remark)
                 except:
                     rem = Remark.objects.create(user=request.user, name=remark)
-            Expense.objects.create(
-                user = request.user,
-                amount = amount,
-                remark = rem,
-                timestamp = timestamp
-            )
+                expense.remark = rem
+                expense.save()
+            
 
             return HttpResponse(status=200)
         else:
@@ -102,16 +106,19 @@ class UpdateExpense(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
-            remark = form.cleaned_data.get('remark').title()
+            remark = form.cleaned_data.get('remark', '').title()
             timestamp = form.cleaned_data.get('timestamp')
+
+            instance.amount = amount
+            instance.timestamp = timestamp
+            rem = None
             if remark:
                 try:
                     rem = Remark.objects.get(user=request.user, name=remark)
                 except:
                     rem = Remark.objects.create(user=request.user, name=remark)
-            instance.amount = amount
+            
             instance.remark = rem
-            instance.timestamp = timestamp
             instance.save()
 
             return HttpResponse(status=200)
