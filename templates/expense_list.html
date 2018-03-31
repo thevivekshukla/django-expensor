@@ -13,6 +13,24 @@
 
 
 {% if objects %}
+<p>
+  <div>
+    <b>Order by:</b>
+    <form method="GET">
+      <select name="field">
+        <option value="amount">Amount</option>
+        <option value="timestamp" selected>Date</option>
+      </select>
+      <select name="order">
+        <option value="">ASC</option>
+        <option value="-" selected>DESC</option>
+      </select>
+      <input type="submit" class="btn btn-xs btn-default" value="Submit">
+      {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+    </form>
+  </div>
+  
+</p>
 
 {% include 'expense_table.html' %}
 

@@ -151,6 +151,12 @@ class ExpenseList(View):
                         ).distinct()
             object_total = objects_list.aggregate(Sum('amount'))['amount__sum']
 
+        order_field = request.GET.get("field")
+        if order_field:
+            ordering = request.GET.get("order", "")+order_field
+            print(ordering)
+            objects_list = objects_list.order_by(ordering)
+
         paginator = Paginator(objects_list, 15)
 
         page = request.GET.get('page')
