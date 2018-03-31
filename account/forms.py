@@ -61,3 +61,19 @@ class LoginForm(forms.Form):
             raise forms.ValidationError("You have entered wrong password.")
 
         return password
+
+
+class ChangePasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput)
+    new_password = forms.CharField(widget=forms.PasswordInput)
+    confirm_new_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean_confirm_new_password(self, *args, **kwargs):
+        password = self.cleaned_data.get("new_password")
+        password2 = self.cleaned_data.get("confirm_new_password")
+
+        if password != password2:
+            raise forms.ValidationError("Password must match.")
+        
+        return password2
+            
