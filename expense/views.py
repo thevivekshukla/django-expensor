@@ -414,24 +414,20 @@ class GetYear(View):
 
 
 class Error404(View):
-
     def get(self, request, *args, **kwargs):
         return render(request, "404.html", {})
 
 
 class Error500(View):
-
     def get(self, request, *args, **kwargs):
         return render(request, "500.html", {})
 
 
 class Error400(View):
-
     def get(self, request, *args, **kwargs):
         return render(request, "400.html", {})
 
 
 class Error403(View):
-
     def get(self, request, *args, **kwargs):
         return render(request, "403.html", {})
