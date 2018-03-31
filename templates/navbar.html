@@ -55,7 +55,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
-        <li><a class="navbar-link" href="{% url 'account:change-password' %}"><span class="glyphicon glyphicon-log-out"></span> Change Password</a></li>
+        <li><a class="navbar-link" href="{% url 'account:change-password' %}"><span class="glyphicon glyphicon-cog"></span> Change Password</a></li>
         <li><a class="navbar-link" href="{% url 'account:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         {% else %}
         <li><a class="navbar-link" href="{% url 'account:register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
