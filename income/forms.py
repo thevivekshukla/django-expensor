@@ -14,5 +14,5 @@ class IncomeForm(forms.Form):
 
 class SelectDateRangeIncomeForm(forms.Form):
     source = forms.CharField(required=False)
-    from_date = forms.DateField(initial=date.today()-timedelta(days=30))
+    from_date = forms.DateField(initial=date.today()-timedelta(days=365))
     to_date = forms.DateField(initial=date.today())
