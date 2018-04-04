@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+
+{% if object_total %}
+<h4>
+    <strong>Total: {{ object_total }}</strong>
+</h4>
+{% endif %}
+
+
+{% if objects %}
+
+<table class="table table-striped">
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Source</th>
+      <th>Action</th>
+    </tr>
+    {% for object in objects %}
+    <tr>
+      <td>{{ object.timestamp }}</td>
+      <td>{{ object.amount }}</td>
+      <td>{% if object.source %}{{ object.source }}{% endif %}</td>
+      <td><a href="{% url "income:update-income" pk=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  
+
+
+{% include 'paginator.html' %}
+
+{% else %}
+<h1>Nothing found</h1><hr>
+{% endif %}
+
+
+<div class="row">
+
+{% if range_form %}
+  <div class="col-sm-4 col-sm-offset-2">
+
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ range_form|crispy }}
+      <input type="submit" class="btn btn-default" name="" value="Search">
+    </form>
+  </div>
+{% endif %}
+
+</div>
+
+
+{% endblock body %}
+
+
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+$("#id_source").autocomplete({
+    source: "/income/autocomplete/source/",
+  });
+
+$(function(){
+  $("#id_from_date").datepicker();
+  $("#id_to_date").datepicker();
+  
+});
+
+</script>
+
+<br><br><br>
+{% endblock js %}

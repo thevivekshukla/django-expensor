@@ -3,11 +3,12 @@ from django.views.generic import ListView
 from django.views import View
 from django.http import HttpResponse, Http404
 from django.utils.decorators import method_decorator
+from django.db.models import Sum
 
 import json
 
 from .models import Income, Source
-from .forms import IncomeForm
+from .forms import IncomeForm, SelectDateRangeIncomeForm
 
 from decorators import login_required_message
 # Create your views here.
@@ -154,3 +155,46 @@ class SourceView(View):
         data = json.dumps(result)
         
         return HttpResponse(data, content_type='application/json')
+
+
+
+class IncomeDateSearch(View):
+    range_form_class = SelectDateRangeIncomeForm
+    template_name = "income-search.html"
+    context = {
+        "title": "Income: Search"
+    }
+
+    @method_decorator(login_required_message)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.context['range_form'] = self.range_form_class()
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        range_form = self.range_form_class(request.POST)
+
+        objects = None
+
+        if range_form.is_valid():
+            source = range_form.cleaned_data.get('source')
+            f_dt = range_form.cleaned_data.get('from_date')
+            t_dt = range_form.cleaned_data.get('to_date')
+            objects = Income.objects.filter(user=request.user).filter(timestamp__range=(f_dt, t_dt))
+            if source:
+                objects = objects.filter(source__name__icontains=source)
+        else:
+            range_form = self.range_form_class()
+
+        if objects:
+            object_total = objects.aggregate(Sum('amount'))['amount__sum']
+        else:
+            object_total = None
+
+        self.context['range_form'] = range_form
+        self.context['objects'] = objects
+        self.context['object_total'] = object_total
+
+        return render(request, self.template_name, self.context)
