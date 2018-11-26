@@ -17,20 +17,20 @@ class ExpenseForm(forms.Form):
     #     model = Expense
     #     fields = ["amount", "remark", "timestamp"]
 
-    def clean_timestamp(self, *args, **kwargs):
-        timestamp = self.cleaned_data.get('timestamp')
-        today = date.today()
+    # def clean_timestamp(self, *args, **kwargs):
+    #    timestamp = self.cleaned_data.get('timestamp')
+    #    today = date.today()
         # three_day = today - timedelta(days=3)
         # ten_day = today - timedelta(days=10)
-        thirty_day = today - timedelta(days=30)
+    #    thirty_day = today - timedelta(days=30)
 
-        if timestamp > today:
-            raise forms.ValidationError("Date cannot be set in future.")
+    #    if timestamp > today:
+    #        raise forms.ValidationError("Date cannot be set in future.")
 
-        if timestamp < thirty_day:
-            raise forms.ValidationError("Date cannot be set more than 30 days in past.")
+    #    if timestamp < thirty_day:
+    #        raise forms.ValidationError("Date cannot be set more than 30 days in past.")
 
-        return timestamp
+    #   return timestamp
 
 
 
