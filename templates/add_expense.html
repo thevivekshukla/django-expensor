@@ -37,12 +37,12 @@
       source: "{% url 'expense:get_remark' %}",
     });
 
-    var today = new Date();
-    month = today.getMonth() + 1;
-    day = today.getDate();
-    year = today.getFullYear();
-    date = month + "/" + day + "/" + year
-    $("#id_timestamp").val(date);
+    // var today = new Date();
+    // month = today.getMonth() + 1;
+    // day = today.getDate();
+    // year = today.getFullYear();
+    // date = month + "/" + day + "/" + year
+    // $("#id_timestamp").val(date);
 
     $("#id_timestamp").datepicker();
 

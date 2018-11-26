@@ -7,8 +7,12 @@ class IncomeForm(forms.Form):
     amount = forms.IntegerField()
     source = forms.CharField(max_length=30, required=False)
     timestamp = forms.DateField()
-    class Meta():
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['timestamp'].initial = date.today()
         
+    class Meta():
         fields = ['amount', 'source', 'timestamp']
 
 

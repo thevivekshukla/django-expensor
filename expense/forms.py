@@ -13,6 +13,10 @@ class ExpenseForm(forms.Form):
     remark = forms.CharField(required=False)
     timestamp = forms.DateField(initial=date.today())
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['timestamp'].initial = date.today()
+
     # class Meta():
     #     model = Expense
     #     fields = ["amount", "remark", "timestamp"]
