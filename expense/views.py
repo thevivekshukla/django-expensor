@@ -86,9 +86,9 @@ class UpdateExpense(View):
     def get(self, request, *args, **kwargs):
         instance = self.get_object(request, *args, **kwargs)
 
-        thirty_day = date.today() - timedelta(days=30)
-        if not instance.timestamp >= thirty_day:
-            return HttpResponse("<h3>Too late! Cannot be changed now.</h3>", status=400)
+        # thirty_day = date.today() - timedelta(days=30)
+        # if not instance.timestamp >= thirty_day:
+        #     return HttpResponse("<h3>Too late! Cannot be changed now.</h3>", status=400)
 
         initial_data = {
             'amount': instance.amount,
