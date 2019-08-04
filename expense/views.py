@@ -373,16 +373,22 @@ class GoToRemarkWiseExpense(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        day = kwargs.get('day')
-        month = kwargs.get('month')
-        year = kwargs.get('year')
+        day = int(kwargs.get('day', 0))
+        month = int(kwargs.get('month', 0))
+        year = int(kwargs.get('year', 0))
+        _day = None
+        _month = None
+        _year = None
         
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
+            _day = date(year, month, day)
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
+            _month = date(year, month, 1)
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
+            _year = date(year, 1, 1)
 
         objects = objects.select_related('remark')
         remarks = set()
@@ -403,6 +409,9 @@ class GoToRemarkWiseExpense(View):
             "title": "Expenses",
             "remarks": remark_dict,
             "total": total,
+            "day": _day,
+            "month": _month,
+            "year": _year,
         }
 
         return render(request, self.template_name, context)
