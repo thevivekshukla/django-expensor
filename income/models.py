@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from utils.base_model import BaseModel
+
 User = get_user_model()
 
 # Create your models here.
 
 
-class Source(models.Model):
+class Source(BaseModel):
 
     user = models.ForeignKey(User)
     name = models.CharField(max_length=30)
@@ -16,7 +18,7 @@ class Source(models.Model):
 
     
 
-class Income(models.Model):
+class Income(BaseModel):
 
     user = models.ForeignKey(User)
     amount = models.PositiveIntegerField()
