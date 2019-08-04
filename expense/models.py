@@ -58,7 +58,7 @@ class ExpenseManager(models.Manager):
 
 
 
-class Remark(BaseModel):
+class Remark(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=30)
 
@@ -66,7 +66,7 @@ class Remark(BaseModel):
         return self.name
 
 
-class Expense(BaseModel):
+class Expense(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     amount = models.PositiveIntegerField()
