@@ -6,6 +6,8 @@ from django.db.models.signals import pre_save
 
 from datetime import date
 
+from utils.base_model import BaseModel
+
 # Create your models here.
 
 
@@ -56,7 +58,7 @@ class ExpenseManager(models.Manager):
 
 
 
-class Remark(models.Model):
+class Remark(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=30)
 
@@ -64,7 +66,7 @@ class Remark(models.Model):
         return self.name
 
 
-class Expense(models.Model):
+class Expense(BaseModel):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     amount = models.PositiveIntegerField()

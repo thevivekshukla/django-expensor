@@ -10,3 +10,4 @@ staticfiles/
 celerybeat**
 .vscode
 .env
+**/.DS_Store

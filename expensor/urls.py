@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 from expense import views
 
 urlpatterns = [
+    url(r'^django-admin/', include(admin.site.urls)),
     url(r'^account/', include('account.urls')),
     url(r'^', include('expense.urls')),
     url(r'^income/', include('income.urls')),
