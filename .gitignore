@@ -1,6 +1,4 @@
-**/migrations/*
 !**/migrations/__init__.py
-**/*_initial.py
 **/__pycache__/
 **/*.pyc
 **/.idea/
