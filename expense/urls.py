@@ -11,6 +11,7 @@ urlpatterns = [
         url(r'^search/$', views.DateSearch.as_view(), name='search'),
         url(r'^(?P<year>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),
         url(r'^(?P<year>\d+)/(?P<month>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),
+        url(r'^(?P<year>\d+)/(?P<month>\d+)/remark/$', views.GoToRemarkWiseExpense.as_view(), name='remark_monthly_expense'),
         url(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),
         url(r'^autocomplete/get_remark/$', views.GetRemark.as_view(), name='get_remark'),
         url(r'^list/$', views.ExpenseList.as_view(), name='expense_list'),

@@ -362,6 +362,52 @@ class GoToExpense(View):
 
 
 
+class GoToRemarkWiseExpense(View):
+    """
+    provies expenses for particular day, month or year.
+    """
+    template_name = 'remark-month-expense.html'
+
+    @method_decorator(login_required_message)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        day = kwargs.get('day')
+        month = kwargs.get('month')
+        year = kwargs.get('year')
+        
+        if day:
+            objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
+        elif month:
+            objects = Expense.objects.this_month(user=request.user, year=year, month=month)
+        elif year:
+            objects = Expense.objects.this_year(user=request.user, year=year)
+
+        objects = objects.select_related('remark')
+        remarks = set()
+        for instance in objects:
+            remarks.add(instance.remark)
+
+        remark_dict = {}
+        for remark in remarks:
+            remark_dict[remark] = objects.filter(remark=remark).aggregate(
+                Sum('amount')
+            )['amount__sum']
+
+
+        total = objects.aggregate(Sum('amount'))['amount__sum']
+
+        context = {
+            "title": "Expenses",
+            "remarks": remark_dict,
+            "total": total,
+        }
+
+        return render(request, self.template_name, context)
+
+
+
 class GetRemark(View):
     """
     will be used to autocomplete the remarks

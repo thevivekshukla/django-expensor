@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+{% if remarks %}
+<h4>Total: {{ total }}</h4><br>
+<table class="table table-striped">
+    
+    <tr>
+      <th>Remark</th>
+      <th>Total Amount</th>
+    </tr>
+    {% for remark, amount in remarks.items %}
+    <tr>
+      <td>
+        {% if not remark.name %}
+            Others<sup>*</sup>
+        {% else %}
+            {{ remark.name }}
+        {% endif %}
+      </td>
+      <td>
+          {{ amount }}
+      </td>
+    </tr> 
+
+    {% endfor %}
+    
+
+  </table>
+  {% else %}
+
+  <h2>No data to show.</h2>
+
+  {% endif %}
+
+{% endblock body %}
