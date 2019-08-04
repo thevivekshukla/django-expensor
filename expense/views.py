@@ -395,6 +395,7 @@ class GoToRemarkWiseExpense(View):
                 Sum('amount')
             )['amount__sum']
 
+        remark_dict = dict(sorted(remark_dict.items(), key=lambda x: x[1], reverse=True))
 
         total = objects.aggregate(Sum('amount'))['amount__sum']
 
