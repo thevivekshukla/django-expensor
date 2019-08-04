@@ -11,17 +11,17 @@
       <th>Remark</th>
       <th>Total Amount</th>
     </tr>
-    {% for remark, amount in remarks.items %}
+    {% for remark in remarks %}
     <tr>
       <td>
-        {% if not remark.name %}
+        {% if not remark.0 %}
             Others<sup>*</sup>
         {% else %}
-            {{ remark.name }}
+            {{ remark.0.name }}
         {% endif %}
       </td>
       <td>
-          {{ amount }}
+          {{ remark.1 }}
       </td>
     </tr> 
 
