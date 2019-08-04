@@ -22,6 +22,15 @@
 </div>
 </div>
 
+{% if not objectss %}
+
+<div class="col-sm-12 col-md-6 col-lg-6">
+<h4>Recent:</h4>
+{% include 'expense_table.html' %}
+</div>
+
+{% endif %}
+
 
 
 
