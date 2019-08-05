@@ -26,7 +26,7 @@
 
 {% if date_form %}
   <div class="col-sm-4 col-sm-offset-0">
-    <form action="{% url "expense:search" %}" method="post">
+    <form action="{% url 'expense:search' %}" method="GET">
       {% csrf_token %}
       {{ date_form|crispy }}
       <input type="submit" class="btn btn-default" name="" value="Search">
@@ -37,7 +37,7 @@
 {% if range_form %}
   <div class="col-sm-4 col-sm-offset-2">
 
-    <form action="{% url "expense:search" %}" method="post">
+    <form action="{% url 'expense:search' %}" method="GET">
       {% csrf_token %}
       {{ range_form|crispy }}
       <input type="submit" class="btn btn-default" name="" value="Search">
