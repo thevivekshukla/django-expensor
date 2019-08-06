@@ -27,6 +27,10 @@
 <div class="col-sm-12 col-md-6 col-lg-6">
 <h4>Recent:</h4>
 {% include 'expense_table.html' %}
+
+<center><a href="{% url 'expense:expense_list' %}">See All</a></center>
+<br><br>
+
 </div>
 
 {% endif %}
