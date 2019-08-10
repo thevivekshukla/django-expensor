@@ -25,6 +25,13 @@
 {% if objects %}
 
 <div class="col-sm-12 col-md-6 col-lg-6">
+
+{% if total.day %}
+<strong>
+  <u>Today you've spent: &#8377; {{ total.day }}</u>
+</strong><br>
+{% endif %}
+
 <h4>Recent:</h4>
 {% include 'expense_table.html' %}
 

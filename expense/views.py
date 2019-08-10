@@ -37,7 +37,9 @@ class AddExpense(View):
         last_10_expenses = Expense.objects.all(user=request.user).order_by(
                             '-created_at', '-timestamp',
                         )[:10]
+                        
         self.context['objects'] = last_10_expenses
+        self.context['total'] = Expense.objects.amount_sum(user=request.user)
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
