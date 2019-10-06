@@ -10,6 +10,33 @@ It is a lite expense management web app that I developed for my personal use.
 - Stats include total expense of all time, total expense of the current year, total expenses of present day, total expense of last and current month.
 - Also a minimal income manager app comes with this app.
 
+### Run into docker
+
+For choosing environment use
+
+```bash
+$ export env_param=development # or `production`
+```
+
+##### Prepare build for using common image in containers
+```bash
+$ cp .env.example .env
+$ docker-compose build
+```
+
+##### Run containers
+
+```bash
+$ docker-compose up -d
+```
+
+##### Execute commands for migrate and collection static
+```bash
+$ docker-compose exec -T django-expensor python manage.py collectstatic --noinput
+$ docker-compose exec -T django-expensor python manage.py makemigrations 
+$ docker-compose exec -T django-expensor python manage.py migrate --noinput
+```
+
 ### System requirements:
 - Python 3.5
 - Django 1.11.8

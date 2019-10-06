@@ -1,8 +1,6 @@
-from expensor.old_settings import *
+from expensor.common import *
 
 DEBUG = False
-
-ALLOWED_HOSTS = config('HOST', cast=Csv())
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -16,7 +14,7 @@ DBBACKUP_STORAGE_OPTIONS = {
 }
 
 
-CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
 
 
 DATABASES = {
@@ -30,6 +28,6 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': config('MEMCACHED_LOCATION'),
     }
 }

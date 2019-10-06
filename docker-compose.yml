@@ -1,0 +1,82 @@
+version: "3.7"
+
+services:
+  django-expensor:
+    image: django-expensor:latest
+    container_name: django-expensor
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+      args:
+        APP_PORT: 8000
+        DJANGO_ENV: ${env_param}
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - app-media:/var/www/app/media
+    ports:
+      - 127.0.0.1:8000:8000
+    depends_on:
+      - expensor-db
+      - expensor-rabbit
+      - expensor-celery
+      - expensor-celery-beat
+      - expensor-memcached
+
+  expensor-celery:
+    image: django-expensor:latest
+    container_name: expensor-celery
+    command: celery -A expensor worker -l info
+    env_file:
+      - .env
+    depends_on:
+      - expensor-db
+      - expensor-rabbit
+    links:
+      - expensor-db
+
+  expensor-celery-beat:
+    image: django-expensor:latest
+    container_name: expensor-celery-beat
+    command: celery -A expensor beat
+    env_file:
+      - .env
+    depends_on:
+      - expensor-db
+      - expensor-rabbit
+    links:
+      - expensor-db
+
+  expensor-rabbit:
+    container_name: expensor-rabbit
+    image: rabbitmq:3.8.0-management
+    env_file:
+      - .env
+    expose:
+      - 5672
+    ports:
+      - 127.0.0.1:15672:15672
+
+  expensor-memcached:
+    container_name: expensor-memcached
+    image: memcached:1.5.19
+    restart: always
+    expose:
+      - 11211
+
+  expensor-db:
+    container_name: expensor-db
+    restart: always
+    image: postgres:12-alpine
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:${PGDATA:-/var/lib/postgresql/data}
+    expose:
+      - 5432
+
+volumes:
+    postgres_data:
+    app-media:
