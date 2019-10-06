@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -15,7 +15,7 @@ from .forms import RegisterUserForm, LoginForm, ChangePasswordForm
 
 
 def user_register(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("expense:expense_list"))
 
     form = RegisterUserForm(request.POST or None)
@@ -37,7 +37,7 @@ def user_register(request):
 
 
 def user_login(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("expense:add_expense"))
 
     form = LoginForm(request.POST or None)
@@ -49,7 +49,7 @@ def user_login(request):
         user = authenticate(username=username, password=password)
 
         if user.is_active:
-            if user.is_authenticated():
+            if user.is_authenticated:
                 login(request, user)
                 next_ = request.GET.get("next")
                 if next_:

@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from expense import views
 
 urlpatterns = [
-    url(r'^django-admin/', include(admin.site.urls)),
+    url(r'^django-admin/', admin.site.urls),
     url(r'^account/', include('account.urls')),
     url(r'^', include('expense.urls')),
     url(r'^income/', include('income.urls')),
@@ -34,7 +34,7 @@ if settings.DEBUG:
 
 
 
-handler404 = views.Error404.as_view()
-handler500 = views.Error500.as_view()
-handler400 = views.Error400.as_view()
-handler403 = views.Error403.as_view()
+# handler404 = views.Error404.as_view()
+# handler500 = views.Error500.as_view()
+# handler400 = views.Error400.as_view()
+# handler403 = views.Error403.as_view()

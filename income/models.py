@@ -10,7 +10,7 @@ User = get_user_model()
 
 class Source(BaseModel):
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,models.CASCADE)
     name = models.CharField(max_length=30)
 
     def __str__(self):
@@ -20,9 +20,9 @@ class Source(BaseModel):
 
 class Income(BaseModel):
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, models.CASCADE)
     amount = models.PositiveIntegerField()
-    source = models.ForeignKey(Source, blank=True, null=True)
+    source = models.ForeignKey(Source, blank=True, null=True, on_delete=models.DO_NOTHING)
     timestamp = models.DateField()
 
     def __str__(self):
