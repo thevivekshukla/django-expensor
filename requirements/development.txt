@@ -1,0 +1,6 @@
+-r base.txt
+
+isort==4.3.3
+pylint==1.8.2
+whitenoise==3.3.0
+ipython

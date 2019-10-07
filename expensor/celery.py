@@ -6,7 +6,9 @@ from django.conf import settings
 from celery import Celery
 from celery.schedules import crontab
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'expensor.settings')
+environment = os.getenv('DJANGO_ENV', 'production')
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'expensor.settings.' + environment)
 
 app = Celery('expensor')
 app.config_from_object('django.conf:settings', namespace='CELERY')

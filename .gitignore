@@ -4,6 +4,7 @@
 **/.idea/
 venv/
 env
+.env
 static/
 staticfiles/
 **/settings/__init__.py

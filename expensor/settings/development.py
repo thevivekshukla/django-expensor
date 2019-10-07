@@ -1,19 +1,21 @@
-from expensor.old_settings import *
+from expensor.common import *
 
 
 DEBUG = True
+
+SECRET_KEY = config('SECRET_KEY')
 
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': 'dbbackups/'}
 
 
-CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
 
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL_DEV')
+        default=config('DATABASE_URL')
     )
 }
 
@@ -22,6 +24,6 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': config('MEMCACHED_LOCATION'),
     }
 }
