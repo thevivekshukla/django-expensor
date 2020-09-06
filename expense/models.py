@@ -48,11 +48,11 @@ class ExpenseManager(models.Manager):
     def amount_sum(self, user=None, year=None, month=None, day=None, *args, **kwargs):
         total = {}
         qs = Expense.objects
-        total['all'] = qs.filter(user=user).aggregate(Sum('amount'))['amount__sum']
-        total['year'] = qs.this_year(user=user).aggregate(Sum('amount'))['amount__sum']
-        total['month'] = qs.this_month(user=user).aggregate(Sum('amount'))['amount__sum']
-        total['last_month'] = qs.last_month(user=user).aggregate(Sum('amount'))['amount__sum']
-        total['day'] = qs.this_day(user=user).aggregate(Sum('amount'))['amount__sum']
+        total['all'] = qs.filter(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        total['year'] = qs.this_year(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        total['month'] = qs.this_month(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        total['last_month'] = qs.last_month(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        total['day'] = qs.this_day(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
 
         return total
 
