@@ -26,10 +26,13 @@
 
 <div class="col-sm-12 col-md-6 col-lg-6">
 
-<strong>
-  <p><u>Today: &#8377; {{ total.day }}</u></p>
-  <p><u>This month: &#8377; {{ total.month }}</u></p>
-</strong>
+<div class="jumbotron">
+  <strong>
+    <p><u>Today</u>: <u>&#8377; {{ total.day }}</u></p>
+    <p><u>This month</u>: <u>&#8377; {{ total.month }}</u></p>
+  </strong>
+</div>
+
 
 <h4>Recent:</h4>
 {% include 'expense_table.html' %}
