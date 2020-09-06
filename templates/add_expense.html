@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
+{% load humanize %}
 
 {% block body %}
 
@@ -27,8 +27,8 @@
 <div class="col-sm-12 col-md-6 col-lg-6">
 
 <div class="jumbotron">
-    <h5><u>Today</u>: &#8377; {{ total.day }}</h5>
-    <h5><u>This month</u>: &#8377; {{ total.month }}</h5>
+    <h5><u>Today</u>: &#8377; {{ total.day|intcomma }}</h5>
+    <h5><u>This month</u>: &#8377; {{ total.month|intcomma }}</h5>
 </div>
 
 
