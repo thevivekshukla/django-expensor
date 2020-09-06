@@ -12,7 +12,8 @@ DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DBBACKUP_STORAGE_OPTIONS = {
     'access_key': config('AWS_DB_ACCESS_KEY'),
     'secret_key': config('AWS_DB_SECRET_KEY'),
-    'bucket_name': config('AWS_DB_BUCKET_NAME')
+    'bucket_name': config('AWS_DB_BUCKET_NAME'),
+    'default_acl': 'private',
 }
 
 
