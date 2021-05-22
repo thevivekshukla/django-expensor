@@ -223,7 +223,7 @@ class SavingsCalculationView(View):
     def return_in_500s(amount):
         mul = amount // 500
         final_amount = int(mul * 500)
-        return f'{final_amount:,}'
+        return final_amount #f'{final_amount:,}'
 
     def post(self, request, *args, **kwargs):
         context = self.context.copy()
