@@ -23,9 +23,10 @@ class SelectDateRangeIncomeForm(forms.Form):
 
 
 class SavingsCalculationForm(forms.Form):
-    savings_percentage = forms.IntegerField(initial=50)
+    savings_percentage = forms.IntegerField(initial=50, max_value=100)
     savings_max_amount = forms.IntegerField(initial=15000)
-    gold_percentage = forms.IntegerField(initial=20)
+    gold_percentage = forms.IntegerField(initial=20, max_value=100)
     # equity_percentage = forms.IntegerField(initial=50)
     salary_received = forms.IntegerField()
     bank_balance = forms.IntegerField()
+

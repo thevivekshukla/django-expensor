@@ -220,5 +220,39 @@ class SavingsCalculationView(View):
         context['form'] = form
         return render(request, self.template_name, context)
 
+    def return_in_500s(amount):
+        mul = amount // 500
+        final_amount = int(mul * 500)
+        return f'{final_amount:,}'
+
+    def post(self, request, *args, **kwargs):
+        context = self.context.copy()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            savings_percentage = form.cleaned_data['savings_percentage']/100
+            savings_max_amount = form.cleaned_data['savings_max_amount']
+            gold_percentage = form.cleaned_data['gold_percentage']/100
+            salary_received = form.cleaned_data['salary_received']
+            bank_balance = form.cleaned_data['bank_balance']
+            equity_percentage = 1 - gold_percentage
+
+            diff = bank_balance - salary_received
+            to_savings = min(diff * savings_percentage, savings_max_amount)
+            for_investment = diff - to_savings
+
+            gold = for_investment * gold_percentage
+            equity = for_investment * equity_percentage
+
+            data = {
+                'savings': self.return_in_500s(to_savings),
+                'gold': self.return_in_500s(gold),
+                'equity': self.return_in_500s(equity),
+            }
+            context['data'] = data
+
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
 
 
