@@ -1,6 +1,6 @@
+from datetime import timedelta
 from django import forms
-from datetime import timedelta, date
-
+from django.utils import timezone
 
 
 class IncomeForm(forms.Form):
@@ -10,7 +10,7 @@ class IncomeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['timestamp'].initial = date.today()
+        self.fields['timestamp'].initial = timezone.now().date()
         
     class Meta():
         fields = ['amount', 'source', 'timestamp']
@@ -18,8 +18,14 @@ class IncomeForm(forms.Form):
 
 class SelectDateRangeIncomeForm(forms.Form):
     source = forms.CharField(required=False)
-    from_date = forms.DateField(initial=date.today()-timedelta(days=365))
-    to_date = forms.DateField(initial=date.today())
+    from_date = forms.DateField()
+    to_date = forms.DateField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        today_date = timezone.now().date()
+        self.fields['from_date'].initial = today_date - timedelta(days=365)
+        self.fields['to_date'].initial = today_date
 
 
 class SavingsCalculationForm(forms.Form):
