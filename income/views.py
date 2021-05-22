@@ -215,7 +215,8 @@ class SavingsCalculationView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
+        salary_received = request.GET.get('salary_received')
+        form = self.form_class(initial={'salary_received': salary_received})
         context = self.context.copy()
         context['form'] = form
         return render(request, self.template_name, context)
