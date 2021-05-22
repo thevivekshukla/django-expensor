@@ -11,11 +11,11 @@ class ExpenseForm(forms.Form):
 
     amount = forms.IntegerField()
     remark = forms.CharField(required=False)
-    timestamp = forms.DateField(initial=date.today())
+    timestamp = forms.DateField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['timestamp'].initial = date.today()
+        self.fields['timestamp'].initial = timezone.now().date()
 
     # class Meta():
     #     model = Expense
@@ -44,7 +44,11 @@ class SelectDateExpenseForm(forms.Form):
             'class': 'remark',
         })
     )
-    date = forms.DateField(initial=date.today())
+    date = forms.DateField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date'].initial = timezone.now().date()
 
 
 class SelectDateRangeExpenseForm(forms.Form):
@@ -53,5 +57,11 @@ class SelectDateRangeExpenseForm(forms.Form):
             'class': 'remark',
         })
     )
-    from_date = forms.DateField(initial=date.today()-timedelta(days=30))
-    to_date = forms.DateField(initial=date.today())
+    from_date = forms.DateField()
+    to_date = forms.DateField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        today_date = timezone.now().date()
+        self.fields['from_date'].initial = today_date - timedelta(days=30)
+        self.fields['to_date'].initial = today_date
