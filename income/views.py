@@ -8,7 +8,10 @@ from django.db.models import Sum
 import json
 
 from .models import Income, Source
-from .forms import IncomeForm, SelectDateRangeIncomeForm
+from .forms import (
+    IncomeForm, SelectDateRangeIncomeForm,
+    SavingsCalculationForm, 
+)
 
 from decorators import login_required_message
 # Create your views here.
@@ -198,3 +201,24 @@ class IncomeDateSearch(View):
         self.context['object_total'] = object_total
 
         return render(request, self.template_name, self.context)
+
+
+class SavingsCalculationView(View):
+    form_class = SavingsCalculationForm
+    template_name = "savings-calculation.html"
+    context = {
+        'title': 'Savings Calculation',
+    }
+
+    @method_decorator(login_required_message)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        context = self.context.copy()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
+

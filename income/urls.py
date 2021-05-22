@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^autocomplete/source/$', views.SourceView.as_view(), name='get-source'),
     url(r'^update/(?P<pk>\d+)/$', views.IncomeUpdateView.as_view(), name='update-income'),
     url(r'^income-search/$', views.IncomeDateSearch.as_view(), name='search'),
+    url(r'^savings-calculation/$', views.SavingsCalculationView.as_view(), name='savings-calculation'),
 ]

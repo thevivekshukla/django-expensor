@@ -20,3 +20,12 @@ class SelectDateRangeIncomeForm(forms.Form):
     source = forms.CharField(required=False)
     from_date = forms.DateField(initial=date.today()-timedelta(days=365))
     to_date = forms.DateField(initial=date.today())
+
+
+class SavingsCalculationForm(forms.Form):
+    savings_percentage = forms.IntegerField(initial=50)
+    savings_max_amount = forms.IntegerField(initial=15_000)
+    gold_percentage = forms.IntegerField(initial=20)
+    # equity_percentage = forms.IntegerField(initial=50)
+    salary_received = forms.IntegerField()
+    bank_balance = forms.IntegerField()
