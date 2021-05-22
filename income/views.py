@@ -220,7 +220,7 @@ class SavingsCalculationView(View):
         context['form'] = form
         return render(request, self.template_name, context)
 
-    def return_in_500s(amount):
+    def return_in_500s(self, amount):
         mul = amount // 500
         final_amount = int(mul * 500)
         return final_amount #f'{final_amount:,}'

@@ -9,13 +9,13 @@
     <div class="col-sm-4 col-sm-offset-2">
         {% if data %}
             <div class="jumbotron">
-                Savings: {{ data.savings }}
-                Gold: {{ data.gold }}
-                Equity: {{ data.equity }}
+                Savings: {{ data.savings|intcomma }}
+                Gold: {{ data.gold|intcomma }}
+                Equity: {{ data.equity|intcomma }}
             </div>
         {% endif %}
 
-        <form action="" method="post">
+        <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="alert alert-warning" role="alert">Equity will be auto calculated based on given inputs above.</div>
