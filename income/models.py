@@ -30,3 +30,17 @@ class Income(BaseModel):
 
     class Meta():
         ordering = ('-timestamp', )
+
+
+class SavingCalculation(BaseModel):
+    user = models.OneToOneField(User, related_name='saving_calculation', on_delete=models.CASCADE)
+    savings_min_amount = models.PositiveIntegerField(help_text='min amount that must be saved if possible. 0 to ignore')
+    savings_max_amount = models.PositiveIntegerField(help_text='max amount that can be saved. 0 to ignore')
+    savings_percentage = models.PositiveIntegerField(help_text='in percentage')
+    gold_percentage = models.PositiveIntegerField(help_text='in percentage')
+    debt_percentage = models.PositiveIntegerField(help_text='in percentage')
+    equity_percentage = models.PositiveIntegerField(help_text='in percentage')
+
+    def __str__(self):
+        return f'{self.user}'
+

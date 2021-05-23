@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 from django.views import View
@@ -7,10 +8,10 @@ from django.db.models import Sum
 
 import json
 
-from .models import Income, Source
+from .models import Income, Source, SavingCalculation
 from .forms import (
     IncomeForm, SelectDateRangeIncomeForm,
-    SavingsCalculationForm, 
+    SavingCalculationForm, SavingCalculationModelForm,
 )
 
 from decorators import login_required_message
@@ -203,8 +204,42 @@ class IncomeDateSearch(View):
         return render(request, self.template_name, self.context)
 
 
+class SavingCalculationDetailView(View):
+    form_class = SavingCalculationModelForm
+    template_name = "savings-calculation-detail.html"
+    context = {
+        'title': 'Saving Calculation Detail',
+    }
+
+    def get(self, request, *args, **kwargs):
+        context = self.context.copy()
+        try:
+            instance = request.user.saving_calculation
+        except SavingCalculation.DoesNotExist:
+            instance = None
+        form = self.form_class(instance=instance)
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        context = self.context.copy()
+        try:
+            instance = request.user.saving_calculation
+        except SavingCalculation.DoesNotExist:
+            instance = None
+        form = self.form_class(instance=instance, data=request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            if instance is None:
+                instance.user = request.user
+            instance.save()
+            messages.success(request, "Savings settings saved successfully!")
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
 class SavingsCalculationView(View):
-    form_class = SavingsCalculationForm
+    form_class = SavingCalculationForm
     template_name = "savings-calculation.html"
     context = {
         'title': 'Savings Calculation',
@@ -215,13 +250,24 @@ class SavingsCalculationView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        salary_received = request.GET.get('salary_received')
-        form = self.form_class(initial={'salary_received': salary_received})
+        initial_data = {'salary_received': request.GET.get('salary_received')}
+        try:
+            savings = request.user.saving_calculation
+            initial_data['savings_min_amount'] = savings.savings_min_amount
+            initial_data['savings_max_amount'] = savings.savings_max_amount
+            initial_data['savings_percentage'] = savings.savings_percentage
+            initial_data['gold_percentage'] = savings.gold_percentage
+            initial_data['debt_percentage'] = savings.debt_percentage
+            initial_data['equity_percentage'] = savings.equity_percentage
+        except SavingCalculation.DoesNotExist:
+            pass
+        form = self.form_class(initial=initial_data)
         context = self.context.copy()
         context['form'] = form
         return render(request, self.template_name, context)
 
     def return_in_500s(self, amount):
+        return amount
         mul = amount // 500
         final_amount = int(mul * 500)
         return final_amount #f'{final_amount:,}'
@@ -230,23 +276,40 @@ class SavingsCalculationView(View):
         context = self.context.copy()
         form = self.form_class(request.POST)
         if form.is_valid():
-            savings_percentage = form.cleaned_data['savings_percentage']/100
+            savings_min_amount = form.cleaned_data['savings_min_amount']
             savings_max_amount = form.cleaned_data['savings_max_amount']
+            savings_percentage = form.cleaned_data['savings_percentage']/100
             gold_percentage = form.cleaned_data['gold_percentage']/100
+            debt_percentage = form.cleaned_data['debt_percentage']/100
+            equity_percentage = form.cleaned_data['equity_percentage']/100
             salary_received = form.cleaned_data['salary_received']
             bank_balance = form.cleaned_data['bank_balance']
-            equity_percentage = 1 - gold_percentage
 
             diff = bank_balance - salary_received
-            to_savings = min(diff * savings_percentage, savings_max_amount)
-            for_investment = diff - to_savings
 
-            gold = for_investment * gold_percentage
-            equity = for_investment * equity_percentage
+            min_savings = max(diff - savings_min_amount, diff)
+            max_savings = min(diff * savings_percentage, savings_max_amount)
+            pct_savings = diff * savings_percentage
+            if min_savings > savings_min_amount and max_savings != 0:
+                to_savings = max_savings
+            else:
+                to_savings = min_savings
+
+            # for_investment = diff - to_savings
+            if to_savings == pct_savings:
+                gold = diff * gold_percentage
+                debt = diff * debt_percentage
+                equity = diff * equity_percentage
+            else:
+                for_investment = diff - to_savings
+                gold = for_investment * (gold_percentage/(1-gold_percentage))
+                debt = for_investment * (debt_percentage/(1-debt_percentage))
+                equity = for_investment * (equity_percentage/(1-equity_percentage))
 
             data = {
                 'savings': self.return_in_500s(to_savings),
                 'gold': self.return_in_500s(gold),
+                'debt': self.return_in_500s(debt),
                 'equity': self.return_in_500s(equity),
             }
             context['data'] = data

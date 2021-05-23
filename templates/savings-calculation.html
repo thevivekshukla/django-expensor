@@ -9,10 +9,25 @@
 
     <div class="col-sm-4 col-sm-offset-2">
         {% if data %}
-            <div class="jumbotron">
-                <h4>Savings: {{ data.savings|intcomma }}</h4>
-                <h4>Gold: {{ data.gold|intcomma }}</h4>
-                <h4>Equity: {{ data.equity|intcomma }}</h4>
+            <div class="alert alert-info">
+                <table class="table">
+                    <tr>
+                        <td><strong>Savings</strong></td>
+                        <td>{{ data.savings|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gold</strong></td>
+                        <td>{{ data.gold|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Debt</strong></td>
+                        <td>{{ data.debt|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Equity</strong></td>
+                        <td>{{ data.equity|intcomma }}</td>
+                    </tr>
+                </table>
             </div>
         {% endif %}
 
@@ -21,12 +36,14 @@
             {{ form|crispy }}
             <div class="alert alert-warning" role="alert">Equity will be auto calculated based on given inputs above.</div>
             <input type="submit" class="btn btn-success" name="" value="Calculate">
+            <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
         </form>
     </div>
 
 </div>
 
 
+<p><br><br><br><br><br></p>
 {% endblock body %}
 
 
