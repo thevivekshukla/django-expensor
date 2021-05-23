@@ -10,6 +10,6 @@ DBBACKUP_STORAGE_OPTIONS = {'location': 'dbbackups/'}
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL_DEV')
+        default=config('DATABASE_URL')
     )
 }
