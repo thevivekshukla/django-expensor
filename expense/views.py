@@ -475,19 +475,25 @@ class GetYear(View):
 
 class Error404(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "404.html", {})
+        return render(request, "404.html", {}, status=404)
 
 
-class Error500(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, "500.html", {})
+# class Error500(View):
+#     def get(self, request, *args, **kwargs):
+#         return render(request, "500.html", {}, status=500)
+
+
+def handler500(request):
+    response = render(request, "500.html")
+    response.status_code = 500
+    return response
 
 
 class Error400(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "400.html", {})
+        return render(request, "400.html", {}, status=400)
 
 
 class Error403(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "403.html", {})
+        return render(request, "403.html", {}, status=403)

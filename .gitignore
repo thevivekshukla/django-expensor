@@ -11,3 +11,5 @@ celerybeat**
 .vscode
 .env
 **/.DS_Store
+**/*.psql
+**/*.sql

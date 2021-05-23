@@ -59,7 +59,8 @@ class ExpenseManager(models.Manager):
 
 
 class Remark(BaseModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='remarks',
+            on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
 
     def __str__(self):
@@ -67,10 +68,11 @@ class Remark(BaseModel):
 
 
 class Expense(BaseModel):
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='expenses',
+            on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
-    remark = models.ForeignKey(Remark, null=True, blank=True)
+    remark = models.ForeignKey(Remark, null=True, blank=True, related_name='expenses',
+                on_delete=models.SET_NULL)
     timestamp = models.DateField()
 
     objects = ExpenseManager()
