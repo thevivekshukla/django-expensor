@@ -34,7 +34,6 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            <div class="alert alert-warning" role="alert">Equity will be auto calculated based on given inputs above.</div>
             <input type="submit" class="btn btn-success" name="" value="Calculate">
             <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
         </form>

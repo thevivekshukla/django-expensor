@@ -267,7 +267,6 @@ class SavingsCalculationView(View):
         return render(request, self.template_name, context)
 
     def return_in_500s(self, amount):
-        return amount
         mul = amount // 500
         final_amount = int(mul * 500)
         return final_amount #f'{final_amount:,}'
@@ -276,9 +275,9 @@ class SavingsCalculationView(View):
         context = self.context.copy()
         form = self.form_class(request.POST)
         if form.is_valid():
+            savings_percentage = form.cleaned_data['savings_percentage']/100
             savings_min_amount = form.cleaned_data['savings_min_amount']
             savings_max_amount = form.cleaned_data['savings_max_amount']
-            savings_percentage = form.cleaned_data['savings_percentage']/100
             gold_percentage = form.cleaned_data['gold_percentage']/100
             debt_percentage = form.cleaned_data['debt_percentage']/100
             equity_percentage = form.cleaned_data['equity_percentage']/100
@@ -287,24 +286,22 @@ class SavingsCalculationView(View):
 
             diff = bank_balance - salary_received
 
-            min_savings = max(diff - savings_min_amount, diff)
             max_savings = min(diff * savings_percentage, savings_max_amount)
-            pct_savings = diff * savings_percentage
-            if min_savings > savings_min_amount and max_savings != 0:
+            if max_savings < savings_min_amount:
+                diff_savings = diff - savings_min_amount
+                if diff_savings > 0:
+                    diff = diff_savings
+                    to_savings = savings_min_amount
+                else:
+                    diff = 0
+                    to_savings = savings_min_amount + diff_savings
+            else:
+                diff -= max_savings
                 to_savings = max_savings
-            else:
-                to_savings = min_savings
 
-            # for_investment = diff - to_savings
-            if to_savings == pct_savings:
-                gold = diff * gold_percentage
-                debt = diff * debt_percentage
-                equity = diff * equity_percentage
-            else:
-                for_investment = diff - to_savings
-                gold = for_investment * (gold_percentage/(1-gold_percentage))
-                debt = for_investment * (debt_percentage/(1-debt_percentage))
-                equity = for_investment * (equity_percentage/(1-equity_percentage))
+            gold = diff * gold_percentage
+            debt = diff * debt_percentage
+            equity = diff * equity_percentage
 
             data = {
                 'savings': self.return_in_500s(to_savings),

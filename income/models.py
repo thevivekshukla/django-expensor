@@ -34,10 +34,10 @@ class Income(BaseModel):
 
 class SavingCalculation(BaseModel):
     user = models.OneToOneField(User, related_name='saving_calculation', on_delete=models.CASCADE)
+    savings_percentage = models.PositiveIntegerField(help_text='in percentage') # of the total amount
     savings_min_amount = models.PositiveIntegerField(help_text='min amount that must be saved if possible. 0 to ignore')
     savings_max_amount = models.PositiveIntegerField(help_text='max amount that can be saved. 0 to ignore')
-    savings_percentage = models.PositiveIntegerField(help_text='in percentage')
-    gold_percentage = models.PositiveIntegerField(help_text='in percentage')
+    gold_percentage = models.PositiveIntegerField(help_text='in percentage') # these will be calculated on the remaining amount after taking out savings
     debt_percentage = models.PositiveIntegerField(help_text='in percentage')
     equity_percentage = models.PositiveIntegerField(help_text='in percentage')
 
