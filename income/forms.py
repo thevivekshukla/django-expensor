@@ -64,7 +64,7 @@ class SavingCalculationForm(forms.Form):
     gold_percentage = forms.IntegerField(initial=20, max_value=100)
     debt_percentage = forms.IntegerField(initial=0)
     equity_percentage = forms.IntegerField(initial=50)
-    salary_received = forms.IntegerField()
+    salary_received = forms.IntegerField(label='Salary Received / Amount to keep in Bank')
     bank_balance = forms.IntegerField()
 
     def clean(self) -> Dict[str, Any]:
