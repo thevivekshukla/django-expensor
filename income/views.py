@@ -229,10 +229,11 @@ class SavingCalculationDetailView(View):
             instance = None
         form = self.form_class(instance=instance, data=request.POST)
         if form.is_valid():
-            instance = form.save(commit=False)
+            cleaned_data = form.cleaned_data
             if instance is None:
-                instance.user = request.user
-            instance.save()
+                SavingCalculation.objects.create(user=request.user, **cleaned_data)
+            else:
+                SavingCalculation.objects.filter(user=request.user).update(**cleaned_data)
             messages.success(request, "Savings settings saved successfully!")
         context['form'] = form
         return render(request, self.template_name, context)
@@ -266,10 +267,11 @@ class SavingsCalculationView(View):
         context['form'] = form
         return render(request, self.template_name, context)
 
-    def return_in_500s(self, amount):
-        mul = amount // 500
-        final_amount = int(mul * 500)
-        return final_amount #f'{final_amount:,}'
+    def return_in_100s(self, amount):
+        multiples_of = 100
+        mul = amount // multiples_of
+        final_amount = int(mul * multiples_of)
+        return final_amount
 
     def post(self, request, *args, **kwargs):
         context = self.context.copy()
@@ -285,6 +287,9 @@ class SavingsCalculationView(View):
             bank_balance = form.cleaned_data['bank_balance']
 
             diff = bank_balance - salary_received
+            
+            if savings_max_amount == 0:
+                savings_max_amount = diff
 
             max_savings = min(diff * savings_percentage, savings_max_amount)
             if max_savings < savings_min_amount:
@@ -304,10 +309,10 @@ class SavingsCalculationView(View):
             equity = diff * equity_percentage
 
             data = {
-                'savings': self.return_in_500s(to_savings),
-                'gold': self.return_in_500s(gold),
-                'debt': self.return_in_500s(debt),
-                'equity': self.return_in_500s(equity),
+                'savings': self.return_in_100s(to_savings),
+                'gold': self.return_in_100s(gold),
+                'debt': self.return_in_100s(debt),
+                'equity': self.return_in_100s(equity),
             }
             context['data'] = data
 
