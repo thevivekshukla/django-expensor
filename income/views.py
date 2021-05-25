@@ -11,7 +11,7 @@ import json
 from .models import Income, Source, SavingCalculation
 from .forms import (
     IncomeForm, SelectDateRangeIncomeForm,
-    SavingCalculationForm, SavingCalculationModelForm,
+    SavingCalculatorForm, SavingCalculationModelForm,
 )
 
 from decorators import login_required_message
@@ -239,11 +239,11 @@ class SavingCalculationDetailView(View):
         return render(request, self.template_name, context)
 
 
-class SavingsCalculationView(View):
-    form_class = SavingCalculationForm
-    template_name = "savings-calculation.html"
+class SavingsCalculatorView(View):
+    form_class = SavingCalculatorForm
+    template_name = "savings-calculator.html"
     context = {
-        'title': 'Savings Calculation',
+        'title': 'Savings Calculator',
     }
 
     @method_decorator(login_required_message)
@@ -260,6 +260,7 @@ class SavingsCalculationView(View):
             initial_data['gold_percentage'] = savings.gold_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
+            initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
         except SavingCalculation.DoesNotExist:
             pass
         form = self.form_class(initial=initial_data)
@@ -283,10 +284,10 @@ class SavingsCalculationView(View):
             gold_percentage = form.cleaned_data['gold_percentage']/100
             debt_percentage = form.cleaned_data['debt_percentage']/100
             equity_percentage = form.cleaned_data['equity_percentage']/100
-            salary_received = form.cleaned_data['salary_received']
+            amount_to_keep_in_bank = form.cleaned_data['amount_to_keep_in_bank']
             bank_balance = form.cleaned_data['bank_balance']
 
-            diff = bank_balance - salary_received
+            diff = max(bank_balance - amount_to_keep_in_bank, 0)
             
             if savings_max_amount == 0:
                 savings_max_amount = diff

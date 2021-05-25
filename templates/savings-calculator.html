@@ -34,7 +34,7 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-success" name="" value="Calculate">
+            <input type="submit" class="btn btn-primary" name="" value="Calculate">
             <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
         </form>
     </div>

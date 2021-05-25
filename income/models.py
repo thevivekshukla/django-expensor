@@ -40,6 +40,7 @@ class SavingCalculation(BaseModel):
     gold_percentage = models.PositiveIntegerField(help_text='in percentage') # these will be calculated on the remaining amount after taking out savings
     debt_percentage = models.PositiveIntegerField(help_text='in percentage')
     equity_percentage = models.PositiveIntegerField(help_text='in percentage')
+    amount_to_keep_in_bank = models.PositiveIntegerField()
 
     def __str__(self):
         return f'{self.user}'

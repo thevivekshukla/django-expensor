@@ -465,7 +465,7 @@ class GetYear(View):
 
             for y in years:
                 result.append(y.year)
-            data = json.dumps(result)
+            data = json.dumps(sorted(result, reverse=True))
 
         cache.set(cache_key, data, cache_time)
 

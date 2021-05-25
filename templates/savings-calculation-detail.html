@@ -20,7 +20,7 @@
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" class="btn btn-success" name="" value="Update">
-            <a style="float:right;" href="{% url 'income:savings-calculation' %}">Calculate Savings</a>
+            <a style="float:right;" href="{% url 'income:savings-calculator' %}">Savings Calculator</a>
         </form>
     </div>
 

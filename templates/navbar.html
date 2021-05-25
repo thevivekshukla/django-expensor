@@ -39,8 +39,11 @@
             <li><a class="navbar-link" href="{% url 'income:add-income' %}">Add Income</a></li>
             <li><a class="navbar-link" href="{% url 'income:income-list' %}">All Income</a></li>
             <li><a class="navbar-link" href="{% url 'income:search' %}">Search</a></li>
-            <li><a class="navbar-link" href="{% url 'income:savings-calculation' %}">Savings Calculation</a></li>
           </ul>
+        </li>
+
+        <li class="dropdown">
+          <li><a class="navbar-link" href="{% url 'income:savings-calculator' %}">Savings Calculator</a></li>
         </li>
       </ul>
 

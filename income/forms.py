@@ -57,15 +57,15 @@ class SavingCalculationModelForm(forms.ModelForm):
         return validate_percentage(super().clean())
 
 
-class SavingCalculationForm(forms.Form):
+class SavingCalculatorForm(forms.Form):
     savings_percentage = forms.IntegerField(initial=50, min_value=0, max_value=100)
-    savings_min_amount = forms.IntegerField(initial=0)
-    savings_max_amount = forms.IntegerField(initial=15000)
-    gold_percentage = forms.IntegerField(initial=20, max_value=100)
-    debt_percentage = forms.IntegerField(initial=0)
-    equity_percentage = forms.IntegerField(initial=50)
-    salary_received = forms.IntegerField(label='Salary Received / Amount to keep in Bank')
-    bank_balance = forms.IntegerField()
+    savings_min_amount = forms.IntegerField(initial=0, min_value=0)
+    savings_max_amount = forms.IntegerField(initial=0, min_value=0)
+    gold_percentage = forms.IntegerField(initial=20, min_value=0, max_value=100)
+    debt_percentage = forms.IntegerField(initial=30, min_value=0, max_value=100)
+    equity_percentage = forms.IntegerField(initial=50, min_value=0, max_value=100)
+    amount_to_keep_in_bank = forms.IntegerField(min_value=0)
+    bank_balance = forms.IntegerField(min_value=0)
 
     def clean(self) -> Dict[str, Any]:
         return validate_percentage(super().clean())
