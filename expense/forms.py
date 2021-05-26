@@ -1,25 +1,20 @@
+from datetime import date, timedelta
+
 from django import forms
 from django.utils import timezone
 
-from datetime import date, timedelta
-
-
 from .models import Expense
+from utils.helpers import get_ist_datetime
 
 
 class ExpenseForm(forms.Form):
-
     amount = forms.IntegerField()
     remark = forms.CharField(required=False)
     timestamp = forms.DateField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['timestamp'].initial = timezone.now().date()
-
-    # class Meta():
-    #     model = Expense
-    #     fields = ["amount", "remark", "timestamp"]
+        self.fields['timestamp'].initial = get_ist_datetime().date()
 
     # def clean_timestamp(self, *args, **kwargs):
     #    timestamp = self.cleaned_data.get('timestamp')
@@ -48,7 +43,7 @@ class SelectDateExpenseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['date'].initial = timezone.now().date()
+        self.fields['date'].initial = get_ist_datetime().date()
 
 
 class SelectDateRangeExpenseForm(forms.Form):
@@ -62,6 +57,6 @@ class SelectDateRangeExpenseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        today_date = timezone.now().date()
+        today_date = get_ist_datetime().date()
         self.fields['from_date'].initial = today_date - timedelta(days=30)
         self.fields['to_date'].initial = today_date

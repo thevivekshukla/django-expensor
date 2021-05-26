@@ -5,6 +5,8 @@ from django import forms
 from django.utils import timezone
 from .models import SavingCalculation
 
+from utils.helpers import get_ist_datetime
+
 
 class IncomeForm(forms.Form):
     amount = forms.IntegerField()
@@ -13,7 +15,7 @@ class IncomeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['timestamp'].initial = timezone.now().date()
+        self.fields['timestamp'].initial = get_ist_datetime().date()
         
     class Meta():
         fields = ['amount', 'source', 'timestamp']
@@ -26,7 +28,7 @@ class SelectDateRangeIncomeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        today_date = timezone.now().date()
+        today_date = get_ist_datetime().date()
         self.fields['from_date'].initial = today_date - timedelta(days=365)
         self.fields['to_date'].initial = today_date
 
