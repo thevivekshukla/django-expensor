@@ -274,8 +274,9 @@ class DateSearch(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.context['date_form'] = self.date_form_class()
-        self.context['range_form'] = self.range_form_class()
+        context = self.context.copy()
+        context['date_form'] = self.date_form_class()
+        context['range_form'] = self.range_form_class()
 
         if request.GET:
             date_form = self.date_form_class(request.GET)
@@ -307,12 +308,12 @@ class DateSearch(View):
             else:
                 object_total = None
 
-            self.context['date_form'] = date_form
-            self.context['range_form'] = range_form
-            self.context['objects'] = objects
-            self.context['object_total'] = object_total
+            context['date_form'] = date_form
+            context['range_form'] = range_form
+            context['objects'] = objects
+            context['object_total'] = object_total
 
-        return render(request, self.template_name, self.context)
+        return render(request, self.template_name, context)
 
 
 

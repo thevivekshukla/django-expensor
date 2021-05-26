@@ -1,62 +1,62 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 
 {% block body %}
 
-
-
 {% if objects %}
 
-<table class="table table-striped">
+  <table class="table table-striped">
     <tr>
       <th>Date</th>
       <th>Amount</th>
       <th>Source</th>
       <th>Action</th>
     </tr>
+
     {% for object in objects %}
     <tr>
       <td>{{ object.timestamp }}</td>
-      <td>{{ object.amount }}</td>
+      <td>{{ object.amount|intcomma }}</td>
       <td>{% if object.source %}{{ object.source }}{% endif %}</td>
-      <td><a href="{% url "income:update-income" pk=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
-        <span class="glyphicon glyphicon-pencil"></span> Edit
+      <td>
+        <a href="{% url "income:update-income" pk=object.id %}">
+          <span class="glyphicon glyphicon-pencil"></span> Edit
         </a>
       </td>
     </tr>
     {% endfor %}
+
   </table>
   
 
+  {% if is_paginated %}
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.field %}&field={{ request.GET.field }}{% endif %}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}
+          ">Previous</a>
+        {% else %}
+          <span><u>Previous</u></span>
+        {% endif %}
 
-{% if is_paginated %}
-<div class="pagination">
-  <span class="step-links">
-    {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.field %}&field={{ request.GET.field }}{% endif %}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}
-      ">Previous</a>
-    {% else %}
-      <span><u>Previous</u></span>
-    {% endif %}
+        <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
 
-    <span class="current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-    </span>
-
-    {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.field %}&field={{ request.GET.field }}{% endif %}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}
-      ">Next</a>
-    {% else %}
-      <span><u>Next</u></span>
-    {% endif %}
-  </span>
-</div>
-{% endif %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.field %}&field={{ request.GET.field }}{% endif %}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}
+          ">Next</a>
+        {% else %}
+          <span><u>Next</u></span>
+        {% endif %}
+      </span>
+    </div>
+  {% endif %}
 
 {% else %}
-<h1>Nothing found</h1><hr>
+  <h1>Nothing found</h1><hr>
 {% endif %}
-
 
 
 {% endblock body %}

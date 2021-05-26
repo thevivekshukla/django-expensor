@@ -174,34 +174,25 @@ class IncomeDateSearch(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.context['range_form'] = self.range_form_class()
-        return render(request, self.template_name, self.context)
-
-    def post(self, request, *args, **kwargs):
-        range_form = self.range_form_class(request.POST)
-
-        objects = None
+        context = self.context.copy()
+        range_form = self.range_form_class(request.GET or None)
 
         if range_form.is_valid():
             source = range_form.cleaned_data.get('source')
             f_dt = range_form.cleaned_data.get('from_date')
             t_dt = range_form.cleaned_data.get('to_date')
             objects = Income.objects.filter(user=request.user).filter(timestamp__range=(f_dt, t_dt))
+
             if source:
                 objects = objects.filter(source__name__icontains=source)
-        else:
-            range_form = self.range_form_class()
 
-        if objects:
-            object_total = objects.aggregate(Sum('amount'))['amount__sum']
-        else:
-            object_total = None
+            object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        self.context['range_form'] = range_form
-        self.context['objects'] = objects
-        self.context['object_total'] = object_total
+            context['objects'] = objects
+            context['object_total'] = object_total
 
-        return render(request, self.template_name, self.context)
+        context['range_form'] = range_form
+        return render(request, self.template_name, context)
 
 
 class SavingCalculationDetailView(View):

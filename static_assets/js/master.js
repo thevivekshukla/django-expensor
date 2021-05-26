@@ -9,24 +9,24 @@ $(document).ready(function(){
 
 
 
-function update(){
-  $(".edit").on("click", function(e){
-    e.preventDefault();
-    id = $(this).data("id");
+// function update(){
+//   $(".edit").on("click", function(e){
+//     e.preventDefault();
+//     id = $(this).data("id");
 
-    $.ajax({
-      url: "/update/"+ id,
-      success: function(){
-        // $("#smsg-"+id).text("Taking you there!");
-        window.location.href = "/update/"+ id +"/";
-      },
-      error: function(){
-        $("#emsg-"+id).text("Too late!");
+//     $.ajax({
+//       url: "/update/"+ id,
+//       success: function(){
+//         // $("#smsg-"+id).text("Taking you there!");
+//         window.location.href = "/update/"+ id +"/";
+//       },
+//       error: function(){
+//         $("#emsg-"+id).text("Too late!");
 
-      },
-    });
-  });
-}
+//       },
+//     });
+//   });
+// }
 
 
 function years(){
