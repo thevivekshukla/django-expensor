@@ -311,10 +311,14 @@ class SavingsCalculatorView(View):
 
             data = {
                 'savings': self.return_in_100s(to_savings),
-                'gold': self.return_in_100s(gold),
-                'debt': self.return_in_100s(debt),
-                'equity': self.return_in_100s(equity),
             }
+            if gold_percentage:
+                data['gold'] = self.return_in_100s(gold)
+            if debt_percentage:
+                data['debt'] = self.return_in_100s(debt)
+            if equity_percentage:
+                data['equity'] = self.return_in_100s(equity)
+
             context['data'] = data
             context['total'] = sum(value for _, value in data.items())
 

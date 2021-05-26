@@ -16,21 +16,21 @@
                         <td>₹ {{ data.savings|intcomma }}</td>
                     </tr>
 
-                    {% if data.gold %}
+                    {% if data.gold >= 0 %}
                         <tr>
                             <td><strong>🔱 Gold</strong></td>
                             <td>₹ {{ data.gold|intcomma }}</td>
                         </tr>
                     {% endif %}
 
-                    {% if data.debt %}
+                    {% if data.debt >= 0 %}
                         <tr>
                             <td><strong>💵 Debt</strong></td>
                             <td>₹ {{ data.debt|intcomma }}</td>
                         </tr>
                     {% endif %}
 
-                    {% if data.equity %}
+                    {% if data.equity >= 0 %}
                         <tr>
                             <td><strong>📈 Equity</strong></td>
                             <td>₹ {{ data.equity|intcomma }}</td>
