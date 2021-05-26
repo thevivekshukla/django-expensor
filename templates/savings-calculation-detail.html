@@ -7,7 +7,8 @@
 
 <div class="row">
 
-    <div class="col-sm-4 col-sm-offset-2">
+    <div class="col-md-4 col-lg-4"></div>
+    <div class="col-md-4 col-lg-4 col-sm-12">
         {% if data %}
             <div class="jumbotron">
                 <h4>Savings: {{ data.savings|intcomma }}</h4>
@@ -19,10 +20,12 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-success" name="" value="Update">
+            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Update">
+            <br>
             <a style="float:right;" href="{% url 'income:savings-calculator' %}">Savings Calculator</a>
         </form>
     </div>
+    <div class="col-md-4 col-lg-4"></div>
 
 </div>
 

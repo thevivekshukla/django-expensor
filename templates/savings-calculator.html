@@ -6,6 +6,10 @@
 
 
 <div class="row">
+
+    <center><h3>{{ title }}</h3></center>
+    <br>
+
     <div class="col-md-4 col-lg-4"></div>
     <div class="col-md-4 col-lg-4 col-sm-12">
         {% if data %}
@@ -48,7 +52,7 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-success btn-lg btn-block" name="" value="Calculate">
+            <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
             <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
         </form>
