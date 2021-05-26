@@ -27,6 +27,10 @@
                         <td><strong>📈 Equity</strong></td>
                         <td>₹ {{ data.equity|intcomma }}</td>
                     </tr>
+                    <tr class="alert alert-success">
+                        <td><strong>Total: </strong></td>
+                        <td>₹ {{ total|intcomma }}</td>
+                    </tr>
                 </table>
             </div>
         {% endif %}

@@ -251,7 +251,7 @@ class SavingsCalculatorView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        initial_data = {'salary_received': request.GET.get('salary_received')}
+        initial_data = {}
         try:
             savings = request.user.saving_calculation
             initial_data['savings_min_amount'] = savings.savings_min_amount
@@ -316,6 +316,7 @@ class SavingsCalculatorView(View):
                 'equity': self.return_in_100s(equity),
             }
             context['data'] = data
+            context['total'] = sum(value for _, value in data.items())
 
         context['form'] = form
         return render(request, self.template_name, context)
