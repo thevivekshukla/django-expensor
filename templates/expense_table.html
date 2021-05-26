@@ -1,24 +1,26 @@
+{% load humanize %}
+
 <table class="table table-striped">
   <tr>
     <th>Date</th>
     <th>Amount</th>
     <th>Remark</th>
     <th>Action</th>
-    <th>Message</th>
+    <!-- <th>Message</th> -->
   </tr>
   {% for object in objects %}
   <tr>
     <td>{{ object.timestamp }}</td>
-    <td>{{ object.amount }}</td>
+    <td>{{ object.amount|intcomma }}</td>
     <td>{% if object.remark %}{{ object.remark }}{% endif %}</td>
     <td><a href="{% url "expense:update_expense" id=object.id %}" class="edit" id="edit-{{ object.id }}" data-id="{{ object.id }}">
       <span class="glyphicon glyphicon-pencil"></span> Edit
       </a>
     </td>
-    <td>
+    <!-- <td>
       <span style="color:red;" id="emsg-{{ object.id }}"></span>
       <span style="color:green;" id="smsg-{{ object.id }}"></span>
-    </td>
+    </td> -->
   </tr>
   {% endfor %}
 </table>

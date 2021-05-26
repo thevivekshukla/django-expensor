@@ -17,7 +17,7 @@ function update(){
     $.ajax({
       url: "/update/"+ id,
       success: function(){
-        $("#smsg-"+id).text("Taking you there!");
+        // $("#smsg-"+id).text("Taking you there!");
         window.location.href = "/update/"+ id +"/";
       },
       error: function(){

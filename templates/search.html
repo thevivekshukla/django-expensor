@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 
 {% block body %}
 
@@ -11,14 +12,11 @@
 {% endif %}
 
 
-
 {% if objects %}
-
-{% include 'expense_table.html' %}
-
-{% else %}
-<h1>Nothing found.</h1>
-<hr>
+  {% include 'expense_table.html' %}
+{% elif request.GET.search == "1" %}
+  <h1>Nothing found.</h1>
+  <hr>
 {% endif %}
 
 
@@ -29,6 +27,7 @@
     <form action="{% url 'expense:search' %}" method="GET">
       {% csrf_token %}
       {{ date_form|crispy }}
+      <input type="text" name="search" value="1" hidden>
       <input type="submit" class="btn btn-default" name="" value="Search">
     </form>
   </div>
@@ -40,6 +39,7 @@
     <form action="{% url 'expense:search' %}" method="GET">
       {% csrf_token %}
       {{ range_form|crispy }}
+      <input type="text" name="search" value="1" hidden>
       <input type="submit" class="btn btn-default" name="" value="Search">
     </form>
   </div>

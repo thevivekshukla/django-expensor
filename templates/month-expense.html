@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 
 
 {% block body %}
@@ -24,7 +24,7 @@
         )
       </td>
       <td>
-          {{ object.1 }}
+          {{ object.1|intcomma }}
       </td>
     </tr> 
 

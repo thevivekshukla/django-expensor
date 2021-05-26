@@ -307,7 +307,6 @@ class DateSearch(View):
             else:
                 object_total = None
 
-            
             self.context['date_form'] = date_form
             self.context['range_form'] = range_form
             self.context['objects'] = objects
