@@ -42,8 +42,8 @@ def validate_percentage(cleaned_data):
     if not (savings_pct >= 0 and savings_pct <= 100):
         raise forms.ValidationError("Savings percentage should be in between 0 to 100.")
 
-    if sum([gold_pct, debt_pct, equity_pct]) != 100:
-        raise forms.ValidationError("Sum of Gold, Debt and Equity percentage fields must be 100")
+    if sum([gold_pct, debt_pct, equity_pct]) not in {0, 100}:
+        raise forms.ValidationError("Sum of Gold, Debt and Equity percentage fields must be either 0 or 100")
 
     return cleaned_data
 
