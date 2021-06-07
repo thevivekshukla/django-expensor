@@ -259,8 +259,8 @@ class SavingsCalculatorView(View):
         context['form'] = form
         return render(request, self.template_name, context)
 
-    def return_in_100s(self, amount):
-        multiples_of = 100
+    def return_in_1000s(self, amount):
+        multiples_of = 1000
         mul = amount // multiples_of
         final_amount = int(mul * multiples_of)
         return final_amount
@@ -301,14 +301,14 @@ class SavingsCalculatorView(View):
             equity = diff * equity_percentage
 
             data = {
-                'savings': self.return_in_100s(to_savings),
+                'savings': self.return_in_1000s(to_savings),
             }
             if gold_percentage:
-                data['gold'] = self.return_in_100s(gold)
+                data['gold'] = self.return_in_1000s(gold)
             if debt_percentage:
-                data['debt'] = self.return_in_100s(debt)
+                data['debt'] = self.return_in_1000s(debt)
             if equity_percentage:
-                data['equity'] = self.return_in_100s(equity)
+                data['equity'] = self.return_in_1000s(equity)
 
             context['data'] = data
             context['total'] = sum(value for _, value in data.items())
