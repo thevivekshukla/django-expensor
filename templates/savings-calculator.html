@@ -2,6 +2,16 @@
 {% load crispy_forms_tags %}
 {% load humanize %}
 
+
+{% block head %}
+<style>
+    tr, td, th {
+        border: none !important;
+    }
+</style>
+{% endblock head %}
+
+
 {% block body %}
 
 
@@ -20,29 +30,38 @@
                         <td>₹ {{ data.savings|intcomma }}</td>
                     </tr>
 
-                    {% if data.gold >= 0 %}
+                    {% if data.investment.gold >= 0 %}
                         <tr>
                             <td><strong>🔱 Gold</strong></td>
-                            <td>₹ {{ data.gold|intcomma }}</td>
+                            <td>₹ {{ data.investment.gold|intcomma }}</td>
                         </tr>
                     {% endif %}
 
-                    {% if data.debt >= 0 %}
+                    {% if data.investment.debt >= 0 %}
                         <tr>
                             <td><strong>💵 Debt</strong></td>
-                            <td>₹ {{ data.debt|intcomma }}</td>
+                            <td>₹ {{ data.investment.debt|intcomma }}</td>
                         </tr>
                     {% endif %}
 
-                    {% if data.equity >= 0 %}
+                    {% if data.investment.equity >= 0 %}
                         <tr>
                             <td><strong>📈 Equity</strong></td>
-                            <td>₹ {{ data.equity|intcomma }}</td>
+                            <td>₹ {{ data.investment.equity|intcomma }}</td>
                         </tr>
                     {% endif %}
 
+                    <tr><td></td><td></td></tr>
+                    <!-- <tr class="alert alert-success">
+                        <td><strong>Invst. Total: </strong>{{ investment_total|intcomma }}</td>
+                        <td><strong>Grand Total: </strong>{{ total|intcomma }}</td>
+                    </tr> -->
                     <tr class="alert alert-success">
-                        <td><strong><span style="visibility: hidden;">➕</span> Total</strong></td>
+                        <td><strong><span style="visibility: hidden;">➕</span> Investment Total</strong></td>
+                        <td>₹ {{ investment_total|intcomma }}</td>
+                    </tr>
+                    <tr class="alert alert-success">
+                        <td><strong><span style="visibility: hidden;">➕</span> Grand Total</strong></td>
                         <td>₹ {{ total|intcomma }}</td>
                     </tr>
                 </table>
