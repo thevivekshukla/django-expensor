@@ -290,8 +290,8 @@ class SavingsCalculatorView(View):
                     diff = diff_savings
                     to_savings = savings_min_amount
                 else:
+                    to_savings = diff
                     diff = 0
-                    to_savings = savings_min_amount + diff_savings
             else:
                 diff -= max_savings
                 to_savings = max_savings
