@@ -52,7 +52,7 @@
         url: form.attr('action'),
         data: form.serialize(),
         success: function(data){
-          window.location = "{% url 'income:savings-calculator' %}"
+          window.location = "{% url 'income:savings-calculator' %}?salary_received="+ form[0]['amount']['value']
           $("#id_error").css("display", "none");
           form[0].reset();
           $("#id_success").text("Added successfully.");

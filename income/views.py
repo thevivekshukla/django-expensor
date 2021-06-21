@@ -242,6 +242,7 @@ class SavingsCalculatorView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        salary_received = request.GET.get('salary_received')
         initial_data = {}
         try:
             savings = request.user.saving_calculation
@@ -252,6 +253,7 @@ class SavingsCalculatorView(View):
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
+            initial_data['bank_balance'] = salary_received
         except SavingCalculation.DoesNotExist:
             pass
         form = self.form_class(initial=initial_data)
