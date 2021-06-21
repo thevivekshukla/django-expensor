@@ -30,7 +30,8 @@ class IncomeList(ListView):
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
-        qs = Income.objects.filter(user=self.request.user)
+        qs = Income.objects.filter(user=self.request.user)\
+                .order_by('-timestamp', '-created_at',)
         return qs
 
     def get_context_data(self, *args, **kwargs):
@@ -242,7 +243,7 @@ class SavingsCalculatorView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        salary_received = request.GET.get('salary_received')
+        amount_received = request.GET.get('amount_received')
         initial_data = {}
         try:
             savings = request.user.saving_calculation
@@ -252,8 +253,10 @@ class SavingsCalculatorView(View):
             initial_data['gold_percentage'] = savings.gold_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
-            initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
-            initial_data['bank_balance'] = salary_received
+            if savings.amount_to_keep_in_bank is 0:
+                initial_data['amount_to_keep_in_bank'] = amount_received
+            else:
+                initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
         except SavingCalculation.DoesNotExist:
             pass
         form = self.form_class(initial=initial_data)
