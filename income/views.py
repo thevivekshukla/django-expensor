@@ -253,7 +253,7 @@ class SavingsCalculatorView(View):
             initial_data['gold_percentage'] = savings.gold_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
-            if savings.amount_to_keep_in_bank is 0:
+            if savings.amount_to_keep_in_bank == 0:
                 initial_data['amount_to_keep_in_bank'] = amount_received
             else:
                 initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
