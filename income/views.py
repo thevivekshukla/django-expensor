@@ -242,12 +242,22 @@ class SavingsCalculatorView(View):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
+    def return_in_100s(self, amount):
+        multiples_of = 100
+        mul = amount // multiples_of
+        final_amount = int(mul * multiples_of)
+        return final_amount
+
     def get(self, request, *args, **kwargs):
-        amount_received = request.GET.get('amount_received')
+        amount_received = int(request.GET.get('amount_received', 0))
         initial_data = {}
+
         try:
             savings = request.user.saving_calculation
-            initial_data['savings_min_amount'] = savings.savings_min_amount
+            if savings.savings_min_amount == 0:
+                initial_data['savings_min_amount'] = self.return_in_100s(amount_received * 0.2)
+            else:
+                initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_max_amount'] = savings.savings_max_amount
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
@@ -258,17 +268,12 @@ class SavingsCalculatorView(View):
                 initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
         except SavingCalculation.DoesNotExist:
             pass
+
         form = self.form_class(initial=initial_data)
         context = self.context.copy()
         context['form'] = form
         return render(request, self.template_name, context)
-
-    def return_in_100s(self, amount):
-        multiples_of = 100
-        mul = amount // multiples_of
-        final_amount = int(mul * multiples_of)
-        return final_amount
-
+    
     def post(self, request, *args, **kwargs):
         context = self.context.copy()
         form = self.form_class(request.POST)
