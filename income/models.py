@@ -37,7 +37,6 @@ class SavingCalculation(BaseModel):
     savings_percentage = models.PositiveIntegerField(help_text='in percentage') # of the total amount
     savings_min_amount = models.PositiveIntegerField(help_text='min amount that must be saved if possible. 0 to ignore')
     savings_max_amount = models.PositiveIntegerField(help_text='max amount that can be saved. 0 to ignore')
-    gold_percentage = models.PositiveIntegerField(help_text='in percentage') # these will be calculated on the remaining amount after taking out savings
     debt_percentage = models.PositiveIntegerField(help_text='in percentage')
     equity_percentage = models.PositiveIntegerField(help_text='in percentage')
     amount_to_keep_in_bank = models.PositiveIntegerField(help_text='Should be less than monthly salary. i.e. <=90% of monthly salary')

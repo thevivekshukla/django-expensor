@@ -30,13 +30,6 @@
                         <td>₹ {{ data.savings|intcomma }}</td>
                     </tr>
 
-                    {% if data.investment.gold >= 0 %}
-                        <tr>
-                            <td><strong>🔱 Gold</strong></td>
-                            <td>₹ {{ data.investment.gold|intcomma }}</td>
-                        </tr>
-                    {% endif %}
-
                     {% if data.investment.debt >= 0 %}
                         <tr>
                             <td><strong>💵 Debt</strong></td>
@@ -52,10 +45,7 @@
                     {% endif %}
 
                     <tr><td></td><td></td></tr>
-                    <!-- <tr class="alert alert-success">
-                        <td><strong>Invst. Total: </strong>{{ investment_total|intcomma }}</td>
-                        <td><strong>Grand Total: </strong>{{ total|intcomma }}</td>
-                    </tr> -->
+                    
                     <tr class="alert alert-success">
                         <td><span style="visibility: hidden;">➕</span> Investment Total</td>
                         <td>₹ {{ investment_total|intcomma }}</td>

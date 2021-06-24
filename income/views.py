@@ -250,7 +250,6 @@ class SavingsCalculatorView(View):
             initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_max_amount'] = savings.savings_max_amount
             initial_data['savings_percentage'] = savings.savings_percentage
-            initial_data['gold_percentage'] = savings.gold_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
             if savings.amount_to_keep_in_bank == 0:
@@ -277,7 +276,6 @@ class SavingsCalculatorView(View):
             savings_percentage = form.cleaned_data['savings_percentage']/100
             savings_min_amount = form.cleaned_data['savings_min_amount']
             savings_max_amount = form.cleaned_data['savings_max_amount']
-            gold_percentage = form.cleaned_data['gold_percentage']/100
             debt_percentage = form.cleaned_data['debt_percentage']/100
             equity_percentage = form.cleaned_data['equity_percentage']/100
             amount_to_keep_in_bank = form.cleaned_data['amount_to_keep_in_bank']
@@ -301,7 +299,6 @@ class SavingsCalculatorView(View):
                 diff -= max_savings
                 to_savings = max_savings
 
-            gold = diff * gold_percentage
             debt = diff * debt_percentage
             equity = diff * equity_percentage
 
@@ -309,8 +306,6 @@ class SavingsCalculatorView(View):
                 'savings': self.return_in_100s(to_savings),
                 'investment': {},
             }
-            if gold_percentage:
-                data['investment']['gold'] = self.return_in_100s(gold)
             if debt_percentage:
                 data['investment']['debt'] = self.return_in_100s(debt)
             if equity_percentage:
