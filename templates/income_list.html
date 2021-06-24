@@ -11,6 +11,7 @@
       <th>Date</th>
       <th>Amount</th>
       <th>Source</th>
+      <th></th>
       <th>Action</th>
     </tr>
 
@@ -20,7 +21,10 @@
       <td>{{ object.amount|intcomma }}</td>
       <td>{% if object.source %}{{ object.source }}{% endif %}</td>
       <td>
-        <a href="{% url "income:update-income" pk=object.id %}">
+        <a href="{% url 'income:savings-calculator' %}?amount_received={{ object.amount }}"><i class='fas fa-calculator'></i></a>
+      </td>
+      <td>
+        <a href="{% url 'income:update-income' pk=object.id %}">
           <span class="glyphicon glyphicon-pencil"></span> Edit
         </a>
       </td>
