@@ -79,6 +79,7 @@ class IncomeAdd(View):
                     amount=amount,
                     timestamp=timestamp
                 )
+            messages.success(request, "Income added successfully!")
             return HttpResponse(status=201)
         else:
             return HttpResponse(status=400)
