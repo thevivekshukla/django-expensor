@@ -39,7 +39,7 @@ class SavingCalculation(BaseModel):
     savings_max_amount = models.PositiveIntegerField(help_text='max amount that can be saved. 0 to ignore')
     debt_percentage = models.PositiveIntegerField(help_text='in percentage')
     equity_percentage = models.PositiveIntegerField(help_text='in percentage')
-    amount_to_keep_in_bank = models.PositiveIntegerField(help_text='Should be less than monthly salary. i.e. <=90% of monthly salary')
+    amount_to_keep_in_bank = models.PositiveIntegerField(null=True, blank=True, help_text='Should be less than monthly salary. i.e. <=90% of monthly salary')
 
     def __str__(self):
         return f'{self.user}'

@@ -255,18 +255,19 @@ class SavingsCalculatorView(View):
 
         try:
             savings = request.user.saving_calculation
-            if savings.savings_min_amount == 0:
-                initial_data['savings_min_amount'] = self.return_in_100s(amount_received * 0.2)
-            else:
-                initial_data['savings_min_amount'] = savings.savings_min_amount
+            initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_max_amount'] = savings.savings_max_amount
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
-            if savings.amount_to_keep_in_bank == 0:
-                initial_data['amount_to_keep_in_bank'] = amount_received
-            else:
-                initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
+            initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
+
+            if amount_received:
+                if not savings.savings_min_amount:
+                    initial_data['savings_min_amount'] = self.return_in_100s(amount_received * 0.2)
+                if not savings.amount_to_keep_in_bank:
+                    initial_data['amount_to_keep_in_bank'] = amount_received
+
         except SavingCalculation.DoesNotExist:
             pass
 
