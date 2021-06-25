@@ -250,7 +250,7 @@ class SavingsCalculatorView(View):
         return final_amount
 
     def get(self, request, *args, **kwargs):
-        amount_received = int(request.GET.get('amount_received', 0))
+        income = int(request.GET.get('income', 0))
         initial_data = {}
 
         try:
@@ -262,11 +262,9 @@ class SavingsCalculatorView(View):
             initial_data['equity_percentage'] = savings.equity_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            if amount_received:
-                if not savings.savings_min_amount:
-                    initial_data['savings_min_amount'] = self.return_in_100s(amount_received * 0.2)
-                if not savings.amount_to_keep_in_bank:
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(amount_received)
+            if income:
+                initial_data['savings_min_amount'] = self.return_in_100s(income * 0.25)
+                initial_data['amount_to_keep_in_bank'] = self.return_in_100s(income * 0.90)
 
         except SavingCalculation.DoesNotExist:
             pass
