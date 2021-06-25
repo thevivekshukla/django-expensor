@@ -266,7 +266,7 @@ class SavingsCalculatorView(View):
                 if not savings.savings_min_amount:
                     initial_data['savings_min_amount'] = self.return_in_100s(amount_received * 0.2)
                 if not savings.amount_to_keep_in_bank:
-                    initial_data['amount_to_keep_in_bank'] = amount_received
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(amount_received * 0.9)
 
         except SavingCalculation.DoesNotExist:
             pass
