@@ -52,8 +52,8 @@
         url: form.attr('action'),
         data: form.serialize(),
         success: function(data){
-          window.location = "{% url 'income:savings-calculator' %}?income="+ form[0]['amount']['value']
-          // window.location = "{% url 'income:income-list' %}"
+          // window.location = "{% url 'income:savings-calculator' %}?income="+ form[0]['amount']['value']
+          window.location = "{% url 'income:income-list' %}"
           $("#id_error").css("display", "none");
           form[0].reset();
           $("#id_success").text("Added successfully.");

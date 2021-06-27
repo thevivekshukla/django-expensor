@@ -53,19 +53,32 @@ class SavingCalculationModelForm(forms.ModelForm):
         exclude = (
             'user',
         )
+        widgets = {
+            'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
+            'savings_max_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
+            'savings_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
+            'debt_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
+            'equity_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
+            'amount_to_keep_in_bank': forms.NumberInput(attrs={'placeholder': 'amount'}),
+        }
 
     def clean(self) -> Dict[str, Any]:
         return validate_percentage(super().clean())
 
 
 class SavingCalculatorForm(forms.Form):
-    savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100)
-    savings_min_amount = forms.IntegerField(initial=0, min_value=0)
-    savings_max_amount = forms.IntegerField(initial=0, min_value=0)
-    debt_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100)
-    equity_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100)
-    amount_to_keep_in_bank = forms.IntegerField(min_value=0)
-    bank_balance = forms.IntegerField(min_value=0)
+    savings_min_amount = forms.IntegerField(initial=0, min_value=0, 
+                            widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
+    savings_max_amount = forms.IntegerField(initial=0, min_value=0,
+                             widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
+    savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100,
+                             widget=forms.NumberInput(attrs={'placeholder': '%'}))
+    debt_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
+                             widget=forms.NumberInput(attrs={'placeholder': '%'}))
+    equity_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
+                             widget=forms.NumberInput(attrs={'placeholder': '%'}))
+    amount_to_keep_in_bank = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
+    bank_balance = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
 
     def clean(self) -> Dict[str, Any]:
         return validate_percentage(super().clean())
