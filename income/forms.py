@@ -72,11 +72,11 @@ class SavingCalculatorForm(forms.Form):
     savings_max_amount = forms.IntegerField(initial=0, min_value=0,
                              widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
     savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100,
-                             widget=forms.NumberInput(attrs={'placeholder': '%'}))
+                             widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
     debt_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
-                             widget=forms.NumberInput(attrs={'placeholder': '%'}))
+                             widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
     equity_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
-                             widget=forms.NumberInput(attrs={'placeholder': '%'}))
+                             widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
     amount_to_keep_in_bank = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
     bank_balance = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
 
