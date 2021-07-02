@@ -268,7 +268,7 @@ class SavingsCalculatorView(View):
                 if savings.savings_max_amount is None:
                     initial_data['savings_max_amount'] = 0
                 if savings.amount_to_keep_in_bank is None:
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(income * 1.25)
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(income)
 
         except SavingCalculation.DoesNotExist:
             pass
