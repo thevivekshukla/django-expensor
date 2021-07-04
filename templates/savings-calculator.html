@@ -64,6 +64,14 @@
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
             <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
+
+            {% if message %}
+                <br>
+                <div class="alert alert-warning">
+                    <strong>Message:</strong>
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
         </form>
     </div>
     <div class="col-md-4 col-lg-4"></div>

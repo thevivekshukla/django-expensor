@@ -252,9 +252,11 @@ class SavingsCalculatorView(View):
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
         initial_data = {}
+        message = None
 
         try:
             savings = request.user.saving_calculation
+            message = savings.message
             initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_max_amount'] = savings.savings_max_amount
             initial_data['savings_percentage'] = savings.savings_percentage
@@ -276,6 +278,7 @@ class SavingsCalculatorView(View):
         form = self.form_class(initial=initial_data)
         context = self.context.copy()
         context['form'] = form
+        context['message'] = message
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
