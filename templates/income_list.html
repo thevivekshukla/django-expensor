@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load humanize %}
+{% load income_utils %}
 
 {% block body %}
 
@@ -21,7 +22,9 @@
       <td>{{ object.amount|intcomma }}</td>
       <td>{% if object.source %}{{ object.source }}{% endif %}</td>
       <td>
-        <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator'></i></a>
+        {% if object|show_calculator %}
+          <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator' style='color:green;'></i></a>
+        {% endif %}
       </td>
       <td>
         <a href="{% url 'income:update-income' pk=object.id %}">
