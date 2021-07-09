@@ -20,7 +20,6 @@ from decorators import login_required_message
 
 
 class IncomeList(ListView):
-
     template_name = 'income_list.html'
     paginate_by = 15
     context_object_name = 'objects'
@@ -86,7 +85,6 @@ class IncomeAdd(View):
 
 
 class IncomeUpdateView(View):
-
     template_name = 'update_income.html'
     form_class = IncomeForm
     context = {

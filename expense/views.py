@@ -105,7 +105,6 @@ class UpdateExpense(View):
         self.context['form'] = form
         return render(request, self.template_name, self.context)
 
-
     def post(self, request, *args, **kwargs):
         instance = self.get_object(request, *args, **kwargs)
 
@@ -139,7 +138,6 @@ class ExpenseList(View):
     @method_decorator(login_required_message)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-
 
     def get(self, request, *args, **kwargs):
         objects_list = Expense.objects.all(user=request.user)
@@ -361,7 +359,6 @@ class GoToExpense(View):
         return render(request, self.template_name, context)
 
 
-
 class GoToRemarkWiseExpense(View):
     """
     provies expenses for particular day, month or year.
@@ -417,7 +414,6 @@ class GoToRemarkWiseExpense(View):
         return render(request, self.template_name, context)
 
 
-
 class GetRemark(View):
     """
     will be used to autocomplete the remarks
@@ -445,7 +441,6 @@ class GetRemark(View):
         return HttpResponse(data, mimetype)
 
 
-
 class GetYear(View):
     """
     return all the year in which expenses are registered.
@@ -470,7 +465,6 @@ class GetYear(View):
         cache.set(cache_key, data, cache_time)
 
         return HttpResponse(data, content_type='application/json')
-
 
 
 class Error404(View):
