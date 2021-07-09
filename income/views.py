@@ -253,6 +253,7 @@ class SavingsCalculatorView(View):
         income = int(request.GET.get('income', 0))
         initial_data = {}
         message = None
+        defaults_message = []
 
         try:
             savings = request.user.saving_calculation
@@ -265,12 +266,20 @@ class SavingsCalculatorView(View):
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
             if income:
+                defaults_message.append(f"Income: ₹ {income:,}")
+                MIN_SAVINGS_PCT = 20
+                KEEP_IN_BANK_PCT = 90
+
                 if not savings.savings_min_amount:
-                    initial_data['savings_min_amount'] = self.return_in_100s(income * 0.2)
+                    initial_data['savings_min_amount'] = self.return_in_100s(income * MIN_SAVINGS_PCT/100)
+                    defaults_message.append(f"Savings Min Amount used is {MIN_SAVINGS_PCT}% of income")
+
                 if savings.savings_max_amount is None:
                     initial_data['savings_max_amount'] = 0
+
                 if not savings.amount_to_keep_in_bank:
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(income * 0.9)
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(income * KEEP_IN_BANK_PCT/100)
+                    defaults_message.append(f"Amount To Keep In Bank used is {KEEP_IN_BANK_PCT}% of income")
 
         except SavingCalculation.DoesNotExist:
             pass
@@ -279,6 +288,7 @@ class SavingsCalculatorView(View):
         context = self.context.copy()
         context['form'] = form
         context['message'] = message
+        context['defaults_message'] = defaults_message
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):

@@ -58,6 +58,14 @@
             </div>
         {% endif %}
 
+        {% if defaults_message %}
+            <div class="alert alert-warning" role="alert">
+                {% for dm in defaults_message %}
+                    <li>{{ dm }}</li>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
@@ -66,9 +74,9 @@
             <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
 
             {% if message %}
-                <br>
-                <div class="alert alert-warning">
-                    <strong>Message:</strong>
+                <br><br>
+                <div class="alert alert-info">
+                    <strong><u>Message</u>:</strong>
                     <p>{{ message|linebreaks }}</p>
                 </div>
             {% endif %}
