@@ -241,11 +241,10 @@ class SavingsCalculatorView(View):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-    def return_in_100s(self, amount):
+    def return_in_multiples(self, amount):
         multiples_of = 100
-        mul = amount // multiples_of
-        final_amount = int(mul * multiples_of)
-        return final_amount
+        final_amount = (amount // multiples_of) * multiples_of
+        return int(final_amount)
 
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
@@ -269,14 +268,14 @@ class SavingsCalculatorView(View):
                 KEEP_IN_BANK_PCT = 90
 
                 if not savings.savings_min_amount:
-                    initial_data['savings_min_amount'] = self.return_in_100s(income * MIN_SAVINGS_PCT/100)
+                    initial_data['savings_min_amount'] = self.return_in_multiples(income * MIN_SAVINGS_PCT/100)
                     defaults_message.append(f"Savings Min Amount used is {MIN_SAVINGS_PCT}% of income")
 
                 if savings.savings_max_amount is None:
                     initial_data['savings_max_amount'] = 0
 
                 if not savings.amount_to_keep_in_bank:
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_100s(income * KEEP_IN_BANK_PCT/100)
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(income * KEEP_IN_BANK_PCT/100)
                     defaults_message.append(f"Amount To Keep In Bank used is {KEEP_IN_BANK_PCT}% of income")
 
         except SavingCalculation.DoesNotExist:
@@ -323,13 +322,13 @@ class SavingsCalculatorView(View):
             equity = diff * equity_percentage
 
             data = {
-                'savings': self.return_in_100s(to_savings),
+                'savings': self.return_in_multiples(to_savings),
                 'investment': {},
             }
             if debt_percentage:
-                data['investment']['debt'] = self.return_in_100s(debt)
+                data['investment']['debt'] = self.return_in_multiples(debt)
             if equity_percentage:
-                data['investment']['equity'] = self.return_in_100s(equity)
+                data['investment']['equity'] = self.return_in_multiples(equity)
 
             context['data'] = data
             context['investment_total'] = sum(value for _, value in data['investment'].items())
