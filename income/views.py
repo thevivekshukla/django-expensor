@@ -242,7 +242,7 @@ class SavingsCalculatorView(View):
         return super().dispatch(*args, **kwargs)
 
     def return_in_multiples(self, amount):
-        multiples_of = 100
+        multiples_of = 500
         final_amount = (amount // multiples_of) * multiples_of
         return int(final_amount)
 
