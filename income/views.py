@@ -264,7 +264,7 @@ class SavingsCalculatorView(View):
 
             if income:
                 defaults_message.append(f"Income: ₹ {income:,}")
-                MIN_SAVINGS_PCT = 20
+                MIN_SAVINGS_PCT = 10
                 KEEP_IN_BANK_PCT = 90
 
                 if not savings.savings_min_amount:
