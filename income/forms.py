@@ -33,7 +33,13 @@ class SelectDateRangeIncomeForm(forms.Form):
         self.fields['to_date'].initial = today_date
 
 
-def validate_percentage(cleaned_data):
+def validate_calculator_fields(cleaned_data):
+    savings_min_amount = cleaned_data['savings_min_amount']
+    savings_max_amount = cleaned_data['savings_max_amount']
+    
+    if savings_max_amount != 0 and savings_max_amount < savings_min_amount:
+        raise forms.ValidationError("Savings Max Amount cannot be less than Savings Min Amount")
+
     savings_pct = cleaned_data['savings_percentage']
     debt_pct = cleaned_data['debt_percentage']
     equity_pct = cleaned_data['equity_percentage']
@@ -63,7 +69,7 @@ class SavingCalculationModelForm(forms.ModelForm):
         }
 
     def clean(self) -> Dict[str, Any]:
-        return validate_percentage(super().clean())
+        return validate_calculator_fields(super().clean())
 
 
 class SavingCalculatorForm(forms.Form):
@@ -81,6 +87,6 @@ class SavingCalculatorForm(forms.Form):
     bank_balance = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
 
     def clean(self) -> Dict[str, Any]:
-        return validate_percentage(super().clean())
+        return validate_calculator_fields(super().clean())
         
 
