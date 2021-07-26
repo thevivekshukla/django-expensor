@@ -252,7 +252,6 @@ class SavingsCalculatorView(View):
 
     def gen_bank_amount(self):
         MONTHS = 6
-        MULTIPLY_BY = 1.5
         user = self.request.user
         now = timezone.now()
         past = now - timedelta(days=MONTHS * 30)
@@ -260,8 +259,8 @@ class SavingsCalculatorView(View):
         past_expense = user.expenses.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
         past_income = user.incomes.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
 
-        avg_expense = (past_expense / MONTHS) * MULTIPLY_BY
-        avg_income = (past_income / MONTHS) * MULTIPLY_BY
+        avg_expense = past_expense / MONTHS
+        avg_income = past_income / MONTHS
         return max(avg_expense, avg_income)
 
     def get(self, request, *args, **kwargs):
