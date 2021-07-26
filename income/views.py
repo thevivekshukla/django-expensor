@@ -1,14 +1,18 @@
+from datetime import timedelta
+
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 from django.views import View
 from django.http import HttpResponse, Http404
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.db.models import Sum
 
 import json
 
 from .models import Income, Source, SavingCalculation
+from expense.models import Expense
 from .forms import (
     IncomeForm, SelectDateRangeIncomeForm,
     SavingCalculatorForm, SavingCalculationModelForm,
@@ -246,6 +250,16 @@ class SavingsCalculatorView(View):
         final_amount = (amount // multiples_of) * multiples_of
         return int(final_amount)
 
+    def averaged_expense(self):
+        DAYS = 180
+        user = self.request.user
+        now = timezone.now()
+        past = now - timedelta(days=DAYS)
+        past_expense = user.expenses.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
+        avg_expense = past_expense/(DAYS/30)
+        return int(avg_expense * 1.5)
+
+
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
         initial_data = {}
@@ -275,8 +289,10 @@ class SavingsCalculatorView(View):
                     initial_data['savings_max_amount'] = 0
 
                 if not savings.amount_to_keep_in_bank:
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(income * KEEP_IN_BANK_PCT/100)
-                    defaults_message.append(f"Amount To Keep In Bank used is {KEEP_IN_BANK_PCT}% of income")
+                    # initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(income * KEEP_IN_BANK_PCT/100)
+                    # defaults_message.append(f"Amount To Keep In Bank used is {KEEP_IN_BANK_PCT}% of income")
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.averaged_expense())
+                    defaults_message.append(f"Amount To Keep In Bank used is 1.5x of last 6 months average expense")
 
         except SavingCalculation.DoesNotExist:
             pass
