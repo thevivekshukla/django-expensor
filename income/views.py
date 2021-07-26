@@ -252,11 +252,12 @@ class SavingsCalculatorView(View):
 
     def averaged_expense(self):
         MONTHS = 6
+        EXPENSE_TIMES = 1.5
         now = timezone.now()
         past = now - timedelta(days=MONTHS * 30)
         past_expense = self.request.user.expenses.filter(timestamp__range=(past, now))\
                         .aggregate(Sum('amount'))['amount__sum'] or 0
-        return (past_expense / MONTHS) * 1.5
+        return (past_expense / MONTHS) * EXPENSE_TIMES
 
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
