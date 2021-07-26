@@ -250,14 +250,19 @@ class SavingsCalculatorView(View):
         final_amount = (amount // multiples_of) * multiples_of
         return int(final_amount)
 
-    def averaged_expense(self):
+    def gen_bank_amount(self):
         MONTHS = 6
-        EXPENSE_TIMES = 1.5
+        MULTIPLY_BY = 1.5
+        user = self.request.user
         now = timezone.now()
         past = now - timedelta(days=MONTHS * 30)
-        past_expense = self.request.user.expenses.filter(timestamp__range=(past, now))\
-                        .aggregate(Sum('amount'))['amount__sum'] or 0
-        return (past_expense / MONTHS) * EXPENSE_TIMES
+
+        past_expense = user.expenses.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
+        past_income = user.incomes.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        avg_expense = (past_expense / MONTHS) * MULTIPLY_BY
+        avg_income = (past_income / MONTHS) * MULTIPLY_BY
+        return max(avg_expense, avg_income)
 
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
@@ -287,9 +292,8 @@ class SavingsCalculatorView(View):
                     initial_data['savings_max_amount'] = 0
 
                 if not savings.amount_to_keep_in_bank:
-                    amount_to_keep_in_bank = max(self.averaged_expense(), income * 0.8)
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(amount_to_keep_in_bank)
-                    defaults_message.append(f"Amount To Keep In Bank used is automatically generated")
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.gen_bank_amount())
+                    defaults_message.append(f"Amount To Keep In Bank used is system generated")
 
         except SavingCalculation.DoesNotExist:
             pass
