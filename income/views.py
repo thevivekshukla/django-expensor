@@ -259,7 +259,6 @@ class SavingsCalculatorView(View):
         avg_expense = past_expense/(DAYS/30)
         return int(avg_expense * 1.5)
 
-
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
         initial_data = {}
@@ -279,7 +278,7 @@ class SavingsCalculatorView(View):
             if income:
                 defaults_message.append(f"Income: ₹ {income:,}")
                 MIN_SAVINGS_PCT = 20
-                KEEP_IN_BANK_PCT = 100
+                # KEEP_IN_BANK_PCT = 100
 
                 if not savings.savings_min_amount:
                     initial_data['savings_min_amount'] = self.return_in_multiples(income * MIN_SAVINGS_PCT/100)
@@ -291,8 +290,9 @@ class SavingsCalculatorView(View):
                 if not savings.amount_to_keep_in_bank:
                     # initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(income * KEEP_IN_BANK_PCT/100)
                     # defaults_message.append(f"Amount To Keep In Bank used is {KEEP_IN_BANK_PCT}% of income")
-                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.averaged_expense())
-                    defaults_message.append(f"Amount To Keep In Bank used is 1.5x of last 6 months average expense")
+                    amount_to_keep_in_bank = max(self.averaged_expense(), income*0.5)
+                    initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(amount_to_keep_in_bank)
+                    defaults_message.append(f"Amount To Keep In Bank used is automatically generated")
 
         except SavingCalculation.DoesNotExist:
             pass
