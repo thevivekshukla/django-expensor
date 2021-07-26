@@ -287,7 +287,7 @@ class SavingsCalculatorView(View):
                     initial_data['savings_max_amount'] = 0
 
                 if not savings.amount_to_keep_in_bank:
-                    amount_to_keep_in_bank = max(self.averaged_expense(), income/2)
+                    amount_to_keep_in_bank = max(self.averaged_expense(), income * 0.8)
                     initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(amount_to_keep_in_bank)
                     defaults_message.append(f"Amount To Keep In Bank used is automatically generated")
 
