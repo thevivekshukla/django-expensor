@@ -251,13 +251,12 @@ class SavingsCalculatorView(View):
         return int(final_amount)
 
     def averaged_expense(self):
-        DAYS = 180
-        user = self.request.user
+        MONTHS = 6
         now = timezone.now()
-        past = now - timedelta(days=DAYS)
-        past_expense = user.expenses.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
-        avg_expense = past_expense/(DAYS/30)
-        return int(avg_expense * 1.5)
+        past = now - timedelta(days=MONTHS * 30)
+        past_expense = self.request.user.expenses.filter(timestamp__range=(past, now))\
+                        .aggregate(Sum('amount'))['amount__sum'] or 0
+        return (past_expense / MONTHS) * 1.5
 
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
@@ -278,7 +277,6 @@ class SavingsCalculatorView(View):
             if income:
                 defaults_message.append(f"Income: ₹ {income:,}")
                 MIN_SAVINGS_PCT = 20
-                # KEEP_IN_BANK_PCT = 100
 
                 if not savings.savings_min_amount:
                     initial_data['savings_min_amount'] = self.return_in_multiples(income * MIN_SAVINGS_PCT/100)
@@ -288,9 +286,7 @@ class SavingsCalculatorView(View):
                     initial_data['savings_max_amount'] = 0
 
                 if not savings.amount_to_keep_in_bank:
-                    # initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(income * KEEP_IN_BANK_PCT/100)
-                    # defaults_message.append(f"Amount To Keep In Bank used is {KEEP_IN_BANK_PCT}% of income")
-                    amount_to_keep_in_bank = max(self.averaged_expense(), income*0.5)
+                    amount_to_keep_in_bank = max(self.averaged_expense(), income/2)
                     initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(amount_to_keep_in_bank)
                     defaults_message.append(f"Amount To Keep In Bank used is automatically generated")
 
