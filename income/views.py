@@ -279,10 +279,6 @@ class SavingsCalculatorView(View):
             initial_data['equity_percentage'] = savings.equity_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            if not savings.amount_to_keep_in_bank:
-                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.gen_bank_amount())
-                defaults_message.append(f"Amount To Keep In Bank used is system generated")
-
             if income:
                 defaults_message.append(f"Income: ₹ {income:,}")
                 MIN_SAVINGS_PCT = 20
@@ -290,6 +286,10 @@ class SavingsCalculatorView(View):
                 if not savings.savings_min_amount:
                     initial_data['savings_min_amount'] = self.return_in_multiples(income * MIN_SAVINGS_PCT/100)
                     defaults_message.append(f"Savings Min Amount used is {MIN_SAVINGS_PCT}% of income")
+            
+            if not savings.amount_to_keep_in_bank:
+                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.gen_bank_amount())
+                defaults_message.append(f"Amount To Keep In Bank used is system generated")
 
         except SavingCalculation.DoesNotExist:
             pass
