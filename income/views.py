@@ -272,7 +272,6 @@ class SavingsCalculatorView(View):
             savings = request.user.saving_calculation
             message = savings.message
             initial_data['savings_min_amount'] = savings.savings_min_amount
-            initial_data['savings_max_amount'] = savings.savings_max_amount
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['debt_percentage'] = savings.debt_percentage
             initial_data['equity_percentage'] = savings.equity_percentage
@@ -280,7 +279,7 @@ class SavingsCalculatorView(View):
 
             if income:
                 defaults_message.append(f"Income: ₹ {income:,}")
-                MIN_SAVINGS_PCT = 20
+                MIN_SAVINGS_PCT = 10
 
                 if not savings.savings_min_amount:
                     initial_data['savings_min_amount'] = self.return_in_multiples(income * MIN_SAVINGS_PCT/100)
@@ -304,37 +303,27 @@ class SavingsCalculatorView(View):
         context = self.context.copy()
         form = self.form_class(request.POST)
         if form.is_valid():
-            savings_percentage = form.cleaned_data['savings_percentage']/100
             savings_min_amount = form.cleaned_data['savings_min_amount']
-            savings_max_amount = form.cleaned_data['savings_max_amount']
+            savings_percentage = form.cleaned_data['savings_percentage']/100
             debt_percentage = form.cleaned_data['debt_percentage']/100
             equity_percentage = form.cleaned_data['equity_percentage']/100
             amount_to_keep_in_bank = form.cleaned_data['amount_to_keep_in_bank']
             bank_balance = form.cleaned_data['bank_balance']
 
             diff = max(bank_balance - amount_to_keep_in_bank, 0)
-            
-            if savings_max_amount == 0:
-                savings_max_amount = diff
 
-            max_savings = min(diff * savings_percentage, savings_max_amount)
-            if max_savings < savings_min_amount:
-                diff_savings = diff - savings_min_amount
-                if diff_savings > 0:
-                    diff = diff_savings
-                    to_savings = savings_min_amount
-                else:
-                    to_savings = diff
-                    diff = 0
-            else:
-                diff -= max_savings
-                to_savings = max_savings
+            savings = savings_min_amount
+            diff -= savings
+            if diff < 0:
+                savings += diff
+                diff = 0
 
+            savings += diff * savings_percentage
             debt = diff * debt_percentage
             equity = diff * equity_percentage
 
             data = {
-                'savings': self.return_in_multiples(to_savings),
+                'savings': self.return_in_multiples(savings),
                 'investment': {},
             }
             if debt_percentage:

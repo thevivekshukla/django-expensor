@@ -34,21 +34,11 @@ class SelectDateRangeIncomeForm(forms.Form):
 
 
 def validate_calculator_fields(cleaned_data):
-    savings_min_amount = cleaned_data['savings_min_amount']
-    savings_max_amount = cleaned_data['savings_max_amount']
-    
-    if savings_max_amount != 0 and savings_max_amount < savings_min_amount:
-        raise forms.ValidationError("Savings Max Amount cannot be less than Savings Min Amount")
-
     savings_pct = cleaned_data['savings_percentage']
     debt_pct = cleaned_data['debt_percentage']
     equity_pct = cleaned_data['equity_percentage']
-
-    if not (savings_pct >= 0 and savings_pct <= 100):
-        raise forms.ValidationError("Savings percentage should be in between 0 to 100.")
-
-    if sum([debt_pct, equity_pct]) not in {0, 100}:
-        raise forms.ValidationError("Sum of Debt and Equity percentage fields must be either 0 or 100")
+    if sum([savings_pct, debt_pct, equity_pct]) != 100:
+        raise forms.ValidationError("Sum of Savings, Debt and Equity percentage fields must be 100")
 
     return cleaned_data
 
@@ -61,7 +51,6 @@ class SavingCalculationModelForm(forms.ModelForm):
         )
         widgets = {
             'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
-            'savings_max_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
             'savings_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
             'debt_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
             'equity_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
@@ -75,8 +64,6 @@ class SavingCalculationModelForm(forms.ModelForm):
 class SavingCalculatorForm(forms.Form):
     savings_min_amount = forms.IntegerField(initial=0, min_value=0, 
                             widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
-    savings_max_amount = forms.IntegerField(initial=0, min_value=0,
-                             widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
     savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100,
                              widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
     debt_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
