@@ -252,9 +252,11 @@ class SavingsCalculatorView(View):
 
     def gen_bank_amount(self):
         MONTHS = 6
+        BUFFER_DAYS = 10
+        DAYS = (MONTHS * 30) + BUFFER_DAYS
         user = self.request.user
         now = timezone.now()
-        past = now - timedelta(days=MONTHS * 31)
+        past = now - timedelta(days=DAYS)
 
         past_income = user.incomes.filter(timestamp__range=(past, now)).aggregate(Sum('amount'))['amount__sum'] or 0
         avg_income = past_income / MONTHS
