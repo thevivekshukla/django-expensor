@@ -1,3 +1,4 @@
+import statistics
 from datetime import timedelta
 
 from django.contrib import messages
@@ -256,10 +257,14 @@ class SavingsCalculatorView(View):
         now = timezone.now()
         past = now - timedelta(days=DAYS)
 
-        past_income = self.request.user.incomes.filter(timestamp__range=(past, now))\
-                        .aggregate(Sum('amount'))['amount__sum'] or 0
-        avg_income = past_income / MONTHS
-        return avg_income
+        past_income = self.request.user.incomes.filter(timestamp__range=(past, now))
+
+        try:
+            income = statistics.median([pi.amount for pi in past_income])
+        except statistics.StatisticsError:
+            income = 0
+
+        return income
 
     def get(self, request, *args, **kwargs):
         income = int(request.GET.get('income', 0))
