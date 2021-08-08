@@ -264,7 +264,6 @@ class SavingsCalculatorView(View):
         for date in dates[:MONTHS]:
             amount = incomes.filter(timestamp__month=date.month, timestamp__year=date.year)\
                         .aggregate(Sum('amount'))['amount__sum'] or 0
-            print(date, amount)
             data.append(amount)
 
         try:
