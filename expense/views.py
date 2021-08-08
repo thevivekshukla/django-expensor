@@ -20,7 +20,6 @@ from decorators import login_required_message
 # Create your views here.
 
 
-
 class AddExpense(View):
     form_class = ExpenseForm
     template_name = "add_expense.html"
@@ -67,7 +66,6 @@ class AddExpense(View):
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
-
 
 
 class UpdateExpense(View):
@@ -129,7 +127,6 @@ class UpdateExpense(View):
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
-
 
 
 class ExpenseList(View):
@@ -211,7 +208,6 @@ class ExpenseList(View):
 #         return context
 
 
-
 class DayWiseExpense(View):
 
     template_name = "day-expense.html"
@@ -235,7 +231,6 @@ class DayWiseExpense(View):
         return render(request, self.template_name, self.context)
 
 
-
 class MonthWiseExpense(View):
     template_name = "month-expense.html"
     context = {
@@ -256,7 +251,6 @@ class MonthWiseExpense(View):
             data.append((date, amount))
         self.context['data'] = data
         return render(request, self.template_name, self.context)
-
 
 
 class DateSearch(View):
@@ -312,7 +306,6 @@ class DateSearch(View):
             context['object_total'] = object_total
 
         return render(request, self.template_name, context)
-
 
 
 class GoToExpense(View):
@@ -491,3 +484,4 @@ class Error400(View):
 class Error403(View):
     def get(self, request, *args, **kwargs):
         return render(request, "403.html", {}, status=403)
+
