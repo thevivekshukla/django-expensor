@@ -252,7 +252,7 @@ class SavingsCalculatorView(View):
         return int(final_amount)
 
     def gen_bank_amount(self):
-        MONTHS = 12
+        MONTHS = 6
         DAYS = MONTHS * 30
         now = timezone.now()
         past = now - timedelta(days=DAYS)
