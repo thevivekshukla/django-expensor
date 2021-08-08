@@ -257,10 +257,18 @@ class SavingsCalculatorView(View):
         now = timezone.now()
         past = now - timedelta(days=DAYS)
 
-        past_income = self.request.user.incomes.filter(timestamp__range=(past, now))
+        incomes = self.request.user.incomes
+        dates = incomes.filter(timestamp__range=(past, now)).order_by('timestamp')\
+                    .dates('timestamp', 'month')
+        data = []
+        for date in dates[:6]:
+            amount = incomes.filter(timestamp__month=date.month, timestamp__year=date.year)\
+                        .aggregate(Sum('amount'))['amount__sum'] or 0
+            print(date, amount)
+            data.append(amount)
 
         try:
-            income = statistics.median([pi.amount for pi in past_income])
+            income = statistics.median(data)
         except statistics.StatisticsError:
             income = 0
 
