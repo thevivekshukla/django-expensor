@@ -81,7 +81,7 @@ class Expense(BaseModel):
         return "{} : {} : {}".format(self.remark, self.amount, self.timestamp)
 
     class Meta():
-        ordering = ["-timestamp"]
+        ordering = ("-timestamp", "-created_at",)
 
 
 def capitalize_remark(instance, sender, *args, **kwargs):
