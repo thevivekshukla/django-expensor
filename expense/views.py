@@ -155,7 +155,6 @@ class ExpenseList(View):
         order_field = request.GET.get("field")
         if order_field:
             ordering = request.GET.get("order", "")+order_field
-            print(ordering)
             objects_list = objects_list.order_by(ordering)
 
         paginator = Paginator(objects_list, 15)
