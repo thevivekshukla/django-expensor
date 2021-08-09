@@ -29,7 +29,7 @@ class Income(BaseModel):
         return "{} : {}".format(self.user, self.source)
 
     class Meta():
-        ordering = ('-timestamp', )
+        ordering = ('-timestamp', '-created_at',)
 
 
 class SavingCalculation(BaseModel):
