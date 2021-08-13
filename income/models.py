@@ -16,7 +16,9 @@ class Source(BaseModel):
     def __str__(self):
         return self.name
 
-    
+    class Meta:
+        unique_together = ('user', 'name',)
+
 
 class Income(BaseModel):
     user = models.ForeignKey(User, related_name='incomes', on_delete=models.CASCADE)

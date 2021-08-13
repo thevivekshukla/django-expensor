@@ -65,11 +65,11 @@ class IncomeAdd(View):
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
             timestamp = form.cleaned_data.get('timestamp')
-            source_name = form.cleaned_data.get('source')
+            source_name = form.cleaned_data.get('source').strip()
 
             source = None
             if source_name:
-                source, _ = Source.objects.get_or_create(user=request.user, name__iexact=source_name)
+                source, _ = Source.objects.get_or_create(user=request.user, name=source_name)
 
             Income.objects.create(
                     user=request.user,
@@ -150,11 +150,9 @@ class SourceView(View):
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term', '')
-        source = Source.objects.filter(name__icontains=term, user=request.user)
-        result = []
+        sources = Source.objects.filter(name__icontains=term, user=request.user)
 
-        for s in source:
-            result.append(s.name)
+        result = [source.name for source in sources]
         data = json.dumps(result)
         
         return HttpResponse(data, content_type='application/json')
@@ -177,7 +175,7 @@ class IncomeDateSearch(View):
         range_form = self.range_form_class(request.GET or None)
 
         if range_form.is_valid():
-            source = range_form.cleaned_data.get('source')
+            source = range_form.cleaned_data.get('source').strip()
             f_dt = range_form.cleaned_data.get('from_date')
             t_dt = range_form.cleaned_data.get('to_date')
             objects = Income.objects.filter(user=request.user).filter(timestamp__range=(f_dt, t_dt))
