@@ -66,6 +66,9 @@ class Remark(BaseModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        unique_together = ('user', 'name',)
+
 
 class Expense(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='expenses',
@@ -84,8 +87,8 @@ class Expense(BaseModel):
         ordering = ("-timestamp", "-created_at",)
 
 
-def capitalize_remark(instance, sender, *args, **kwargs):
+def preprocess_remark(instance, sender, *args, **kwargs):
     if instance.name:
-        instance.name = instance.name.title()
+        instance.name = instance.name.strip().lower()
 
-pre_save.connect(capitalize_remark, sender=Remark)
+pre_save.connect(preprocess_remark, sender=Remark)

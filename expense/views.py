@@ -45,23 +45,22 @@ class AddExpense(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
-            remark = form.cleaned_data.get('remark', '').title()
+            remark = form.cleaned_data.get('remark', '').strip()
             timestamp = form.cleaned_data.get('timestamp')
 
-            expense = Expense.objects.create(
-                user = request.user,
-                amount = amount,
-                timestamp = timestamp
-            )
-
+            remark_object = None
             if remark:
                 try:
-                    rem = Remark.objects.get(user=request.user, name=remark)
-                except:
-                    rem = Remark.objects.create(user=request.user, name=remark)
-                expense.remark = rem
-                expense.save()
-            
+                    remark_object = Remark.objects.get(user=request.user, name__iexact=remark)
+                except Remark.DoesNotExist:
+                    remark_object = Remark.objects.create(user=request.user, name=remark)
+
+            Expense.objects.create(
+                user = request.user,
+                amount = amount,
+                timestamp = timestamp,
+                remark=remark_object,
+            )
 
             return HttpResponse(status=200)
         else:
