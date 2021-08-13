@@ -275,7 +275,7 @@ class DateSearch(View):
             objects = None
 
             if range_form.is_valid():
-                remark = range_form.cleaned_data.get('remark')
+                remark = range_form.cleaned_data.get('remark', '').strip()
                 f_dt = range_form.cleaned_data.get('from_date')
                 t_dt = range_form.cleaned_data.get('to_date')
                 objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
@@ -285,7 +285,7 @@ class DateSearch(View):
                 range_form = self.range_form_class()
 
             if date_form.is_valid():
-                remark = date_form.cleaned_data.get('remark')
+                remark = date_form.cleaned_data.get('remark', '').strip()
                 dt = date_form.cleaned_data.get('date')
                 objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
                 if remark:
