@@ -66,22 +66,16 @@ class IncomeAdd(View):
             amount = form.cleaned_data.get('amount')
             timestamp = form.cleaned_data.get('timestamp')
             source_name = form.cleaned_data.get('source')
+
+            source = None
             if source_name:
-                try:
-                    source = Source.objects.get(name=source_name, user=request.user)
-                except Source.DoesNotExist:
-                    source = Source.objects.create(name=source_name, user=request.user)
-                income = Income.objects.create(
+                source, _ = Source.objects.get_or_create(user=request.user, name__iexact=source_name)
+
+            Income.objects.create(
                     user=request.user,
                     amount=amount,
                     timestamp=timestamp,
-                    source=source
-                )
-            else:
-                income = Income.objects.create(
-                    user=request.user,
-                    amount=amount,
-                    timestamp=timestamp
+                    source=source,
                 )
             messages.success(request, "Income added successfully!")
             return HttpResponse(status=201)
