@@ -108,7 +108,7 @@ class UpdateExpense(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
-            remark = form.cleaned_data.get('remark', '').title()
+            remark = form.cleaned_data.get('remark', '').strip()
             timestamp = form.cleaned_data.get('timestamp')
 
             instance.amount = amount
@@ -116,7 +116,7 @@ class UpdateExpense(View):
             rem = None
             if remark:
                 try:
-                    rem = Remark.objects.get(user=request.user, name=remark)
+                    rem = Remark.objects.get(user=request.user, name__iexact=remark)
                 except:
                     rem = Remark.objects.create(user=request.user, name=remark)
             
