@@ -416,15 +416,9 @@ class GetRemark(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             q = request.GET.get('term', '')
-            # remarks = Expense.objects.all(user=request.user).filter(remark__icontains=q).order_by(
-            #           ).values_list('remark', flat=True).distinct()
             remarks = Remark.objects.filter(user=request.user).filter(name__icontains=q).order_by(
                         ).values_list('name', flat=True)
-            results = []
-            for remark in remarks:
-                remark_json = {}
-                remark_json['value'] = remark
-                results.append(remark_json)
+            results = [{'value': remark} for remark in remarks]
             data = json.dumps(results)
         else:
             data = 'fail'
