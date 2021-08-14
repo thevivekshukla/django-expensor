@@ -45,7 +45,6 @@ class IncomeList(ListView):
 
 
 class IncomeAdd(View):
-
     template_name = 'add_income.html'
     form_class = IncomeForm
 
@@ -156,7 +155,6 @@ class SourceView(View):
         data = json.dumps(result)
         
         return HttpResponse(data, content_type='application/json')
-
 
 
 class IncomeDateSearch(View):
