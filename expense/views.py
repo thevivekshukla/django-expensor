@@ -414,16 +414,13 @@ class GetRemark(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        if request.is_ajax():
-            q = request.GET.get('term', '')
-            remarks = Remark.objects.filter(user=request.user).filter(name__icontains=q).order_by(
-                        ).values_list('name', flat=True)
-            results = [{'value': remark} for remark in remarks]
-            data = json.dumps(results)
-        else:
-            data = 'fail'
-        mimetype = 'application/json'
-        return HttpResponse(data, mimetype)
+        term = request.GET.get('term', '').strip()
+        remarks = Remark.objects.filter(user=request.user).filter(name__icontains=term)\
+                    .values_list('name', flat=True)
+        results = [remark for remark in remarks]
+        data = json.dumps(results)
+
+        return HttpResponse(data, content_type='application/json')
 
 
 class GetYear(View):
