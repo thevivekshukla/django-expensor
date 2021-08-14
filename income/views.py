@@ -64,7 +64,7 @@ class IncomeAdd(View):
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
             timestamp = form.cleaned_data.get('timestamp')
-            source_name = form.cleaned_data.get('source').strip()
+            source_name = form.cleaned_data.get('source', '').strip()
 
             source = None
             if source_name:
@@ -108,7 +108,6 @@ class IncomeUpdateView(View):
         }
         
         self.context['income_form'] = self.form_class(initial=initial_data)
-
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
@@ -124,12 +123,12 @@ class IncomeUpdateView(View):
         if form.is_valid():
             amount = form.cleaned_data['amount']
             timestamp = form.cleaned_data['timestamp']
-            source_name = form.cleaned_data.get('source', None)
+            source_name = form.cleaned_data.get('source', '').strip()
             if source_name:
                 try:
-                    source = Source.objects.get(name=source_name, user=request.user)
+                    source = Source.objects.get(user=request.user, name=source_name)
                 except Source.DoesNotExist:
-                    source = Source.objects.create(name=source_name, user=request.user)
+                    source = Source.objects.create(user=request.user, name=source_name)
                 income.source = source
 
             income.amount = amount
