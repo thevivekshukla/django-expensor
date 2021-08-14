@@ -148,10 +148,11 @@ class SourceView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        term = request.GET.get('term', '')
-        sources = Source.objects.filter(name__icontains=term, user=request.user)
+        term = request.GET.get('term', '').strip()
+        sources = Source.objects.filter(user=request.user, name__icontains=term)\
+                    .values_list('name', flat=True)
 
-        result = [source.name for source in sources]
+        result = [source for source in sources]
         data = json.dumps(result)
         
         return HttpResponse(data, content_type='application/json')
@@ -179,7 +180,7 @@ class IncomeDateSearch(View):
             objects = Income.objects.filter(user=request.user).filter(timestamp__range=(f_dt, t_dt))
 
             if source:
-                objects = objects.filter(source__name__icontains=source)
+                objects = objects.filter(source__name=source)
 
             object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
 
