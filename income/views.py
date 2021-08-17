@@ -307,15 +307,19 @@ class SavingsCalculatorView(View):
 
             diff = max(bank_balance - amount_to_keep_in_bank, 0)
 
-            savings = savings_min_amount
+            savings = max(savings_min_amount, diff*savings_percentage)
             diff -= savings
             if diff < 0:
                 savings += diff
                 diff = 0
 
-            savings += diff * savings_percentage
-            debt = diff * debt_percentage
-            equity = diff * equity_percentage
+            new_total_pct = 1 - savings_percentage
+            try:
+                debt = diff * (debt_percentage/new_total_pct)
+                equity = diff * (equity_percentage/new_total_pct)
+            except ZeroDivisionError:
+                debt = 0
+                equity = 0
 
             data = {
                 'savings': self.return_in_multiples(savings),
