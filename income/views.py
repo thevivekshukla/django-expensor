@@ -241,7 +241,7 @@ class SavingsCalculatorView(View):
         multiples_of = 100
         amount = math.ceil(amount)
         final_amount = (amount // multiples_of) * multiples_of
-        return int(final_amount)
+        return final_amount
 
     def gen_bank_amount(self):
         MONTHS = 6
