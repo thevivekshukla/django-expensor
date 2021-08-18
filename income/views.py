@@ -1,5 +1,6 @@
 import statistics
 from datetime import timedelta
+import math
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
@@ -238,6 +239,7 @@ class SavingsCalculatorView(View):
 
     def return_in_multiples(self, amount):
         multiples_of = 100
+        amount = math.ceil(amount)
         final_amount = (amount // multiples_of) * multiples_of
         return int(final_amount)
 
