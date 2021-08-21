@@ -4,20 +4,29 @@ import math
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import (
+    ListView, CreateView,
+    UpdateView, DeleteView,
+)
 from django.views import View
 from django.http import HttpResponse, Http404
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.db.models import Sum
 
 import json
 
-from .models import Income, Source, SavingCalculation
+from .models import (
+    Income, Source,
+    SavingCalculation,
+    InvestmentEntity,
+)
 from expense.models import Expense
 from .forms import (
     IncomeForm, SelectDateRangeIncomeForm,
     SavingCalculatorForm, SavingCalculationModelForm,
+    InvestmentEntityModelForm, InvestmentEntityForm,
 )
 
 from decorators import login_required_message
@@ -193,41 +202,112 @@ class IncomeDateSearch(View):
 
 class SavingCalculationDetailView(View):
     form_class = SavingCalculationModelForm
+    inv_form_class = InvestmentEntityForm
     template_name = "savings-calculation-detail.html"
     context = {
         'title': 'Saving Calculation Detail',
     }
 
     def get(self, request, *args, **kwargs):
-        context = self.context.copy()
         try:
             instance = request.user.saving_calculation
         except SavingCalculation.DoesNotExist:
             instance = None
-        form = self.form_class(instance=instance)
-        context['form'] = form
+
+        context = self.context.copy()
+        context['form'] = self.form_class(instance=instance)
+        context['inv_form'] = self.inv_form_class(user=request.user)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        context = self.context.copy()
         try:
             instance = request.user.saving_calculation
         except SavingCalculation.DoesNotExist:
             instance = None
+        
         form = self.form_class(instance=instance, data=request.POST)
-        if form.is_valid():
+        inv_form = self.inv_form_class(user=request.user, data=request.POST)
+
+        if form.is_valid() and inv_form.is_valid():
             cleaned_data = form.cleaned_data
+            inv_cleaned_data = inv_form.cleaned_data
+            # updating savings instance
             if instance is None:
-                SavingCalculation.objects.create(user=request.user, **cleaned_data)
+                instance = SavingCalculation.objects.create(user=request.user, **cleaned_data)
             else:
                 SavingCalculation.objects.filter(user=request.user).update(**cleaned_data)
+
+            # updating investment entity
+            for name, pct in inv_cleaned_data.items():
+                InvestmentEntity.objects.filter(saving_calculation=instance, name=name)\
+                    .update(percentage=pct)
             messages.success(request, "Savings settings saved successfully!")
+        else:
+            messages.warning(request, "There is some error, please check fields below")
+
+        context = self.context.copy()
         context['form'] = form
+        context['inv_form'] = inv_form
         return render(request, self.template_name, context)
+
+
+class InvestmentEntityCreateView(CreateView):
+    template_name = "investment-entity-create.html"
+    model = InvestmentEntity
+    fields = ['name',]
+    success_url = reverse_lazy('income:investment-entity-list')
+    extra_context = {
+        'title': 'Add Investment Entity',
+    }
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.saving_calculation = self.request.user.saving_calculation
+        obj.save()
+        return super().form_valid(form)
+
+
+class InvestmentEntityListView(ListView):
+    template_name = "investment-entity-list.html"
+    model = InvestmentEntity
+    extra_context = {
+        'title': 'Investments List',
+    }
+
+    def get_queryset(self):
+        return InvestmentEntity.objects.filter(
+            saving_calculation=self.request.user.saving_calculation,
+        )
+
+
+class InvestmentEntityUpdateView(UpdateView):
+    model = InvestmentEntity
+    fields = ['name',]
+    template_name = "investment-entity-create.html"
+    extra_context = {
+        'title': 'Update Investment Entity',
+    }
+    success_url = reverse_lazy('income:investment-entity-list')
+
+
+class InvestmentEntityDeleteView(DeleteView):
+    model = InvestmentEntity
+    success_url = reverse_lazy('income:investment-entity-list')
+    template_name = "investment-entity-delete.html"
+    extra_context = {
+        'title': 'Confirm Delete',
+    }
+
+    def get_queryset(self):
+        return self.model.objects.filter(
+            percentage=0,
+            saving_calculation=self.request.user.saving_calculation,
+        )
 
 
 class SavingsCalculatorView(View):
     form_class = SavingCalculatorForm
+    inv_form_class = InvestmentEntityForm
     template_name = "savings-calculator.html"
     context = {
         'title': 'Savings Calculator',
@@ -270,8 +350,6 @@ class SavingsCalculatorView(View):
             message = savings.message
             initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_percentage'] = savings.savings_percentage
-            initial_data['debt_percentage'] = savings.debt_percentage
-            initial_data['equity_percentage'] = savings.equity_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
             if income:
@@ -289,54 +367,60 @@ class SavingsCalculatorView(View):
         except SavingCalculation.DoesNotExist:
             pass
 
-        form = self.form_class(initial=initial_data)
         context = self.context.copy()
-        context['form'] = form
+        context['form'] = self.form_class(initial=initial_data)
+        context['inv_form'] = self.inv_form_class(user=request.user)
         context['message'] = message
         context['defaults_message'] = defaults_message
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
         context = self.context.copy()
-        form = self.form_class(request.POST)
-        if form.is_valid():
+        form = self.form_class(data=request.POST)
+        inv_form = self.inv_form_class(user=request.user, data=request.POST)
+
+        if form.is_valid() and inv_form.is_valid():
             savings_min_amount = form.cleaned_data['savings_min_amount']
             savings_percentage = form.cleaned_data['savings_percentage']/100
-            debt_percentage = form.cleaned_data['debt_percentage']/100
-            equity_percentage = form.cleaned_data['equity_percentage']/100
             amount_to_keep_in_bank = form.cleaned_data['amount_to_keep_in_bank']
             bank_balance = form.cleaned_data['bank_balance']
+            investment_data = inv_form.cleaned_data
 
-            diff = max(bank_balance - amount_to_keep_in_bank, 0)
+            cal_amount = max(bank_balance - amount_to_keep_in_bank, 0)
 
-            savings = max(savings_min_amount, diff*savings_percentage)
-            diff -= savings
-            if diff < 0:
-                savings += diff
-                diff = 0
-
-            new_total_pct = 1 - savings_percentage
-            try:
-                debt = diff * (debt_percentage/new_total_pct)
-                equity = diff * (equity_percentage/new_total_pct)
-            except ZeroDivisionError:
-                debt = 0
-                equity = 0
+            # savings calculation
+            savings = max(savings_min_amount, cal_amount * savings_percentage)
+            cal_amount -= savings
+            if cal_amount < 0:
+                savings += cal_amount
+                cal_amount = 0
 
             data = {
                 'savings': self.return_in_multiples(savings),
                 'investment': {},
             }
-            if debt_percentage:
-                data['investment']['debt'] = self.return_in_multiples(debt)
-            if equity_percentage:
-                data['investment']['equity'] = self.return_in_multiples(equity)
+
+            # investment calculation from here
+            investment_percentage = 1 - savings_percentage
+            investment_total = 0
+            for inv_name, inv_pct in investment_data.items():
+                try:
+                    inv_amount = self.return_in_multiples(
+                        cal_amount * ( (inv_pct/100) / investment_percentage)
+                    )
+                except ZeroDivisionError:
+                    inv_amount = 0
+                data['investment'][inv_name] = inv_amount
+                investment_total += inv_amount
 
             context['data'] = data
-            context['investment_total'] = sum(value for _, value in data['investment'].items())
-            context['total'] = data['savings'] + context['investment_total']
+            context['investment_total'] = investment_total
+            context['total'] = data['savings'] + investment_total
+        else:
+            messages.warning(request, "There is some error, please check fields below")
 
         context['form'] = form
+        context['inv_form'] = inv_form
         return render(request, self.template_name, context)
 
 

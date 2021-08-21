@@ -26,32 +26,25 @@
             <div class="alert alert-info">
                 <table class="table">
                     <tr>
-                        <td><strong>🏦 Savings</strong></td>
+                        <td><strong>Savings</strong></td>
                         <td>₹ {{ data.savings|intcomma }}</td>
                     </tr>
 
-                    {% if data.investment.debt >= 0 %}
+                    {% for inv_name, inv_amount in data.investment.items %}
                         <tr>
-                            <td><strong>💵 Debt</strong></td>
-                            <td>₹ {{ data.investment.debt|intcomma }}</td>
+                            <td><strong>{{ inv_name }}</strong></td>
+                            <td>₹ {{ inv_amount|intcomma }}</td>
                         </tr>
-                    {% endif %}
-
-                    {% if data.investment.equity >= 0 %}
-                        <tr>
-                            <td><strong>📈 Equity</strong></td>
-                            <td>₹ {{ data.investment.equity|intcomma }}</td>
-                        </tr>
-                    {% endif %}
+                    {% endfor %}
 
                     <tr><td></td><td></td></tr>
                     
                     <tr class="alert alert-success">
-                        <td><span style="visibility: hidden;">➕</span> Investment Total</td>
+                        <td>Investment Total</td>
                         <td>₹ {{ investment_total|intcomma }}</td>
                     </tr>
                     <tr class="alert alert-success">
-                        <td><strong><span style="visibility: hidden;">➕</span> Grand Total</strong></td>
+                        <td><strong>Grand Total</strong></td>
                         <td><strong>₹ {{ total|intcomma }}</strong></td>
                     </tr>
                 </table>
@@ -69,6 +62,7 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
+            {{ inv_form|crispy }}
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
             <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>

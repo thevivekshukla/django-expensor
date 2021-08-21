@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% load income_utils %}
+
+{% block body %}
+
+
+<div class="col-md-1 col-lg-1"></div>
+
+<div class="col-md-10 col-lg-10 col-sm-12">
+  <h3>{{ title }}</h3><br>
+  
+  <table class="table table-striped">
+    <tr>
+      <th>Name</th>
+      <th>Percentage</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+
+    {% for object in object_list %}
+    <tr>
+      <td>{{ object.name }}</td>
+      <td>{{ object.percentage }}</td>
+      <td>
+        <a href="{% url 'income:investment-entity-update' pk=object.id %}">
+          <span class="glyphicon glyphicon-pencil"></span> Edit
+        </a>
+      </td>
+      <td>
+        <a href="{% url 'income:investment-entity-delete' pk=object.id %}">
+          <span class="glyphicon glyphicon-trash"></span> Delete
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+
+  </table>
+
+  <a href="{% url 'income:investment-entity-create' %}" class="btn btn-primary">Add New</a>
+  <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Calculator Setting</a>
+</div>
+
+<div class="col-md-1 col-lg-1"></div>
+
+
+
+{% endblock body %}
+

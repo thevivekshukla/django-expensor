@@ -9,19 +9,14 @@
 
     <div class="col-md-4 col-lg-4"></div>
     <div class="col-md-4 col-lg-4 col-sm-12">
-
+        <h3>{{ title }}:</h3>
+        <br>
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            {{ inv_form|crispy }}
-            <input type="submit" class="btn btn-success btn-lg btn-block" value="Update">
+            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">
             <br>
-
-            {% if user.saving_calculation %}
-            <center>
-                <a class="btn btn-primary btn-block" href="{% url 'income:investment-entity-list' %}">Manage Investments</a>
-            </center>
-            {% endif %}
+            <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Calculator Settings</a>
         </form>
         
     </div>

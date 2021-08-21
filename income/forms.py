@@ -2,8 +2,9 @@ from typing import Dict, Any
 
 from datetime import timedelta
 from django import forms
+from django.forms import widgets
 from django.utils import timezone
-from .models import SavingCalculation
+from .models import SavingCalculation, InvestmentEntity
 
 from utils.helpers import get_ist_datetime
 
@@ -33,47 +34,75 @@ class SelectDateRangeIncomeForm(forms.Form):
         self.fields['to_date'].initial = today_date
 
 
-def validate_calculator_fields(cleaned_data):
-    savings_pct = cleaned_data['savings_percentage']
-    debt_pct = cleaned_data['debt_percentage']
-    equity_pct = cleaned_data['equity_percentage']
-    if sum([savings_pct, debt_pct, equity_pct]) != 100:
-        raise forms.ValidationError("Sum of Savings, Debt and Equity percentage fields must be 100")
-
-    return cleaned_data
-
-
 class SavingCalculationModelForm(forms.ModelForm):
     class Meta:
         model = SavingCalculation
-        exclude = (
-            'user',
+        fields = (
+            'message',
+            'amount_to_keep_in_bank',
+            'savings_min_amount',
+            'savings_percentage',
         )
         widgets = {
             'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
             'savings_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
-            'debt_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
-            'equity_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
             'amount_to_keep_in_bank': forms.NumberInput(attrs={'placeholder': 'amount'}),
         }
 
-    def clean(self) -> Dict[str, Any]:
-        return validate_calculator_fields(super().clean())
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+
+class InvestmentEntityModelForm(forms.ModelForm):
+    class Meta:
+        model = InvestmentEntity
+        exclude = (
+            'saving_calculation',
+        )
+        widgets = {
+            'percentage': forms.NumberInput(attrs={'placeholder': '%'}),
+        }
+
+
+class InvestmentEntityForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        self.original_data = kwargs.get('data', dict()).copy()
+        super().__init__(*args, **kwargs)
+
+        if user:
+            try:
+                investments = user.saving_calculation.investment_entity.all()
+                for inv in investments:
+                    self.fields[inv.name] = forms.IntegerField(
+                        initial=inv.percentage, min_value=0, max_value=100,
+                        widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}),
+                        label=inv.name,
+                    )
+            except SavingCalculation.DoesNotExist:
+                pass
+
+    def clean(self):
+        inv_keys = self.fields.keys()
+        total = sum(
+            int(pct)
+            for name, pct in self.original_data.items()
+            if 'percentage' in name or name in inv_keys
+        )
+        if total != 100:
+            raise forms.ValidationError("Sum of all percentage fields must be 100")
+        return self.cleaned_data
 
 
 class SavingCalculatorForm(forms.Form):
-    savings_min_amount = forms.IntegerField(initial=0, min_value=0, 
-                            widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
+    common_amt_widget = forms.NumberInput(attrs={'placeholder': 'amount'})
+
+    bank_balance = forms.IntegerField(min_value=0, widget=common_amt_widget)
+    amount_to_keep_in_bank = forms.IntegerField(min_value=0, widget=common_amt_widget)
+    savings_min_amount = forms.IntegerField(initial=0, min_value=0, widget=common_amt_widget)
     savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100,
                              widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
-    debt_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
-                             widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
-    equity_percentage = forms.IntegerField(initial=0, min_value=0, max_value=100,
-                             widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
-    amount_to_keep_in_bank = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
-    bank_balance = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': 'amount'}))
 
-    def clean(self) -> Dict[str, Any]:
-        return validate_calculator_fields(super().clean())
-        
+
 
