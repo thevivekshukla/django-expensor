@@ -44,6 +44,7 @@ class SavingCalculationModelForm(forms.ModelForm):
             'savings_percentage',
         )
         widgets = {
+            'message': forms.Textarea(attrs={'rows':4,}),
             'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
             'savings_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
             'amount_to_keep_in_bank': forms.NumberInput(attrs={'placeholder': 'amount'}),
