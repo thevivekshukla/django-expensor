@@ -29,8 +29,6 @@ from .forms import (
     SavingCalculatorForm, SavingCalculationModelForm,
     InvestmentEntityForm,
 )
-
-from decorators import login_required_message
 # Create your views here.
 
 
