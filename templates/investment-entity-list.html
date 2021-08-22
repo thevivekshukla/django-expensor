@@ -32,10 +32,10 @@
       <td>
         {% if not object.percentage %}
           <a href="{% url 'income:investment-entity-delete' pk=object.id %}">
-            <span class="glyphicon glyphicon-trash"></span> Delete
+            <span class="glyphicon glyphicon-trash"></span>
           </a>
         {% else %}
-          <span title="Value must be 0 to enable delete"><i class="glyphicon glyphicon-info-sign"></i></span>
+          <span data-toggle="tooltip" data-placement="top" title="Percentage value must be 0 to enable delete"><i class="glyphicon glyphicon-info-sign"></i></span>
         {% endif %}
       </td>
 
@@ -44,13 +44,27 @@
 
   </table>
 
-  <a href="{% url 'income:investment-entity-create' %}" class="btn btn-primary">Add New</a>
-  <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Calculator Setting</a>
-</div>
+  <a style="float:left;" href="{% url 'income:investment-entity-create' %}" class="btn btn-primary">Add New</a>
+
+  <div style="float:right;">
+    <a class="btn btn-primary" href="{% url 'income:savings-calculation-detail' %}"><i class="glyphicon glyphicon-cog"></i></a>
+    <a class="btn btn-primary" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i></a>
+  </div>
 
 <div class="col-md-1 col-lg-1"></div>
 
 
 
 {% endblock body %}
+
+
+{% block js %}
+
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+{% endblock js %}
 

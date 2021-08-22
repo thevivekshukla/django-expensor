@@ -70,15 +70,16 @@
 
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
-            <a style="float:right;" href="{% url 'income:savings-calculation-detail' %}">Settings</a>
 
             {% if message %}
-                <br><br>
+                <br>
                 <div class="alert alert-info">
                     <strong><u>Message</u>:</strong>
                     <p>{{ message|linebreaks }}</p>
                 </div>
             {% endif %}
+
+            <a style="float:right;" class="btn btn-primary" href="{% url 'income:savings-calculation-detail' %}"><i class="glyphicon glyphicon-cog"></i></a>
         </form>
     </div>
     <div class="col-md-4 col-lg-4"></div>
