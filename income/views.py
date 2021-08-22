@@ -256,7 +256,7 @@ class InvestmentEntityListView(LoginRequiredMixin, ListView):
     }
 
     def get_queryset(self):
-        return InvestmentEntity.objects.filter(
+        return self.model.objects.filter(
             saving_calculation=self.request.user.saving_calculation,
         )
 
