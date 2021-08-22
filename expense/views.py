@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.views import View
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from datetime import date, timedelta
 import json
@@ -20,17 +21,13 @@ from decorators import login_required_message
 # Create your views here.
 
 
-class AddExpense(View):
+class AddExpense(LoginRequiredMixin, View):
     form_class = ExpenseForm
     template_name = "add_expense.html"
     context = {
         'form': form_class,
         'title': "Add expense"
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         last_10_expenses = Expense.objects.all(user=request.user).order_by(
@@ -67,16 +64,12 @@ class AddExpense(View):
             return HttpResponse(status=400)
 
 
-class UpdateExpense(View):
+class UpdateExpense(LoginRequiredMixin, View):
     form_class = ExpenseForm
     template_name = "update_expense.html"
     context = {
         "title": "Update expense"
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get_object(self, request, *args, **kwargs):
         id = int(kwargs['id'])
@@ -128,12 +121,8 @@ class UpdateExpense(View):
             return HttpResponse(status=400)
 
 
-class ExpenseList(View):
+class ExpenseList(LoginRequiredMixin, View):
     template_name = "expense_list.html"
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         objects_list = Expense.objects.all(user=request.user)
@@ -206,16 +195,12 @@ class ExpenseList(View):
 #         return context
 
 
-class DayWiseExpense(View):
+class DayWiseExpense(LoginRequiredMixin, View):
 
     template_name = "day-expense.html"
     context = {
         'title': 'Day Wise Expense',
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         expense = Expense.objects.all(user=request.user)
@@ -229,15 +214,11 @@ class DayWiseExpense(View):
         return render(request, self.template_name, self.context)
 
 
-class MonthWiseExpense(View):
+class MonthWiseExpense(LoginRequiredMixin, View):
     template_name = "month-expense.html"
     context = {
         'title': 'Monthly Expense',
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         dates = Expense.objects.all(user=request.user).dates('timestamp', 'month')
@@ -251,17 +232,13 @@ class MonthWiseExpense(View):
         return render(request, self.template_name, self.context)
 
 
-class DateSearch(View):
+class DateSearch(LoginRequiredMixin, View):
     date_form_class = SelectDateExpenseForm
     range_form_class = SelectDateRangeExpenseForm
     template_name = "search.html"
     context = {
         "title": "Search"
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = self.context.copy()
@@ -306,15 +283,11 @@ class DateSearch(View):
         return render(request, self.template_name, context)
 
 
-class GoToExpense(View):
+class GoToExpense(LoginRequiredMixin, View):
     """
     provies expenses for particular day, month or year.
     """
     template_name = 'goto.html'
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         day = kwargs.get('day')
@@ -350,15 +323,11 @@ class GoToExpense(View):
         return render(request, self.template_name, context)
 
 
-class GoToRemarkWiseExpense(View):
+class GoToRemarkWiseExpense(LoginRequiredMixin, View):
     """
     provies expenses for particular day, month or year.
     """
     template_name = 'remark-month-expense.html'
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         day = int(kwargs.get('day', 0))
@@ -405,13 +374,10 @@ class GoToRemarkWiseExpense(View):
         return render(request, self.template_name, context)
 
 
-class GetRemark(View):
+class GetRemark(LoginRequiredMixin, View):
     """
     will be used to autocomplete the remarks
     """
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term', '').strip()
@@ -423,13 +389,10 @@ class GetRemark(View):
         return HttpResponse(data, content_type='application/json')
 
 
-class GetYear(View):
+class GetYear(LoginRequiredMixin, View):
     """
     return all the year in which expenses are registered.
     """
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         cache_key = 'expense_year'

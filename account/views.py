@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -71,16 +72,12 @@ def user_logout(request):
 
 
 
-class ChangePassword(View):
+class ChangePassword(LoginRequiredMixin, View):
     template_name = "account_form.html"
     form_class = ChangePasswordForm
     context = {
         "title": "Change Password"
     }
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         self.context['form'] = self.form_class()

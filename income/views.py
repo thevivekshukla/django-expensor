@@ -9,6 +9,7 @@ from django.views.generic import (
     UpdateView, DeleteView,
 )
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, Http404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -34,14 +35,10 @@ from decorators import login_required_message
 
 
 
-class IncomeList(ListView):
+class IncomeList(LoginRequiredMixin, ListView):
     template_name = 'income_list.html'
     paginate_by = 15
     context_object_name = 'objects'
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
         qs = Income.objects.filter(user=self.request.user)\
@@ -54,13 +51,9 @@ class IncomeList(ListView):
         return context
 
 
-class IncomeAdd(View):
+class IncomeAdd(LoginRequiredMixin, View):
     template_name = 'add_income.html'
     form_class = IncomeForm
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = {
@@ -92,16 +85,12 @@ class IncomeAdd(View):
             return HttpResponse(status=400)
 
 
-class IncomeUpdateView(View):
+class IncomeUpdateView(LoginRequiredMixin, View):
     template_name = 'update_income.html'
     form_class = IncomeForm
     context = {
         'title': 'Update Income',
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         pk = int(kwargs['pk'])
@@ -150,11 +139,7 @@ class IncomeUpdateView(View):
             return HttpResponse(status=400)
 
 
-class SourceView(View):
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+class SourceView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term', '').strip()
@@ -167,16 +152,12 @@ class SourceView(View):
         return HttpResponse(data, content_type='application/json')
 
 
-class IncomeDateSearch(View):
+class IncomeDateSearch(LoginRequiredMixin, View):
     range_form_class = SelectDateRangeIncomeForm
     template_name = "income-search.html"
     context = {
         "title": "Income: Search"
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = self.context.copy()
@@ -200,7 +181,7 @@ class IncomeDateSearch(View):
         return render(request, self.template_name, context)
 
 
-class SavingCalculationDetailView(View):
+class SavingCalculationDetailView(LoginRequiredMixin, View):
     form_class = SavingCalculationModelForm
     inv_form_class = InvestmentEntityForm
     template_name = "savings-calculation-detail.html"
@@ -251,7 +232,7 @@ class SavingCalculationDetailView(View):
         return render(request, self.template_name, context)
 
 
-class InvestmentEntityCreateView(CreateView):
+class InvestmentEntityCreateView(LoginRequiredMixin, CreateView):
     template_name = "investment-entity-create.html"
     model = InvestmentEntity
     fields = ['name',]
@@ -267,7 +248,7 @@ class InvestmentEntityCreateView(CreateView):
         return super().form_valid(form)
 
 
-class InvestmentEntityListView(ListView):
+class InvestmentEntityListView(LoginRequiredMixin, ListView):
     template_name = "investment-entity-list.html"
     model = InvestmentEntity
     extra_context = {
@@ -280,7 +261,7 @@ class InvestmentEntityListView(ListView):
         )
 
 
-class InvestmentEntityUpdateView(UpdateView):
+class InvestmentEntityUpdateView(LoginRequiredMixin, UpdateView):
     model = InvestmentEntity
     fields = ['name',]
     template_name = "investment-entity-create.html"
@@ -290,7 +271,7 @@ class InvestmentEntityUpdateView(UpdateView):
     success_url = reverse_lazy('income:investment-entity-list')
 
 
-class InvestmentEntityDeleteView(DeleteView):
+class InvestmentEntityDeleteView(LoginRequiredMixin, DeleteView):
     model = InvestmentEntity
     success_url = reverse_lazy('income:investment-entity-list')
     template_name = "investment-entity-delete.html"
@@ -305,17 +286,13 @@ class InvestmentEntityDeleteView(DeleteView):
         )
 
 
-class SavingsCalculatorView(View):
+class SavingsCalculatorView(LoginRequiredMixin, View):
     form_class = SavingCalculatorForm
     inv_form_class = InvestmentEntityForm
     template_name = "savings-calculator.html"
     context = {
         'title': 'Savings Calculator',
     }
-
-    @method_decorator(login_required_message)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def return_in_multiples(self, amount):
         multiples_of = 100
