@@ -28,11 +28,17 @@
           <span class="glyphicon glyphicon-pencil"></span> Edit
         </a>
       </td>
+
       <td>
-        <a href="{% url 'income:investment-entity-delete' pk=object.id %}">
-          <span class="glyphicon glyphicon-trash"></span> Delete
-        </a>
+        {% if not object.percentage %}
+          <a href="{% url 'income:investment-entity-delete' pk=object.id %}">
+            <span class="glyphicon glyphicon-trash"></span> Delete
+          </a>
+        {% else %}
+          <span title="Value must be 0 to enable delete"><i class="glyphicon glyphicon-info-sign"></i></span>
+        {% endif %}
       </td>
+
     </tr>
     {% endfor %}
 

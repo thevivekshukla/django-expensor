@@ -14,7 +14,12 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            {{ inv_form|crispy }}
+
+            {% if inv_form.fields %}
+                <center><h4><u>Investments</u></h4></center>
+                {{ inv_form|crispy }}
+            {% endif %}
+
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Update">
             <br>
 
