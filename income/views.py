@@ -10,6 +10,7 @@ from django.views.generic import (
 )
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse, Http404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -230,11 +231,12 @@ class SavingCalculationDetailView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class InvestmentEntityCreateView(LoginRequiredMixin, CreateView):
+class InvestmentEntityCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = "investment-entity-create.html"
     model = InvestmentEntity
     fields = ['name',]
     success_url = reverse_lazy('income:investment-entity-list')
+    success_message = "Investment Entity Created"
     extra_context = {
         'title': 'Add Investment Entity',
     }
@@ -259,7 +261,7 @@ class InvestmentEntityListView(LoginRequiredMixin, ListView):
         )
 
 
-class InvestmentEntityUpdateView(LoginRequiredMixin, UpdateView):
+class InvestmentEntityUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = InvestmentEntity
     fields = ['name',]
     template_name = "investment-entity-create.html"
@@ -267,6 +269,12 @@ class InvestmentEntityUpdateView(LoginRequiredMixin, UpdateView):
         'title': 'Update Investment Entity',
     }
     success_url = reverse_lazy('income:investment-entity-list')
+    success_message = "Updated successfully!"
+
+    def get_queryset(self):
+        return self.model.objects.filter(
+            saving_calculation=self.request.user.saving_calculation,
+        )
 
 
 class InvestmentEntityDeleteView(LoginRequiredMixin, DeleteView):
