@@ -389,11 +389,13 @@ class SavingsCalculatorView(View):
             cal_amount = max(bank_balance - amount_to_keep_in_bank, 0)
 
             # savings calculation
-            savings = max(savings_min_amount, cal_amount * savings_percentage)
+            savings = savings_min_amount
             cal_amount -= savings
             if cal_amount < 0:
                 savings += cal_amount
                 cal_amount = 0
+
+            savings += cal_amount * savings_percentage
 
             data = {
                 'savings': self.return_in_multiples(savings),
@@ -401,12 +403,11 @@ class SavingsCalculatorView(View):
             }
 
             # investment calculation from here
-            investment_percentage = 1 - savings_percentage
             investment_total = 0
             for inv_name, inv_pct in investment_data.items():
                 try:
                     inv_amount = self.return_in_multiples(
-                        cal_amount * ( (inv_pct/100) / investment_percentage)
+                        cal_amount * (inv_pct/100)
                     )
                 except ZeroDivisionError:
                     inv_amount = 0
