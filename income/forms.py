@@ -52,17 +52,6 @@ class SavingCalculationModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-
-class InvestmentEntityModelForm(forms.ModelForm):
-    class Meta:
-        model = InvestmentEntity
-        exclude = (
-            'saving_calculation',
-        )
-        widgets = {
-            'percentage': forms.NumberInput(attrs={'placeholder': '%'}),
-        }
 
 
 class InvestmentEntityForm(forms.Form):

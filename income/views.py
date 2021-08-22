@@ -26,7 +26,7 @@ from expense.models import Expense
 from .forms import (
     IncomeForm, SelectDateRangeIncomeForm,
     SavingCalculatorForm, SavingCalculationModelForm,
-    InvestmentEntityModelForm, InvestmentEntityForm,
+    InvestmentEntityForm,
 )
 
 from decorators import login_required_message
@@ -405,12 +405,9 @@ class SavingsCalculatorView(View):
             # investment calculation from here
             investment_total = 0
             for inv_name, inv_pct in investment_data.items():
-                try:
-                    inv_amount = self.return_in_multiples(
-                        cal_amount * (inv_pct/100)
-                    )
-                except ZeroDivisionError:
-                    inv_amount = 0
+                inv_amount = self.return_in_multiples(
+                    cal_amount * (inv_pct/100)
+                )
                 data['investment'][inv_name] = inv_amount
                 investment_total += inv_amount
 
