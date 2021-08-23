@@ -344,7 +344,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     defaults_message.append(f"Savings Min Amount used is {MIN_SAVINGS_PCT}% of income")
             
             if not savings.amount_to_keep_in_bank:
-                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.gen_bank_amount())
+                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(
+                    max(self.gen_bank_amount(), income * 0.6)
+                )
                 defaults_message.append(f"Amount To Keep In Bank used is system generated")
 
         except SavingCalculation.DoesNotExist:
