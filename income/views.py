@@ -322,7 +322,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return avg_income
 
     def get(self, request, *args, **kwargs):
-        income = int(request.GET.get('income', 0))
+        income = request.GET.get('income')
         initial_data = {}
         message = None
         defaults_message = []
@@ -334,16 +334,20 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            if income:
-                defaults_message.append(f"Income: ₹ {income:,}")
-                MIN_SAVINGS_PCT = 10
+            MIN_SAVINGS_PCT = 10/100
+            BANK_AMOUNT = self.gen_bank_amount()
 
-                if not savings.savings_min_amount:
-                    initial_data['savings_min_amount'] = self.return_in_multiples(income * MIN_SAVINGS_PCT/100)
-                    defaults_message.append(f"Savings Min Amount used is {MIN_SAVINGS_PCT}% of income")
+            if income:
+                income = int(income)
+                defaults_message.append(f"Income: ₹ {income:,}")
+
+            if not savings.savings_min_amount and savings.auto_fill_savings_min_amount:
+                income_to_use = income if income else BANK_AMOUNT
+                initial_data['savings_min_amount'] = self.return_in_multiples(income_to_use * MIN_SAVINGS_PCT)
+                defaults_message.append("Savings Min Amount used is system generated")
             
-            if not savings.amount_to_keep_in_bank:
-                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(self.gen_bank_amount())
+            if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
+                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT)
                 defaults_message.append(f"Amount To Keep In Bank used is system generated")
 
         except SavingCalculation.DoesNotExist:

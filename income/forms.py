@@ -40,7 +40,9 @@ class SavingCalculationModelForm(forms.ModelForm):
         fields = (
             'message',
             'amount_to_keep_in_bank',
+            'auto_fill_amount_to_keep_in_bank',
             'savings_min_amount',
+            'auto_fill_savings_min_amount',
             'savings_percentage',
         )
         widgets = {
@@ -52,6 +54,8 @@ class SavingCalculationModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['auto_fill_amount_to_keep_in_bank'].help_text = "only works if Amount to keep in bank is 0"
+        self.fields['auto_fill_savings_min_amount'].help_text = "only works if Savings min amount is 0"
 
 
 class InvestmentEntityForm(forms.Form):

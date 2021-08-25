@@ -37,8 +37,10 @@ class Income(BaseModel):
 class SavingCalculation(BaseModel):
     user = models.OneToOneField(User, related_name='saving_calculation', on_delete=models.CASCADE)
     savings_min_amount = models.PositiveIntegerField(help_text='min amount that must be saved if possible. 0 to ignore')
+    auto_fill_savings_min_amount = models.BooleanField(default=False, blank=True)
     savings_percentage = models.PositiveIntegerField(help_text='in percentage') # of the total amount
     amount_to_keep_in_bank = models.PositiveIntegerField(help_text='Should be less than monthly salary. i.e. <=90% of monthly salary')
+    auto_fill_amount_to_keep_in_bank = models.BooleanField(default=False, blank=True)
     message = models.TextField(null=True, blank=True, help_text="briefly explain your thought process on choosing this method")
 
     def __str__(self):
