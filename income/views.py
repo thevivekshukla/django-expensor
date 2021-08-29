@@ -312,7 +312,6 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         past = now - timedelta(days=DAYS)
 
         incomes = self.request.user.incomes.filter(timestamp__range=(past, now))
-
         income_sum = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
         avg_income = income_sum / MONTHS
 
