@@ -391,11 +391,12 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             # investment calculation from here
             investment_total = 0
             for inv_name, inv_pct in investment_data.items():
-                inv_amount = self.return_in_multiples(
-                    cal_amount * (inv_pct/100)
-                )
-                data['investment'][inv_name] = inv_amount
-                investment_total += inv_amount
+                if inv_pct:
+                    inv_amount = self.return_in_multiples(
+                        cal_amount * (inv_pct/100)
+                    )
+                    data['investment'][inv_name] = inv_amount
+                    investment_total += inv_amount
 
             context['data'] = data
             context['investment_total'] = investment_total
