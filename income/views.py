@@ -308,7 +308,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
     def gen_bank_amount(self):
         MONTHS = 6
         DAYS = MONTHS * 30
-        now = timezone.now()
+        now = timezone.now().date()
         past = now - timedelta(days=DAYS)
 
         incomes = self.request.user.incomes.filter(timestamp__range=(past, now))
