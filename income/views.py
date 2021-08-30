@@ -24,12 +24,12 @@ from .models import (
     SavingCalculation,
     InvestmentEntity,
 )
-from expense.models import Expense
 from .forms import (
     IncomeForm, SelectDateRangeIncomeForm,
     SavingCalculatorForm, SavingCalculationModelForm,
     InvestmentEntityForm,
 )
+from utils import helpers
 # Create your views here.
 
 
@@ -308,7 +308,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
     def gen_bank_amount(self):
         MONTHS = 6
         DAYS = MONTHS * 30
-        now = timezone.now().date()
+        now = helpers.get_ist_datetime().date()
         past = now - timedelta(days=DAYS)
 
         incomes = self.request.user.incomes.filter(timestamp__range=(past, now))
