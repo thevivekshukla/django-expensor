@@ -165,6 +165,7 @@ class ExpenseList(LoginRequiredMixin, View):
             "total": total,
             "first_date": first_date,
             "object_total": object_total,
+            "expense_ratio": helpers.get_expense_ratio(request.user),
         }
 
         return render(request, self.template_name, context)
