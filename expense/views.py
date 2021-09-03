@@ -170,34 +170,7 @@ class ExpenseList(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-# class DayWiseExpense(ListView):
-
-#     template_name = "day-expense.html"
-#     paginate_by = 30
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):
-#         return super().dispatch(*args, **kwargs)
-
-#     def get_queryset(self, *args, **kwargs):
-#         return Expense.objects.all(user=self.request.user).dates('timestamp', 'day').order_by('-timestamp')
-
-#     def get_context_data(self, *args, **kwargs):
-#         context = super().get_context_data(*args, **kwargs)
-#         queryset = self.get_queryset()
-#         days = queryset
-#         data = []
-#         for day in days:
-#             sum_day = queryset.filter(timestamp=day).aggregate(Sum('amount'))['amount__sum']
-#             data.append((day, sum_day))
-        
-#         context['data'] = data
-#         context['title'] = 'Day Wise Expense'
-#         return context
-
-
 class DayWiseExpense(LoginRequiredMixin, View):
-
     template_name = "day-expense.html"
     context = {
         'title': 'Day Wise Expense',
