@@ -22,6 +22,6 @@ def get_expense_ratio(user):
     
     if income_sum > 0:
         ratio = (expense_sum/income_sum) * 100
-        return round(ratio, 4)
+        return round(ratio, 2)
     return None
 
