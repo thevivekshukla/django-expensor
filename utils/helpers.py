@@ -21,6 +21,7 @@ def get_expense_ratio(user):
     expense_sum = user.expenses.aggregate(Sum('amount')).get('amount__sum', 0)
     
     if income_sum > 0:
-        return round(expense_sum/income_sum, 4) * 100
+        ratio = (expense_sum/income_sum) * 100
+        return round(ratio, 4)
     return None
 
