@@ -14,9 +14,6 @@ def get_ist_datetime(dt=None):
 
 
 def get_expense_ratio(user):
-    from income.models import Income
-    from expense.models import Expense
-
     income_sum = user.incomes.aggregate(Sum('amount')).get('amount__sum', 0)
     expense_sum = user.expenses.aggregate(Sum('amount')).get('amount__sum', 0)
     
