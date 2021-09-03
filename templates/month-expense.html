@@ -10,6 +10,7 @@
     <tr>
       <th>Months</th>
       <th>Total Amount</th>
+      <th>Expense Ratio</th>
     </tr>
     {% for object in data reversed %}
     <tr>
@@ -25,6 +26,11 @@
       </td>
       <td>
           {{ object.1|intcomma }}
+      </td>
+      <td>
+          {% if object.2 %}
+            {{ object.2 }}%
+          {% endif %}
       </td>
     </tr> 
 
