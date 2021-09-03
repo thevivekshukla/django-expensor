@@ -371,13 +371,11 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             cal_amount = max(bank_balance - amount_to_keep_in_bank, 0)
 
             # savings calculation
-            savings = savings_min_amount
+            savings = max(savings_min_amount, cal_amount * savings_percentage)
             cal_amount -= savings
             if cal_amount < 0:
                 savings += cal_amount
                 cal_amount = 0
-
-            savings += cal_amount * savings_percentage
 
             data = {
                 'savings': self.return_in_multiples(savings),

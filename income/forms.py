@@ -47,9 +47,9 @@ class SavingCalculationModelForm(forms.ModelForm):
         )
         widgets = {
             'message': forms.Textarea(attrs={'rows':4,}),
-            'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount'}),
-            'savings_percentage': forms.NumberInput(attrs={'placeholder': '%'}),
-            'amount_to_keep_in_bank': forms.NumberInput(attrs={'placeholder': 'amount'}),
+            'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount', 'min': 0}),
+            'savings_percentage': forms.NumberInput(attrs={'placeholder': '(0-100)%', 'min': 0, 'max': 100}),
+            'amount_to_keep_in_bank': forms.NumberInput(attrs={'placeholder': 'amount', 'min': 0}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -82,7 +82,7 @@ class InvestmentEntityForm(forms.Form):
         total = sum(
             int(pct)
             for name, pct in self.original_data.items()
-            if 'percentage' in name or name in inv_keys
+            if name in inv_keys
         )
         if total != 100:
             raise forms.ValidationError("Sum of all percentage fields must be 100")
