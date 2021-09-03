@@ -16,6 +16,7 @@ import json
 
 from .forms import ExpenseForm, SelectDateExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
+from utils import helpers
 
 # Create your views here.
 
@@ -35,6 +36,7 @@ class AddExpense(LoginRequiredMixin, View):
                         
         self.context['objects'] = last_10_expenses
         self.context['total'] = Expense.objects.amount_sum(user=request.user)
+        self.context['expense_ratio'] = helpers.get_expense_ratio(request.user)
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):

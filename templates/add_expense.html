@@ -29,6 +29,9 @@
 <div class="jumbotron" style="padding-top: 1%; padding-bottom: 1%;">
     <h5>Today: &#8377; {{ total.day|intcomma }}</h5>
     <h5>This month: &#8377; {{ total.month|intcomma }}</h5>
+    {% if expense_ratio %}
+      <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">ER: {{ expense_ratio }}%</span></h5>
+    {% endif %}
 </div>
 
 
@@ -57,14 +60,9 @@
       source: "{% url 'expense:get_remark' %}",
     });
 
-    // var today = new Date();
-    // month = today.getMonth() + 1;
-    // day = today.getDate();
-    // year = today.getFullYear();
-    // date = month + "/" + day + "/" + year
-    // $("#id_timestamp").val(date);
-
     $("#id_timestamp").datepicker();
+
+    $('[data-toggle="tooltip"]').tooltip();
 
     var form = $("#id_add_expense");
 
