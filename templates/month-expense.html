@@ -11,6 +11,7 @@
       <th>Months</th>
       <th>Total Amount</th>
       <th>Expense %</th>
+      <th>EIR</th>
     </tr>
     {% for object in data reversed %}
     <tr>
@@ -26,6 +27,11 @@
       <td>
           {% if object.2 %}
             {{ object.2 }}%
+          {% endif %}
+      </td>
+      <td>
+          {% if object.3 %}
+            {{ object.3 }}%
           {% endif %}
       </td>
     </tr> 
