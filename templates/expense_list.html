@@ -2,13 +2,25 @@
 {% load crispy_forms_tags %}
 {% load humanize %}
 
+
+{% block head %}
+<style>
+    .stats-table > tr > td > th {
+        font-size: 16px;
+        border: none !important;
+    }
+</style>
+{% endblock head %}
+
+
+
 {% block body %}
 
 
 {% if request.GET.q %}
-<h4>Total for search "{{ request.GET.q }}": {{ object_total }}</h4>
+  <h4>Total for search "{{ request.GET.q }}": {{ object_total }}</h4>
 {% elif object_total %}
-<h4>Total: {{ object_total }}</h4>
+  <h4>Total: {{ object_total }}</h4>
 {% endif %}
 
 
@@ -53,26 +65,49 @@
 
 
 {% if total %}
+
+
+  
 <div class="jumbotron">
-  <h2>Stats:</h2>
+  <div class="row">
+    <div class="col-md-6 col-lg-6 col-sm-12">
+      <h4><u>Expense Stats:</u></h4>
 
-  <h4>Today: {{ total.day|intcomma }}</h4>
+      <table class="table stats-table">
+        <tr>
+            <td><strong>Today:</strong></td>
+            <td>{{ total.day|intcomma }}</td>
+        </tr>
+        <tr>
+            <td><strong>This month ({% now "M" %}):</strong></td>
+            <td>{{ total.month|intcomma }}</td>
+        </tr>
+        {% if total.last_month %}
+        <tr>
+            <td><strong>Last month:</strong></td>
+            <td>{{ total.last_month|intcomma }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td><strong>Total expenses of {% now "Y" %}:</strong></td>
+            <td>{{ total.year|intcomma }}</td>
+        </tr>
+        <tr>
+            <td><strong>All time {% if first_date %}(since {{ first_date }}){% endif %}:</strong></td>
+            <td>{{ total.all|intcomma }}</td>
+        </tr>
+        {% if expense_to_income_ratio %}
+        <tr>
+            <td><strong>Expense to Income Ratio (EIR):</strong></td>
+            <td>{{ expense_to_income_ratio }}%</td>
+        </tr>
+        {% endif %}
+      </table>
 
-  <h4>This month ({% now "M" %}): {{ total.month|intcomma }}</h4>
-
-  {%if total.last_month %}
-  <h4>Last month: {{ total.last_month|intcomma }}</h4>
-  {% endif %}
-
-  <h4>Total expenses of {% now "Y" %}: {{ total.year|intcomma }}</h4>
-
-  <h4>All time {% if first_date %}(since {{ first_date }}){% endif %}: {{ total.all|intcomma }}</h4>
-
-  {% if expense_to_income_ratio %}
-    <h4>Expense to Income Ratio (EIR): {{ expense_to_income_ratio }}%</h4>
-  {% endif %}
-
+    </div>
+  </div>
 </div>
+
 {% endif %}
 
 
