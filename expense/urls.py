@@ -10,6 +10,8 @@ urlpatterns = [
         re_path(r'^update/(?P<id>\d+)/$', views.UpdateExpense.as_view(), name='update_expense'),
         re_path(r'^search/$', views.DateSearch.as_view(), name='search'),
 
+        re_path(r'^all/remark/$', views.GoToRemarkWiseExpense.as_view(), name='all_remark_expenses'),
+
         re_path(r'^(?P<year>\d+)/$', views.GoToExpense.as_view(), name='goto_expense'),
         re_path(r'^(?P<year>\d+)/remark/$', views.GoToRemarkWiseExpense.as_view(), name='goto_year_expense'),
 

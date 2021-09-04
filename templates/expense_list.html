@@ -26,88 +26,85 @@
 
 
 {% if objects %}
-<p>
-  <div>
-    <b>Order by:</b>
-    <form method="GET">
-      <select name="field">
-        <option value="amount">Amount</option>
-        <option value="timestamp" selected>Date</option>
-      </select>
-      <select name="order">
-        <option value="">ASC</option>
-        <option value="-" selected>DESC</option>
-      </select>
-      <input type="submit" class="btn btn-xs btn-default" value="Submit">
-      {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
-    </form>
+  <p>
+    <div>
+      <b>Order by:</b>
+      <form method="GET">
+        <select name="field">
+          <option value="amount">Amount</option>
+          <option value="timestamp" selected>Date</option>
+        </select>
+        <select name="order">
+          <option value="">ASC</option>
+          <option value="-" selected>DESC</option>
+        </select>
+        <input type="submit" class="btn btn-xs btn-default" value="Submit">
+        {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+      </form>
+    </div>
+  </p>
+
+  {% include 'expense_table.html' %}
+
+  {% if goto_total %}
+    <div class="jumbotron">
+      <h4 style="float:right">Total: {{ goto_total }}</h4>
+    </div>
+  {% endif %}
+
+  {% include 'paginator.html' %}
+
+  <div style="float:right;">
+    <a href="{% url 'expense:all_remark_expenses' %}">By Remark</a>
   </div>
-  
-</p>
-
-{% include 'expense_table.html' %}
-
-
-{% if goto_total %}
-  <div class="jumbotron">
-    <h4 style="float:right">Total: {{ goto_total }}</h4>
-  </div>
-{% endif %}
-
-
-{% include 'paginator.html' %}
 
 {% else %}
-<h1>Nothing found</h1><hr>
+  <h1>Nothing found</h1><hr>
 {% endif %}
 
 
 
 
 {% if total %}
+  <div class="jumbotron">
+    <div class="row">
+      <div class="col-md-6 col-lg-6 col-sm-12">
+        <h4><u>Expense Stats:</u></h4>
 
+        <table class="table stats-table">
+          <tr>
+              <td><strong>Today:</strong></td>
+              <td>{{ total.day|intcomma }}</td>
+          </tr>
+          <tr>
+              <td><strong>This month ({% now "M" %}):</strong></td>
+              <td>{{ total.month|intcomma }}</td>
+          </tr>
+          {% if total.last_month %}
+          <tr>
+              <td><strong>Last month:</strong></td>
+              <td>{{ total.last_month|intcomma }}</td>
+          </tr>
+          {% endif %}
+          <tr>
+              <td><strong>Total expenses of {% now "Y" %}:</strong></td>
+              <td>{{ total.year|intcomma }}</td>
+          </tr>
+          <tr>
+              <td><strong>All time {% if first_date %}(since {{ first_date }}){% endif %}:</strong></td>
+              <td>{{ total.all|intcomma }}</td>
+          </tr>
+          {% if expense_to_income_ratio %}
+          <tr>
+              <td><strong>Expense to Income Ratio (EIR):</strong></td>
+              <td>{{ expense_to_income_ratio }}%</td>
+          </tr>
+          {% endif %}
+        </table>
 
-  
-<div class="jumbotron">
-  <div class="row">
-    <div class="col-md-6 col-lg-6 col-sm-12">
-      <h4><u>Expense Stats:</u></h4>
-
-      <table class="table stats-table">
-        <tr>
-            <td><strong>Today:</strong></td>
-            <td>{{ total.day|intcomma }}</td>
-        </tr>
-        <tr>
-            <td><strong>This month ({% now "M" %}):</strong></td>
-            <td>{{ total.month|intcomma }}</td>
-        </tr>
-        {% if total.last_month %}
-        <tr>
-            <td><strong>Last month:</strong></td>
-            <td>{{ total.last_month|intcomma }}</td>
-        </tr>
-        {% endif %}
-        <tr>
-            <td><strong>Total expenses of {% now "Y" %}:</strong></td>
-            <td>{{ total.year|intcomma }}</td>
-        </tr>
-        <tr>
-            <td><strong>All time {% if first_date %}(since {{ first_date }}){% endif %}:</strong></td>
-            <td>{{ total.all|intcomma }}</td>
-        </tr>
-        {% if expense_to_income_ratio %}
-        <tr>
-            <td><strong>Expense to Income Ratio (EIR):</strong></td>
-            <td>{{ expense_to_income_ratio }}%</td>
-        </tr>
-        {% endif %}
-      </table>
-
+      </div>
     </div>
   </div>
-</div>
-
 {% endif %}
 
 

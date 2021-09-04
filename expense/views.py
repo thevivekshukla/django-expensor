@@ -326,7 +326,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
     """
     provies expenses for particular day, month or year.
     """
-    template_name = 'remark-month-expense.html'
+    template_name = 'remark-wise-expenses.html'
 
     def get(self, request, *args, **kwargs):
         day = int(kwargs.get('day', 0))
@@ -345,6 +345,8 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
             _year = date(year, 1, 1)
+        else:
+            objects = Expense.objects.all(user=request.user)
 
         objects = objects.select_related('remark')
         remarks = set()
