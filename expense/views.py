@@ -83,10 +83,6 @@ class UpdateExpense(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         instance = self.get_object(request, *args, **kwargs)
 
-        # thirty_day = date.today() - timedelta(days=30)
-        # if not instance.timestamp >= thirty_day:
-        #     return HttpResponse("<h3>Too late! Cannot be changed now.</h3>", status=400)
-
         initial_data = {
             'amount': instance.amount,
             'remark': instance.remark,
@@ -143,19 +139,10 @@ class ExpenseList(LoginRequiredMixin, View):
 
         order_field = request.GET.get("field")
         if order_field:
-            ordering = request.GET.get("order", "")+order_field
+            ordering = request.GET.get("order", "") + order_field
             objects_list = objects_list.order_by(ordering)
 
-        paginator = Paginator(objects_list, 15)
-
-        page = request.GET.get('page')
-
-        try:
-            objects = paginator.page(page)
-        except PageNotAnInteger:
-            objects = paginator.page(1)
-        except EmptyPage:
-            objects = paginator.page(paginator.num_pages)
+        objects = helpers.get_paginator_object(request, objects_list, 30)
 
         total = Expense.objects.amount_sum(user=request.user)
 
@@ -179,13 +166,16 @@ class DayWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         expense = Expense.objects.all(user=request.user)
-        days = expense.dates('timestamp', 'day').order_by('-timestamp')
+        days = expense.dates('timestamp', 'day', order='DESC')
+        days = helpers.get_paginator_object(request, days, 90)
+
         data = []
         for day in days:
-            sum_day = expense.filter(timestamp=day).aggregate(Sum('amount'))['amount__sum']
+            sum_day = expense.filter(timestamp=day).aggregate(Sum('amount'))['amount__sum'] or 0
             data.append((day, sum_day))
         
         self.context['data'] = data
+        self.context['objects'] = days
         return render(request, self.template_name, self.context)
 
 
@@ -197,11 +187,13 @@ class MonthWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        dates = Expense.objects.all(user=user).dates('timestamp', 'month')
+        dates = Expense.objects.all(user=user).dates('timestamp', 'month', order='DESC')
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
         income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-        data = []
 
+        dates = helpers.get_paginator_object(request, dates, 12)
+
+        data = []
         for date in dates:
             amount = Expense.objects.this_month(
                 user=user, year=date.year, month=date.month
@@ -211,6 +203,7 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             data.append((date, amount, expense_ratio, expense_to_income_ratio))
 
         self.context['data'] = data
+        self.context['objects'] = dates
         return render(request, self.template_name, self.context)
 
 
@@ -284,15 +277,7 @@ class GoToExpense(LoginRequiredMixin, View):
             objects = Expense.objects.this_year(user=request.user, year=year)
 
         goto_total = objects.aggregate(Sum('amount'))['amount__sum']
-
-        paginator = Paginator(objects, 50)
-        page = request.GET.get('page')
-        try:
-            objects = paginator.page(page)
-        except PageNotAnInteger:
-            objects = paginator.page(1)
-        except EmptyPage:
-            objects = paginator.page(paginator.num_pages)
+        objects = helpers.get_paginator_object(request, objects, 50)
 
         context = {
             "title": "Expenses",
@@ -334,12 +319,10 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
 
         remark_dict = {}
         for remark in remarks:
-            remark_dict[remark] = objects.filter(remark=remark).aggregate(
-                Sum('amount')
-            )['amount__sum']
+            remark_dict[remark] = objects.filter(remark=remark)\
+                                    .aggregate(Sum('amount'))['amount__sum']
 
         remark_dict = sorted(remark_dict.items(), key=lambda x: x[1], reverse=True)
-
         total = objects.aggregate(Sum('amount'))['amount__sum']
 
         context = {
@@ -375,31 +358,24 @@ class GetYear(LoginRequiredMixin, View):
     """
 
     def get(self, request, *args, **kwargs):
-        cache_key = 'expense_year'
+        cache_key = f'expense_year_{request.user.id}'
         cache_time = 15768000 # 182.5 days
         data = cache.get(cache_key)
 
         if not data:
             years = Expense.objects.all(user=request.user).dates('timestamp', 'year')
             result = []
-
             for y in years:
                 result.append(y.year)
             data = json.dumps(sorted(result, reverse=True))
 
         cache.set(cache_key, data, cache_time)
-
         return HttpResponse(data, content_type='application/json')
 
 
 class Error404(View):
     def get(self, request, *args, **kwargs):
         return render(request, "404.html", {}, status=404)
-
-
-# class Error500(View):
-#     def get(self, request, *args, **kwargs):
-#         return render(request, "500.html", {}, status=500)
 
 
 def handler500(request):

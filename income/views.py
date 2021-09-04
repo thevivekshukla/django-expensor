@@ -47,6 +47,7 @@ class IncomeList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+        context['objects'] = context['page_obj']
         context['title'] = 'Income List'
         saving_to_income_ratio = 100 - helpers.expense_to_income_ratio(self.request.user)
         context['saving_to_income_ratio'] = round(saving_to_income_ratio, 2)
@@ -150,9 +151,10 @@ class MonthWiseIncome(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         incomes = Income.objects.filter(user=user)
-        dates = incomes.dates('timestamp', 'month')
-        data = []
+        dates = incomes.dates('timestamp', 'month', order='DESC')
+        dates = helpers.get_paginator_object(request, dates, 12)
 
+        data = []
         for date in dates:
             amount = incomes.filter(
                 timestamp__year=date.year,
@@ -161,6 +163,8 @@ class MonthWiseIncome(LoginRequiredMixin, View):
             data.append((date, amount))
 
         self.context['data'] = data
+        self.context['is_paginated'] = True
+        self.context['objects'] = dates
         return render(request, self.template_name, self.context)
 
 
@@ -180,21 +184,10 @@ class GoToIncome(LoginRequiredMixin, View):
         if month:
             incomes = incomes.filter(timestamp__month=month)
 
-        total = incomes.aggregate(Sum('amount'))['amount__sum']
-
-        paginator = Paginator(incomes, 20)
-        page = request.GET.get('page')
-        try:
-            incomes = paginator.page(page)
-        except PageNotAnInteger:
-            incomes = paginator.page(1)
-        except EmptyPage:
-            incomes = paginator.page(paginator.num_pages)
-
         context = {
             "title": f"Income - {year}/{month}",
             "objects": incomes,
-            "total": total,
+            "total": incomes.aggregate(Sum('amount'))['amount__sum'],
         }
         return render(request, self.template_name, context)
 

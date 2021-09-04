@@ -13,7 +13,7 @@
       <th><span data-toggle="tooltip" data-placement="top" title="Expense Ratio (%)">ER</span></th>
       <th><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (%)">EIR</span></th>
     </tr>
-    {% for object in data reversed %}
+    {% for object in data %}
     <tr>
       <td>
         <a href="{% url 'expense:goto_expense' year=object.0.year month=object.0.month %}">
@@ -40,6 +40,9 @@
     
 
   </table>
+
+  {% include 'paginator.html' %}
+  
   {% else %}
 
   <h2>No data to show.</h2>
