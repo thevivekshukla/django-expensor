@@ -47,6 +47,8 @@ class IncomeList(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['title'] = 'Income List'
+        saving_to_income_ratio = 100 - helpers.expense_to_income_ratio(self.request.user)
+        context['saving_to_income_ratio'] = round(saving_to_income_ratio, 2)
         return context
 
 
@@ -318,13 +320,14 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return avg_income
 
     def get(self, request, *args, **kwargs):
+        user = request.user
         income = request.GET.get('income')
         initial_data = {}
         message = None
         defaults_message = []
 
         try:
-            savings = request.user.saving_calculation
+            savings = user.saving_calculation
             message = savings.message
             initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_percentage'] = savings.savings_percentage
@@ -351,7 +354,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
         context = self.context.copy()
         context['form'] = self.form_class(initial=initial_data)
-        context['inv_form'] = self.inv_form_class(user=request.user)
+        context['inv_form'] = self.inv_form_class(user=user)
         context['message'] = message
         context['defaults_message'] = defaults_message
         return render(request, self.template_name, context)

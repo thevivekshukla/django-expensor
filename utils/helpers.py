@@ -17,7 +17,7 @@ def calculate_ratio(amount, total):
     if total > 0:
         ratio = (amount/total) * 100
         return round(ratio, 2)
-    return None
+    return 0
 
 
 def expense_to_income_ratio(user):
