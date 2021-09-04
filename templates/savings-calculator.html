@@ -27,13 +27,13 @@
                 <table class="table">
                     <tr>
                         <td><strong>Savings</strong></td>
-                        <td>₹ {{ data.savings|intcomma }}</td>
+                        <td>{{ data.savings|intcomma }}</td>
                     </tr>
 
                     {% for inv_name, inv_amount in data.investment.items %}
                         <tr>
                             <td><strong>{{ inv_name }}</strong></td>
-                            <td>₹ {{ inv_amount|intcomma }}</td>
+                            <td>{{ inv_amount|intcomma }}</td>
                         </tr>
                     {% endfor %}
 
@@ -41,11 +41,11 @@
                     
                     <tr class="alert alert-success">
                         <td>Investment Total</td>
-                        <td>₹ {{ investment_total|intcomma }}</td>
+                        <td>{{ investment_total|intcomma }}</td>
                     </tr>
                     <tr class="alert alert-success">
                         <td><strong>Grand Total</strong></td>
-                        <td><strong>₹ {{ total|intcomma }}</strong></td>
+                        <td><strong>{{ total|intcomma }}</strong></td>
                     </tr>
                 </table>
             </div>
