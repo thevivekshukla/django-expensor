@@ -8,10 +8,10 @@
 <table class="table table-striped">
     
     <tr>
-      <th>Months</th>
-      <th>Total Amount</th>
-      <th>Expense %</th>
-      <th>EIR</th>
+      <th>Month</th>
+      <th>Amount</th>
+      <th><span data-toggle="tooltip" data-placement="top" title="Expense Ratio">ER</span></th>
+      <th><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR</span></th>
     </tr>
     {% for object in data reversed %}
     <tr>
@@ -47,3 +47,16 @@
   {% endif %}
 
 {% endblock body %}
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+</script>
+
+{% endblock js %}
