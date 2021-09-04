@@ -143,7 +143,6 @@ class ExpenseList(LoginRequiredMixin, View):
             objects_list = objects_list.order_by(ordering)
 
         objects = helpers.get_paginator_object(request, objects_list, 30)
-
         total = Expense.objects.amount_sum(user=request.user)
 
         context = {
@@ -167,7 +166,7 @@ class DayWiseExpense(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         expense = Expense.objects.all(user=request.user)
         days = expense.dates('timestamp', 'day', order='DESC')
-        days = helpers.get_paginator_object(request, days, 90)
+        days = helpers.get_paginator_object(request, days, 50)
 
         data = []
         for day in days:
@@ -187,7 +186,12 @@ class MonthWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        dates = Expense.objects.all(user=user).dates('timestamp', 'month', order='DESC')
+        year = request.GET.get('year')
+        expenses = Expense.objects.all(user=user)
+        if year:
+            expenses = expenses.filter(timestamp__year=int(year))
+
+        dates = expenses.dates('timestamp', 'month', order='DESC')
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
         income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
 
@@ -204,6 +208,33 @@ class MonthWiseExpense(LoginRequiredMixin, View):
 
         self.context['data'] = data
         self.context['objects'] = dates
+        return render(request, self.template_name, self.context)
+
+
+class YearWiseExpense(LoginRequiredMixin, View):
+    """
+    return all the year in which expenses are registered.
+    """
+    template_name = "year-expense.html"
+    context = {
+        'title': 'Yearly Expense',
+    }
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        years = Expense.objects.all(user=user).dates('timestamp', 'year', order='DESC')
+        expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+        income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+
+        data = []
+        for year in [yr.year for yr in years]:
+            amount = Expense.objects.this_year(user=user, year=year)\
+                        .aggregate(Sum('amount'))['amount__sum'] or 0
+            expense_ratio = helpers.calculate_ratio(amount, expense_sum)
+            expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
+            data.append((year, amount, expense_ratio, expense_to_income_ratio))
+
+        self.context['data'] = data
         return render(request, self.template_name, self.context)
 
 
@@ -349,27 +380,6 @@ class GetRemark(LoginRequiredMixin, View):
         results = [remark for remark in remarks]
         data = json.dumps(results)
 
-        return HttpResponse(data, content_type='application/json')
-
-
-class GetYear(LoginRequiredMixin, View):
-    """
-    return all the year in which expenses are registered.
-    """
-
-    def get(self, request, *args, **kwargs):
-        cache_key = f'expense_year_{request.user.id}'
-        cache_time = 15768000 # 182.5 days
-        data = cache.get(cache_key)
-
-        if not data:
-            years = Expense.objects.all(user=request.user).dates('timestamp', 'year')
-            result = []
-            for y in years:
-                result.append(y.year)
-            data = json.dumps(sorted(result, reverse=True))
-
-        cache.set(cache_key, data, cache_time)
         return HttpResponse(data, content_type='application/json')
 
 

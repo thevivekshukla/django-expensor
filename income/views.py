@@ -163,7 +163,6 @@ class MonthWiseIncome(LoginRequiredMixin, View):
             data.append((date, amount))
 
         self.context['data'] = data
-        self.context['is_paginated'] = True
         self.context['objects'] = dates
         return render(request, self.template_name, self.context)
 

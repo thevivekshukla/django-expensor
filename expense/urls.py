@@ -23,6 +23,6 @@ urlpatterns = [
         re_path(r'^list/$', views.ExpenseList.as_view(), name='expense_list'),
         re_path(r'^day-wise-expense/$', views.DayWiseExpense.as_view(), name='day-wise-expense'),
         re_path(r'^months/$', views.MonthWiseExpense.as_view(), name='month-wise-expense'),
-        re_path(r'^years/$', views.GetYear.as_view(), name='years'),
+        re_path(r'^years/$', views.YearWiseExpense.as_view(), name='year-wise-expense'),
         re_path(r'^$', views.AddExpense.as_view(), name='add_expense'),
 ]

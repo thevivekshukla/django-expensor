@@ -18,19 +18,12 @@
           <ul class="dropdown-menu">
             <li><a class="navbar-link" href="{% url 'expense:add_expense' %}">Add Expense</a></li>
             <li><a class="navbar-link" href="{% url 'expense:expense_list' %}">All Expenses</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:year-wise-expense' %}">Yearly Expense</a></li>
             <li><a class="navbar-link" href="{% url 'expense:month-wise-expense' %}">Monthly Expense</a></li>
             <li><a class="navbar-link" href="{% url 'expense:day-wise-expense' %}">Daily Expense</a></li>
             <li><a class="navbar-link" href="{% url 'expense:search' %}">Search</a></li>
           </ul>
         </li>
-
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" id="year-dropdown" href="#">Yearly Expense <span class="caret"></span></a>
-            <ul class="dropdown-menu" id="year-content-dropdown">
-  
-            </ul>
-        </li>
-
 
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="">Income
