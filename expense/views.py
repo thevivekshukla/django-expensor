@@ -267,7 +267,7 @@ class DateSearch(LoginRequiredMixin, View):
 
 class GoToExpense(LoginRequiredMixin, View):
     """
-    provies expenses for particular day, month or year.
+    provides expenses for particular day, month or year.
     """
     template_name = 'goto.html'
 
@@ -286,9 +286,7 @@ class GoToExpense(LoginRequiredMixin, View):
         goto_total = objects.aggregate(Sum('amount'))['amount__sum']
 
         paginator = Paginator(objects, 50)
-
         page = request.GET.get('page')
-
         try:
             objects = paginator.page(page)
         except PageNotAnInteger:

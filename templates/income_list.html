@@ -5,11 +5,17 @@
 
 {% block body %}
 
-{% if saving_to_income_ratio %}
+
 <div class="jumbotron" style="padding-top: 1%; padding-bottom: 1%;">
-  <h5>Saving to Income Ratio: {{ saving_to_income_ratio }}%</h5>
+  {% if saving_to_income_ratio %}
+    <h5>Saving to Income Ratio: {{ saving_to_income_ratio }}%</h5>
+  {% endif %}
+
+  {% if total %}
+    <h5>Total: {{ total|intcomma }}</h5>
+  {% endif %}
 </div>
-{% endif %}
+
 
 {% if objects %}
 

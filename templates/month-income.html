@@ -14,7 +14,9 @@
     {% for object in data reversed %}
     <tr>
       <td>
-        {{ object.0|date:"Y" }} {{ object.0|date:"M" }}
+        <a href="{% url 'income:goto-income-list' year=object.0.year month=object.0.month %}">
+          {{ object.0|date:"Y" }} {{ object.0|date:"M" }}
+        </a>
       </td>
       <td>
           {{ object.1|intcomma }}

@@ -4,6 +4,7 @@ import math
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import (
     ListView, CreateView,
     UpdateView, DeleteView,
@@ -161,6 +162,41 @@ class MonthWiseIncome(LoginRequiredMixin, View):
 
         self.context['data'] = data
         return render(request, self.template_name, self.context)
+
+
+class GoToIncome(LoginRequiredMixin, View):
+    """
+    provides income for particular day, month or year.
+    """
+    template_name = 'income_list.html'
+
+    def get(self, request, *args, **kwargs):
+        month = kwargs.get('month')
+        year = kwargs.get('year')
+        
+        incomes = request.user.incomes.all()
+        if year:
+            incomes = incomes.filter(timestamp__year=year)
+        if month:
+            incomes = incomes.filter(timestamp__month=month)
+
+        total = incomes.aggregate(Sum('amount'))['amount__sum']
+
+        paginator = Paginator(incomes, 20)
+        page = request.GET.get('page')
+        try:
+            incomes = paginator.page(page)
+        except PageNotAnInteger:
+            incomes = paginator.page(1)
+        except EmptyPage:
+            incomes = paginator.page(paginator.num_pages)
+
+        context = {
+            "title": f"Income - {year}/{month}",
+            "objects": incomes,
+            "total": total,
+        }
+        return render(request, self.template_name, context)
 
 
 class SourceView(LoginRequiredMixin, View):
