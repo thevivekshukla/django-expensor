@@ -16,12 +16,12 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="">Expense
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a class="navbar-link" href="{% url 'expense:add_expense' %}">Add</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:expense_list' %}">All</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:year-wise-expense' %}">Yearly</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:month-wise-expense' %}">Monthly</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:day-wise-expense' %}">Daily</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:search' %}">Advance Search</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:add_expense' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:expense_list' %}"><i class="fas fa-list"></i> All</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:year-wise-expense' %}"><i class="far fa-calendar-alt"></i> Yearly</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:month-wise-expense' %}"><i class="far fa-calendar-alt"></i> Monthly</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:day-wise-expense' %}"><i class="far fa-calendar-alt"></i> Daily</a></li>
+            <li><a class="navbar-link" href="{% url 'expense:search' %}"><i class="fas fa-search"></i> Advance Search</a></li>
           </ul>
         </li>
 
@@ -29,15 +29,15 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="">Income
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a class="navbar-link" href="{% url 'income:add-income' %}">Add</a></li>
-            <li><a class="navbar-link" href="{% url 'income:income-list' %}">All</a></li>
-            <li><a class="navbar-link" href="{% url 'income:month-income-list' %}">Monthly</a></li>
-            <li><a class="navbar-link" href="{% url 'income:search' %}">Advance Search</a></li>
+            <li><a class="navbar-link" href="{% url 'income:add-income' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
+            <li><a class="navbar-link" href="{% url 'income:income-list' %}"><i class="fas fa-list"></i> All</a></li>
+            <li><a class="navbar-link" href="{% url 'income:month-income-list' %}"><i class="far fa-calendar-alt"></i> Monthly</a></li>
+            <li><a class="navbar-link" href="{% url 'income:search' %}"><i class="fas fa-search"></i> Advance Search</a></li>
           </ul>
         </li>
 
         <li class="dropdown">
-          <li><a class="navbar-link" href="{% url 'income:savings-calculator' %}">Savings Calculator</a></li>
+          <li><a class="navbar-link" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Savings Calculator</a></li>
         </li>
       </ul>
 
