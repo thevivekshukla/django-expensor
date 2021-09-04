@@ -140,6 +140,29 @@ class IncomeUpdateView(LoginRequiredMixin, View):
             return HttpResponse(status=400)
 
 
+class MonthWiseIncome(LoginRequiredMixin, View):
+    template_name = "month-income.html"
+    context = {
+        'title': 'Monthly Income',
+    }
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        incomes = Income.objects.filter(user=user)
+        dates = incomes.dates('timestamp', 'month')
+        data = []
+
+        for date in dates:
+            amount = incomes.filter(
+                timestamp__year=date.year,
+                timestamp__month=date.month,
+            ).aggregate(Sum('amount')).get('amount__sum', 0)
+            data.append((date, amount))
+
+        self.context['data'] = data
+        return render(request, self.template_name, self.context)
+
+
 class SourceView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):

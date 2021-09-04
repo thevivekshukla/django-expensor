@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+
+{% block body %}
+
+{% if data %}
+<table class="table table-striped">
+    
+    <tr>
+      <th>Month</th>
+      <th>Amount</th>
+    </tr>
+    {% for object in data reversed %}
+    <tr>
+      <td>
+        {{ object.0|date:"Y" }} {{ object.0|date:"M" }}
+      </td>
+      <td>
+          {{ object.1|intcomma }}
+      </td>
+    </tr> 
+
+    {% endfor %}
+    
+
+  </table>
+  {% else %}
+
+  <h2>No data to show.</h2>
+
+  {% endif %}
+
+{% endblock body %}
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+  });
+
+</script>
+
+{% endblock js %}
