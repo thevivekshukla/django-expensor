@@ -13,18 +13,16 @@ def get_ist_datetime(dt=None):
     return dt.astimezone(tz)
 
 
-def calculate_expense_ratio(user, expense_amount, income_sum=None):
-    if income_sum is None:
-        income_sum = user.incomes.aggregate(Sum('amount')).get('amount__sum', 0)
-        
-    if income_sum > 0:
-        ratio = (expense_amount/income_sum) * 100
+def calculate_ratio(amount, total):
+    if total > 0:
+        ratio = (amount/total) * 100
         return round(ratio, 2)
     return None
 
 
-def get_expense_ratio(user):
+def expense_to_income_ratio(user):
     expense_sum = user.expenses.aggregate(Sum('amount')).get('amount__sum', 0)
-    return calculate_expense_ratio(user, expense_sum)
+    income_sum = user.incomes.aggregate(Sum('amount')).get('amount__sum', 0)
+    return calculate_ratio(expense_sum, income_sum)
     
 

@@ -36,7 +36,7 @@ class AddExpense(LoginRequiredMixin, View):
                         
         self.context['objects'] = last_10_expenses
         self.context['total'] = Expense.objects.amount_sum(user=request.user)
-        self.context['expense_ratio'] = helpers.get_expense_ratio(request.user)
+        self.context['expense_to_income_ratio'] = helpers.expense_to_income_ratio(request.user)
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
@@ -165,7 +165,7 @@ class ExpenseList(LoginRequiredMixin, View):
             "total": total,
             "first_date": first_date,
             "object_total": object_total,
-            "expense_ratio": helpers.get_expense_ratio(request.user),
+            "expense_to_income_ratio": helpers.expense_to_income_ratio(request.user),
         }
 
         return render(request, self.template_name, context)
@@ -198,14 +198,14 @@ class MonthWiseExpense(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         dates = Expense.objects.all(user=user).dates('timestamp', 'month')
-        income_sum = user.incomes.aggregate(Sum('amount')).get('amount__sum', 0)
+        expense_sum = user.expenses.aggregate(Sum('amount')).get('amount__sum', 0)
         data = []
 
         for date in dates:
             amount = Expense.objects.this_month(
                 user=user, year=date.year, month=date.month
                 ).aggregate(Sum('amount')).get('amount__sum', 0)
-            expense_ratio = helpers.calculate_expense_ratio(user, amount, income_sum)
+            expense_ratio = helpers.calculate_ratio(amount, expense_sum)
             data.append((date, amount, expense_ratio))
 
         self.context['data'] = data

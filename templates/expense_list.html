@@ -68,8 +68,8 @@
 
   <h4>All time {% if first_date %}(since {{ first_date }}){% endif %}: &#8377; {{ total.all|intcomma }}</h4>
 
-  {% if expense_ratio %}
-    <h4>Expense Ratio: {{ expense_ratio }}%</h4>
+  {% if expense_to_income_ratio %}
+    <h4>Expense to Income Ratio: {{ expense_to_income_ratio }}%</h4>
   {% endif %}
 
 </div>
