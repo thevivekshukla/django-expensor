@@ -156,7 +156,7 @@ class MonthWiseIncome(LoginRequiredMixin, View):
             amount = incomes.filter(
                 timestamp__year=date.year,
                 timestamp__month=date.month,
-            ).aggregate(Sum('amount')).get('amount__sum', 0)
+            ).aggregate(Sum('amount'))['amount__sum'] or 0
             data.append((date, amount))
 
         self.context['data'] = data

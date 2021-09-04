@@ -21,8 +21,8 @@ def calculate_ratio(amount, total):
 
 
 def expense_to_income_ratio(user):
-    expense_sum = user.expenses.aggregate(Sum('amount')).get('amount__sum', 0)
-    income_sum = user.incomes.aggregate(Sum('amount')).get('amount__sum', 0)
+    expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+    income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
     return calculate_ratio(expense_sum, income_sum)
     
 

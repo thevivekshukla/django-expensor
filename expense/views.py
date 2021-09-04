@@ -198,14 +198,14 @@ class MonthWiseExpense(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         dates = Expense.objects.all(user=user).dates('timestamp', 'month')
-        expense_sum = user.expenses.aggregate(Sum('amount')).get('amount__sum', 0)
-        income_sum = user.incomes.aggregate(Sum('amount')).get('amount__sum', 0)
+        expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+        income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
         data = []
 
         for date in dates:
             amount = Expense.objects.this_month(
                 user=user, year=date.year, month=date.month
-                ).aggregate(Sum('amount')).get('amount__sum', 0)
+                ).aggregate(Sum('amount'))['amount__sum'] or 0
             expense_ratio = helpers.calculate_ratio(amount, expense_sum)
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             data.append((date, amount, expense_ratio, expense_to_income_ratio))
