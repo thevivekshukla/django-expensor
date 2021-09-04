@@ -56,17 +56,17 @@
 <div class="jumbotron">
   <h2>Stats:</h2>
 
-  <h4>Today: &#8377; {{ total.day|intcomma }}</h4>
+  <h4>Today: {{ total.day|intcomma }}</h4>
 
-  <h4>This month ({% now "M" %}): &#8377; {{ total.month|intcomma }}</h4>
+  <h4>This month ({% now "M" %}): {{ total.month|intcomma }}</h4>
 
   {%if total.last_month %}
-  <h4>Last month: &#8377; {{ total.last_month|intcomma }}</h4>
+  <h4>Last month: {{ total.last_month|intcomma }}</h4>
   {% endif %}
 
-  <h4>Total expenses of {% now "Y" %}: &#8377; {{ total.year|intcomma }}</h4>
+  <h4>Total expenses of {% now "Y" %}: {{ total.year|intcomma }}</h4>
 
-  <h4>All time {% if first_date %}(since {{ first_date }}){% endif %}: &#8377; {{ total.all|intcomma }}</h4>
+  <h4>All time {% if first_date %}(since {{ first_date }}){% endif %}: {{ total.all|intcomma }}</h4>
 
   {% if expense_to_income_ratio %}
     <h4>Expense to Income Ratio (EIR): {{ expense_to_income_ratio }}%</h4>
