@@ -226,7 +226,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
         income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        years = helpers.get_paginator_object(request, years, 10)
+        years = helpers.get_paginator_object(request, years, 5)
 
         data = []
         for year in [yr.year for yr in years]:
