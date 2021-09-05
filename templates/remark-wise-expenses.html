@@ -18,7 +18,11 @@
 <br>
 
 {% if remarks %}
-<h4>Total: {{ total|intcomma }}</h4><br>
+
+<div class="alert alert-info">
+  <h4>Total: {{ total|intcomma }}</h4>
+</div>
+
 <table class="table table-striped">
     
     <tr>
