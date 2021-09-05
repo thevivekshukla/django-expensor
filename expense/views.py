@@ -322,20 +322,20 @@ class GoToExpense(LoginRequiredMixin, View):
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
             dt = date(year, month, day)
-            date_str = dt.strftime("%d %b %Y")
+            date_str = f': {dt.strftime("%d %b %Y")}'
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
             dt = date(year, month, 1)
-            date_str = dt.strftime("%b %Y")
+            date_str = f': {dt.strftime("%b %Y")}'
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
-            date_str = f"{year}"
+            date_str = f': {year}'
 
         total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
         objects = helpers.get_paginator_object(request, objects, 50)
 
         context = {
-            "title": f"Expenses: {date_str}",
+            "title": f"Expenses {date_str}",
             "objects": objects,
             "total": total,
         }
@@ -358,14 +358,14 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
             _day = date(year, month, day)
-            date_str = _day.strftime("%d %b %Y")
+            date_str = f': {_day.strftime("%d %b %Y")}'
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
             _month = date(year, month, 1)
-            date_str = _month.strftime("%b %Y")
+            date_str = f': {_month.strftime("%b %Y")}'
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
-            date_str = f"{year}"
+            date_str = f': {year}'
         else:
             objects = Expense.objects.all(user=request.user)
 
@@ -383,7 +383,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         total = objects.aggregate(Sum('amount'))['amount__sum']
 
         context = {
-            "title": f"Remark-Wise Expenses: {date_str}",
+            "title": f"Remark-Wise Expenses {date_str}",
             "remarks": remark_dict,
             "total": total,
         }
