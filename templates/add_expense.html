@@ -26,20 +26,52 @@
 
 <div class="col-sm-12 col-md-6 col-lg-6">
 
-<div class="alert alert-info" style="padding-top: 1%; padding-bottom: 1%;">
-    <h5>Today: &#8377; {{ total.day|intcomma }}</h5>
-    <h5>This month: &#8377; {{ total.month|intcomma }}</h5>
-    {% if expense_to_income_ratio %}
-      <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR: {{ expense_to_income_ratio }}%</span></h5>
-    {% endif %}
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <!-- Basic Stat Accordion -->
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingOne">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            Basic Stat
+          </a>
+        </h4>
+      </div>
+      <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+        <div class="panel-body">
+          
+          <div class="alert alert-info" style="padding-top: 1%; padding-bottom: 1%;">
+            <h5>Today: &#8377; {{ total.day|intcomma }}</h5>
+            <h5>This month: &#8377; {{ total.month|intcomma }}</h5>
+            {% if expense_to_income_ratio %}
+              <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR: {{ expense_to_income_ratio }}%</span></h5>
+            {% endif %}
+          </div>
+
+          {% include 'expense_table.html' %}
+          <center><a href="{% url 'expense:expense_list' %}">See All</a></center>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent  -->
+    <!-- <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingTwo">
+        <h4 class="panel-title">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Recent
+          </a>
+        </h4>
+      </div>
+      <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+        <div class="panel-body">
+          
+        </div>
+      </div>
+    </div> -->
+    
 </div>
 
-
-<h4>Recent:</h4>
-{% include 'expense_table.html' %}
-
-<center><a href="{% url 'expense:expense_list' %}">See All</a></center>
-<br><br>
 
 </div>
 
