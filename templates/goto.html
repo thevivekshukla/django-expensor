@@ -5,11 +5,7 @@
 {% block body %}
 
 
-{% if goto_total %}
-  <div class="alert alert-info">
-    <h4>Total: {{ goto_total|intcomma }}</h4>
-  </div>
-{% endif %}
+{% include "total_alert_info.html" %}
 
 
 {% if objects %}

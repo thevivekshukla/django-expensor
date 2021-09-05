@@ -193,16 +193,17 @@ class DayWiseExpense(LoginRequiredMixin, View):
 
 class MonthWiseExpense(LoginRequiredMixin, View):
     template_name = "month-expense.html"
-    context = {
-        'title': 'Monthly Expense',
-    }
 
     def get(self, request, *args, **kwargs):
+        context = {}
+        date_str = ""
         user = request.user
         year = request.GET.get('year')
         expenses = Expense.objects.all(user=user)
         if year:
             expenses = expenses.filter(timestamp__year=int(year))
+            context['total'] = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+            date_str = f": {year}"
 
         dates = expenses.dates('timestamp', 'month', order='DESC')
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -219,9 +220,10 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             data.append((date, amount, expense_ratio, expense_to_income_ratio))
 
-        self.context['data'] = data
-        self.context['objects'] = dates
-        return render(request, self.template_name, self.context)
+        context['title'] = f'Monthly Expense {date_str}'
+        context['data'] = data
+        context['objects'] = dates
+        return render(request, self.template_name, context)
 
 
 class YearWiseExpense(LoginRequiredMixin, View):
@@ -329,13 +331,13 @@ class GoToExpense(LoginRequiredMixin, View):
             objects = Expense.objects.this_year(user=request.user, year=year)
             date_str = f"{year}"
 
-        goto_total = objects.aggregate(Sum('amount'))['amount__sum']
+        total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
         objects = helpers.get_paginator_object(request, objects, 50)
 
         context = {
             "title": f"Expenses: {date_str}",
             "objects": objects,
-            "goto_total": goto_total,
+            "total": total,
         }
 
         return render(request, self.template_name, context)

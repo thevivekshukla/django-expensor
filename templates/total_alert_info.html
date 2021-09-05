@@ -1,0 +1,7 @@
+{% load humanize %}
+
+{% if total %}
+  <div class="alert alert-info">
+    <h4>Total: {{ total|intcomma }}</h4>
+  </div>
+{% endif %}
