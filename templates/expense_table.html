@@ -10,7 +10,7 @@
   </tr>
   {% for object in objects %}
   <tr>
-    <td>{{ object.timestamp }}</td>
+    <td>{{ object.timestamp|date:"d M, Y" }}</td>
     <td>{{ object.amount|intcomma }}</td>
     <td>{% if object.remark %}{{ object.remark }}{% endif %}</td>
     <td>
