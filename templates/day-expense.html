@@ -16,7 +16,7 @@
     <tr>
       <td>
         <a href="{% url 'expense:goto_expense' year=object.0.year month=object.0.month day=object.0.day %}">
-          {{ object.0 }}
+          {{ object.0|date:"d M, Y" }}
         </a>
       </td>
       <td>{{ object.1|intcomma }}</td>
