@@ -1,5 +1,4 @@
-import statistics
-from datetime import timedelta
+from datetime import timedelta, date
 import math
 
 from django.contrib import messages
@@ -174,17 +173,21 @@ class GoToIncome(LoginRequiredMixin, View):
     template_name = 'income_list.html'
 
     def get(self, request, *args, **kwargs):
-        month = kwargs.get('month')
-        year = kwargs.get('year')
+        month = int(kwargs.get('month', 0))
+        year = int(kwargs.get('year', 0))
+        date_str = ""
         
         incomes = request.user.incomes.all()
         if year:
             incomes = incomes.filter(timestamp__year=year)
-        if month:
+            date_str = f"{year}"
+        if year and month:
             incomes = incomes.filter(timestamp__month=month)
+            dt = date(year, month, 1)
+            date_str = dt.strftime("%B %Y")
 
         context = {
-            "title": f"Income - {year}/{month}",
+            "title": f"Income: {date_str}",
             "objects": incomes,
             "total": incomes.aggregate(Sum('amount'))['amount__sum'],
         }

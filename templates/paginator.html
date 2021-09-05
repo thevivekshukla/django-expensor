@@ -2,7 +2,7 @@
 <div class="pagination">
   <span class="step-links">
     {% if objects.has_previous %}
-      <a href="?page={{ objects.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.field %}&field={{ request.GET.field }}{% endif %}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}
+      <a href="?{% for k, v in request.GET.items %}&{{k}}={{v}}{% endfor %}&page={{ objects.previous_page_number }}
       ">Previous</a>
     {% else %}
       <span><u>Previous</u></span>
@@ -13,7 +13,7 @@
     </span>
 
     {% if objects.has_next %}
-      <a href="?page={{ objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.field %}&field={{ request.GET.field }}{% endif %}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}
+      <a href="?{% for k, v in request.GET.items %}&{{k}}={{v}}{% endfor %}&page={{ objects.next_page_number }}
       ">Next</a>
     {% else %}
       <span><u>Next</u></span>

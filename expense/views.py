@@ -168,8 +168,10 @@ class DayWiseExpense(LoginRequiredMixin, View):
 
         year = request.GET.get('year')
         month = request.GET.get('month')
-        if year and month:
-            expense = expense.filter(timestamp__year=year, timestamp__month=month)
+        if year:
+            expense = expense.filter(timestamp__year=year)
+        if month:
+            expense = expense.filter(timestamp__month=month)
 
         days = expense.dates('timestamp', 'day', order='DESC')
         days = helpers.get_paginator_object(request, days, 50)
