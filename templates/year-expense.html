@@ -10,30 +10,24 @@
     <tr>
       <th>Year</th>
       <th>Amount</th>
-      <th><span data-toggle="tooltip" data-placement="top" title="Expense Ratio (%)">ER</span></th>
-      <th><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (%)">EIR</span></th>
     </tr>
+
     {% for object in data %}
     <tr>
+
       <td>
         <a href="{% url 'expense:month-wise-expense' %}?year={{ object.0 }}">
-          <strong>{{ object.0 }}</strong>
+          {{ object.0 }}
         </a>
         (by <a href="{% url 'expense:goto_year_expense' year=object.0 %}">remark</a>)
       </td>
+
       <td>
-          <strong>{{ object.1|intcomma }}</strong>
+          <span data-toggle="tooltip" data-placement="top" title="Expense Ratio: {{ object.2 }}% & Expense to Income Ratio: {{ object.3 }}%">
+            {{ object.1|intcomma }}
+          </span>
       </td>
-      <td>
-          {% if object.2 %}
-            {{ object.2 }}<span style="font-size:9px;">%</span>
-          {% endif %}
-      </td>
-      <td>
-          {% if object.3 %}
-            {{ object.3 }}<span style="font-size:9px;">%</span>
-          {% endif %}
-      </td>
+
     </tr> 
 
     {% endfor %}
@@ -52,14 +46,3 @@
 {% endblock body %}
 
 
-{% block js %}
-
-<script type="text/javascript">
-
-  $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
-  });
-
-</script>
-
-{% endblock js %}
