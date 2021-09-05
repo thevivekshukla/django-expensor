@@ -28,6 +28,12 @@
     {% include "navbar.html" %}
 
     <div class="container">
+      {% if title %}
+        <div class="page-header">
+          <h2>{{ title }}</h2>
+        </div>
+      {% endif %}
+
       {% include "messages.html" %}
 
       {% block body %}{% endblock body %}
