@@ -159,19 +159,23 @@ class ExpenseList(LoginRequiredMixin, View):
 
 class DayWiseExpense(LoginRequiredMixin, View):
     template_name = "day-expense.html"
-    context = {
-        'title': 'Day Wise Expense',
-    }
 
     def get(self, request, *args, **kwargs):
+        context = {}
+        date_str = ""
         expense = Expense.objects.all(user=request.user)
 
-        year = request.GET.get('year')
-        month = request.GET.get('month')
-        if year:
-            expense = expense.filter(timestamp__year=year)
-        if month:
-            expense = expense.filter(timestamp__month=month)
+        year = int(request.GET.get('year', 0))
+        month = int(request.GET.get('month', 0))
+        if year or month:
+            if year:
+                expense = expense.filter(timestamp__year=year)
+                date_str = f": {year}"
+            if month:
+                expense = expense.filter(timestamp__month=month)
+                dt = date(year, month, 1)
+                date_str = f": {dt.strftime('%B %Y')}"
+            context['total'] = expense.aggregate(Sum('amount'))['amount__sum'] or 0
 
         days = expense.dates('timestamp', 'day', order='DESC')
         days = helpers.get_paginator_object(request, days, 50)
@@ -181,9 +185,10 @@ class DayWiseExpense(LoginRequiredMixin, View):
             sum_day = expense.filter(timestamp=day).aggregate(Sum('amount'))['amount__sum'] or 0
             data.append((day, sum_day))
         
-        self.context['data'] = data
-        self.context['objects'] = days
-        return render(request, self.template_name, self.context)
+        context['title'] = f'Day-Wise Expense {date_str}'
+        context['data'] = data
+        context['objects'] = days
+        return render(request, self.template_name, context)
 
 
 class MonthWiseExpense(LoginRequiredMixin, View):

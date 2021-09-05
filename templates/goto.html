@@ -5,13 +5,6 @@
 {% block body %}
 
 
-{% if request.GET.q %}
-  <h4>Total for search "{{ request.GET.q }}": {{ object_total }}</h4>
-{% elif object_total %}
-  <h4>Total: {{ object_total }}</h4>
-{% endif %}
-
-
 {% if goto_total %}
   <div class="alert alert-info">
     <h4>Total: {{ goto_total|intcomma }}</h4>
