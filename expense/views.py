@@ -165,7 +165,7 @@ class DayWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         expense = Expense.objects.all(user=request.user)
-        
+
         year = request.GET.get('year')
         month = request.GET.get('month')
         if year and month:
@@ -305,18 +305,18 @@ class GoToExpense(LoginRequiredMixin, View):
     template_name = 'goto.html'
 
     def get(self, request, *args, **kwargs):
-        day = kwargs.get('day')
-        month = kwargs.get('month')
-        year = kwargs.get('year')
+        day = int(kwargs.get('day', 0))
+        month = int(kwargs.get('month', 0))
+        year = int(kwargs.get('year', 0))
         date_str = ""
         
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
-            dt = date(*map(int, [year, month, day]))
+            dt = date(year, month, day)
             date_str = dt.strftime("%d %b %Y")
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
-            dt = date(int(year), int(month), 1)
+            dt = date(year, month, 1)
             date_str = dt.strftime("%b %Y")
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
@@ -344,19 +344,19 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         day = int(kwargs.get('day', 0))
         month = int(kwargs.get('month', 0))
         year = int(kwargs.get('year', 0))
-        _day = None
-        _month = None
-        _year = None
+        date_str = ""
         
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
             _day = date(year, month, day)
+            date_str = _day.strftime("%d %b %Y")
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
             _month = date(year, month, 1)
+            date_str = _month.strftime("%b %Y")
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
-            _year = date(year, 1, 1)
+            date_str = f"{year}"
         else:
             objects = Expense.objects.all(user=request.user)
 
@@ -374,12 +374,9 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         total = objects.aggregate(Sum('amount'))['amount__sum']
 
         context = {
-            "title": "Expenses",
+            "title": f"Remark-Wise Expenses: {date_str}",
             "remarks": remark_dict,
             "total": total,
-            "day": _day,
-            "month": _month,
-            "year": _year,
         }
 
         return render(request, self.template_name, context)

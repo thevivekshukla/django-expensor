@@ -3,18 +3,6 @@
 
 {% block body %}
 
-
-<center>
-  <h4><u>
-    For:
-    {% if day or month or year %}
-      {{ day|date:"d M Y" }}{{ month|date:"M Y" }}{{ year|date:"Y" }}
-    {% else %}
-      All Time
-    {% endif %}
-  </u></h4>
-</center>
-
 <br>
 
 {% if remarks %}
