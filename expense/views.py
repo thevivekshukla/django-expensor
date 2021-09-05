@@ -165,6 +165,12 @@ class DayWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         expense = Expense.objects.all(user=request.user)
+        
+        year = request.GET.get('year')
+        month = request.GET.get('month')
+        if year and month:
+            expense = expense.filter(timestamp__year=year, timestamp__month=month)
+
         days = expense.dates('timestamp', 'day', order='DESC')
         days = helpers.get_paginator_object(request, days, 50)
 
@@ -302,19 +308,25 @@ class GoToExpense(LoginRequiredMixin, View):
         day = kwargs.get('day')
         month = kwargs.get('month')
         year = kwargs.get('year')
+        date_str = ""
         
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
+            dt = date(*map(int, [year, month, day]))
+            date_str = dt.strftime("%d %b %Y")
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
+            dt = date(int(year), int(month), 1)
+            date_str = dt.strftime("%b %Y")
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
+            date_str = f"{year}"
 
         goto_total = objects.aggregate(Sum('amount'))['amount__sum']
         objects = helpers.get_paginator_object(request, objects, 50)
 
         context = {
-            "title": "Expenses",
+            "title": f"Expenses: {date_str}",
             "objects": objects,
             "goto_total": goto_total,
         }
