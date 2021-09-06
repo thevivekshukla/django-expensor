@@ -15,7 +15,9 @@
       <th>Remark</th>
       <th>Total Amount</th>
     </tr>
+
     {% for remark in remarks %}
+    
     <tr>
       <td>
         {% if not remark.0 %}
@@ -24,8 +26,11 @@
             {{ remark.0.name }}
         {% endif %}
       </td>
+
       <td>
-          {{ remark.1|intcomma }}
+          <span data-toggle="tooltip" data-placement="top" title="Expense Ratio: {{ remark.2 }}% & Expense to Income Ratio: {{ remark.3 }}%">
+            {{ remark.1|intcomma }}
+          </span>
       </td>
     </tr> 
 

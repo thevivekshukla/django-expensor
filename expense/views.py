@@ -350,41 +350,48 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
     template_name = 'remark-wise-expenses.html'
 
     def get(self, request, *args, **kwargs):
+        user = request.user
         day = int(kwargs.get('day', 0))
         month = int(kwargs.get('month', 0))
         year = int(kwargs.get('year', 0))
         date_str = ""
         
         if day:
-            objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
+            objects = Expense.objects.this_day(user=user, year=year, month=month, day=day)
             _day = date(year, month, day)
             date_str = f': {_day.strftime("%d %b %Y")}'
         elif month:
-            objects = Expense.objects.this_month(user=request.user, year=year, month=month)
+            objects = Expense.objects.this_month(user=user, year=year, month=month)
             _month = date(year, month, 1)
             date_str = f': {_month.strftime("%b %Y")}'
         elif year:
-            objects = Expense.objects.this_year(user=request.user, year=year)
+            objects = Expense.objects.this_year(user=user, year=year)
             date_str = f': {year}'
         else:
-            objects = Expense.objects.all(user=request.user)
+            objects = Expense.objects.all(user=user)
 
         objects = objects.select_related('remark')
         remarks = set()
         for instance in objects:
             remarks.add(instance.remark)
 
-        remark_dict = {}
-        for remark in remarks:
-            remark_dict[remark] = objects.filter(remark=remark)\
-                                    .aggregate(Sum('amount'))['amount__sum']
+        expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+        income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        remark_dict = sorted(remark_dict.items(), key=lambda x: x[1], reverse=True)
-        total = objects.aggregate(Sum('amount'))['amount__sum']
+        remark_data = []
+        for remark in remarks:
+            amount = objects.filter(remark=remark)\
+                        .aggregate(Sum('amount'))['amount__sum'] or 0
+            expense_ratio = helpers.calculate_ratio(amount, expense_sum)
+            expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
+            remark_data.append((remark, amount, expense_ratio, expense_to_income_ratio))
+
+        remark_data = sorted(remark_data, key=lambda x: x[1], reverse=True)
+        total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
 
         context = {
             "title": f"Remark-Wise Expenses {date_str}",
-            "remarks": remark_dict,
+            "remarks": remark_data,
             "total": total,
         }
 
