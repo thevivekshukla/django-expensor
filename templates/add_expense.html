@@ -39,9 +39,9 @@
         <div id="basicStat" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
             
-            <div class="alert alert-info" style="padding-top: 1%; padding-bottom: 1%;">
-              <h5>Today: &#8377; {{ total.day|intcomma }}</h5>
-              <h5>This month: &#8377; {{ total.month|intcomma }}</h5>
+            <div>
+              <h5>Spent today: {{ total.day|intcomma }}</h5>
+              <h5>Spent this month: {{ total.month|intcomma }}</h5>
               {% if expense_to_income_ratio %}
                 <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR: {{ expense_to_income_ratio }}%</span></h5>
               {% endif %}
