@@ -189,7 +189,7 @@ class GoToIncome(LoginRequiredMixin, View):
         context = {
             "title": f"Income: {date_str}",
             "objects": incomes,
-            "total": incomes.aggregate(Sum('amount'))['amount__sum'],
+            "total": incomes.aggregate(Sum('amount'))['amount__sum'] or 0,
         }
         return render(request, self.template_name, context)
 

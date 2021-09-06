@@ -135,7 +135,7 @@ class ExpenseList(LoginRequiredMixin, View):
                         Q(remark__name__icontains=q) |
                         Q(amount__icontains=q)
                         ).distinct()
-            object_total = objects_list.aggregate(Sum('amount'))['amount__sum']
+            object_total = objects_list.aggregate(Sum('amount'))['amount__sum'] or 0
 
         order_field = request.GET.get("field")
         if order_field:
@@ -295,7 +295,7 @@ class DateSearch(LoginRequiredMixin, View):
                 date_form = self.date_form_class()
 
             if objects:
-                object_total = objects.aggregate(Sum('amount'))['amount__sum']
+                object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
             else:
                 object_total = None
 
