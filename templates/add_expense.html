@@ -125,7 +125,7 @@
       success: function(data){
         basicInfoContent.append("<h5>Spent Today: "+ data.today_expense +"</h5>");
         basicInfoContent.append("<h5>Spent this month: "+ data.this_month_expense +"</h5>");
-        basicInfoContent.append('<h5>EIR: '+ data.expense_to_income_ratio +' %</h5>');
+        basicInfoContent.append('<h5>EIR: '+ data.expense_to_income_ratio +'%</h5>');
       },
       error: function(data){
         console.log(data);
