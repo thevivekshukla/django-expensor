@@ -7,6 +7,7 @@ from django.db.models.signals import pre_save
 from datetime import date
 
 from utils.base_model import BaseModel
+from utils.helpers import get_ist_datetime
 
 # Create your models here.
 
@@ -20,7 +21,7 @@ class ExpenseManager(models.Manager):
         if year:
             y = year
         else:
-            y = date.today().year
+            y = get_ist_datetime().date().year
         qs = super(ExpenseManager, self).filter(user=user).filter(timestamp__year=y)
         return qs
 
@@ -28,19 +29,24 @@ class ExpenseManager(models.Manager):
         if month:
             m = month
         else:
-            m = date.today().month
+            m = get_ist_datetime().date().month
         qs = Expense.objects.this_year(user=user, year=year).filter(timestamp__month=m)
         return qs
 
     def last_month(self, user=None, *args, **kwargs):
-        qs = Expense.objects.this_year(user=user).filter(timestamp__month=date.today().month-1)
+        today = get_ist_datetime().date()
+        year = today.year
+        last_month = (today.month - 1) or 12
+        if last_month == 12:
+            year -= 1
+        qs = Expense.objects.this_year(user=user, year=year).filter(timestamp__month=last_month)
         return qs
 
     def this_day(self, user=None, year=None, month=None, day=None, *args, **kwargs):
         if day:
             d = day
         else:
-            d = date.today().day
+            d = get_ist_datetime().date().day
         qs = Expense.objects.this_month(user=user, year=year, month=month).filter(timestamp__day=d)
         return qs
 
