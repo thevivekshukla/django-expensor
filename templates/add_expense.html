@@ -31,20 +31,15 @@
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne">
           <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#basicStat" aria-expanded="false" aria-controls="basicStat">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#basicStatCollapsible" aria-expanded="false" aria-controls="basicStatCollapsible">
               Basic Information
             </a>
           </h4>
         </div>
-        <div id="basicStat" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+        <div id="basicStatCollapsible" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
             
-            <div>
-              <h5>Spent today: {{ total.day|intcomma }}</h5>
-              <h5>Spent this month: {{ total.month|intcomma }}</h5>
-              {% if expense_to_income_ratio %}
-                <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR: {{ expense_to_income_ratio }}%</span></h5>
-              {% endif %}
+            <div id="basicInfoContent">
             </div>
 
           </div>
@@ -80,6 +75,26 @@
 
 {% block js %}
 <script type="text/javascript">
+
+  function fetchBasicInfo() {
+    basicInfoContent = $("#basicInfoContent")
+    basicInfoContent.html('');
+
+    $.ajax({
+      type: "GET",
+      url: '{% url "expense:get-basic-info" %}',
+      success: function(data){
+        basicInfoContent.append("<h5>Spent Today: "+ data.today_expense +"</h5>");
+        basicInfoContent.append("<h5>Spent this month: "+ data.this_month_expense +"</h5>");
+        basicInfoContent.append('<h5>EIR: '+ data.expense_to_income_ratio +' %</h5>');
+      },
+      error: function(data){
+        console.log(data);
+        console.log('error while fetching basic info data');
+      }
+    });
+  }
+
   $(document).ready(function(){
 
     $("#id_remark").autocomplete({
@@ -87,6 +102,10 @@
     });
 
     $("#id_timestamp").datepicker();
+
+    $('#basicStatCollapsible').on('show.bs.collapse', function () {
+      fetchBasicInfo();
+    });
 
     var form = $("#id_add_expense");
 

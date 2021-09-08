@@ -27,4 +27,6 @@ urlpatterns = [
         re_path(r'^months/$', views.MonthWiseExpense.as_view(), name='month-wise-expense'),
         re_path(r'^years/$', views.YearWiseExpense.as_view(), name='year-wise-expense'),
         re_path(r'^$', views.AddExpense.as_view(), name='add_expense'),
+
+        re_path(r'^basic-info/$', views.GetBasicInfo.as_view(), name='get-basic-info'),
 ]

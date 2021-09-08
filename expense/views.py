@@ -35,8 +35,6 @@ class AddExpense(LoginRequiredMixin, View):
                         )[:10]
                         
         self.context['objects'] = last_10_expenses
-        self.context['total'] = Expense.objects.amount_sum(user=request.user)
-        self.context['expense_to_income_ratio'] = helpers.expense_to_income_ratio(request.user)
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
@@ -63,6 +61,24 @@ class AddExpense(LoginRequiredMixin, View):
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
+
+
+class GetBasicInfo(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        data = dict()
+
+        qs = Expense.objects
+        today_expense = qs.this_day(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        this_month_expense = qs.this_month(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        data['today_expense'] = f"{today_expense:,}"
+        data['this_month_expense'] = f"{this_month_expense:,}"
+        data['expense_to_income_ratio'] = helpers.expense_to_income_ratio(request.user)
+        data = json.dumps(data)
+
+        return HttpResponse(data, content_type='application/json')
 
 
 class UpdateExpense(LoginRequiredMixin, View):
