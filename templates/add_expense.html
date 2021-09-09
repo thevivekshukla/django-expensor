@@ -31,15 +31,18 @@
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne">
           <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#basicStatCollapsible" aria-expanded="false" aria-controls="basicStatCollapsible">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#basicInfoCollapsible" aria-expanded="false" aria-controls="basicInfoCollapsible">
               Basic Information
             </a>
           </h4>
         </div>
-        <div id="basicStatCollapsible" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+        <div id="basicInfoCollapsible" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
             
             <div id="basicInfoContent">
+              <h5>Spent Today: <span id="today_expense"></span></h5>
+              <h5>Spent this month: <span id="month_expense"></span></h5>
+              <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR: <span id="eir"></span>%</span></h5>
             </div>
 
           </div>
@@ -76,17 +79,33 @@
 {% block js %}
 <script type="text/javascript">
 
+  function fetchBasicInfo() {
+    $.ajax({
+      type: "GET",
+      url: '{% url "expense:get-basic-info" %}',
+      success: function(data){
+        $("#today_expense").html(data.today_expense);
+        $("#month_expense").html(data.this_month_expense);
+        $("#eir").html(data.expense_to_income_ratio);
+      },
+      error: function(data){
+        console.log(data);
+        console.log('error while fetching basic info data');
+      }
+    });
+  }
+
   $(document).ready(function(){
 
     $("#id_remark").autocomplete({
-      source: "{% url 'expense:get_remark' %}",
+      source: "{% url 'expense:get_remark' %}"
     });
 
     $("#id_timestamp").datepicker();
 
-    //$('#basicStatCollapsible').on('show.bs.collapse', function () {
-    //  fetchBasicInfo();
-    //});
+    $('#basicInfoCollapsible').on('show.bs.collapse', function () {
+      fetchBasicInfo();
+    });
 
     var form = $("#id_add_expense");
 
@@ -113,29 +132,7 @@
       });
       return false;
     });
-  });
-
-  function fetchBasicInfo() {
-    basicInfoContent = $("#basicInfoContent")
-    basicInfoContent.html('');
-
-    $.ajax({
-      type: "GET",
-      url: '{% url "expense:get-basic-info" %}',
-      success: function(data){
-        basicInfoContent.append("<h5>Spent Today: "+ data.today_expense +"</h5>");
-        basicInfoContent.append("<h5>Spent this month: "+ data.this_month_expense +"</h5>");
-        basicInfoContent.append('<h5>EIR: '+ data.expense_to_income_ratio +'%</h5>');
-      },
-      error: function(data){
-        console.log(data);
-        console.log('error while fetching basic info data');
-      }
-    });
-  }
-  
-  $( window ).on( "load", function() {
-    fetchBasicInfo();
+    
   });
 
 </script>
