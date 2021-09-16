@@ -84,8 +84,8 @@ class InvestmentEntityForm(forms.Form):
             for name, pct in self.original_data.items()
             if name in inv_keys
         )
-        if total != 100:
-            raise forms.ValidationError("Sum of all percentage fields must be 100")
+        if not total in {0, 100}:
+            raise forms.ValidationError("Sum of all percentage fields must be either 0 or 100")
         return self.cleaned_data
 
 
