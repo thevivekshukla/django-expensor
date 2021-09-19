@@ -76,8 +76,13 @@ class GetBasicInfo(LoginRequiredMixin, View):
         data['today_expense'] = f"{today_expense:,}"
         data['this_month_expense'] = f"{this_month_expense:,}"
         data['expense_to_income_ratio'] = helpers.expense_to_income_ratio(request.user)
-        data = json.dumps(data)
 
+        today = helpers.get_ist_datetime()
+        this_month_income = user.incomes.filter\
+            (timestamp__year=today.year, timestamp__month=today.month).aggregate(Sum('amount'))['amount__sum'] or 0
+        data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
+
+        data = json.dumps(data)
         return HttpResponse(data, content_type='application/json')
 
 

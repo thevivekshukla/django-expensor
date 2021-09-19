@@ -42,7 +42,9 @@
             <div id="basicInfoContent">
               <h5>Spent Today: <span id="today_expense"></span></h5>
               <h5>Spent this month: <span id="month_expense"></span></h5>
+              <br>
               <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">EIR: <span id="eir"></span>%</span></h5>
+              <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">Current Month EIR: <span id="month_eir"></span>%</span></h5>
             </div>
 
           </div>
@@ -87,6 +89,7 @@
         $("#today_expense").html(data.today_expense);
         $("#month_expense").html(data.this_month_expense);
         $("#eir").html(data.expense_to_income_ratio);
+        $("#month_eir").html(data.this_month_eir);
       },
       error: function(data){
         console.log(data);
