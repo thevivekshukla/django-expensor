@@ -48,8 +48,6 @@ class IncomeList(LoginRequiredMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         context['objects'] = context['page_obj']
         context['title'] = 'Income List'
-        # saving_to_income_ratio = 100 - helpers.expense_to_income_ratio(self.request.user)
-        # context['saving_to_income_ratio'] = round(saving_to_income_ratio, 2)
         return context
 
 
