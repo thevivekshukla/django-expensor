@@ -50,8 +50,8 @@
                 <div class="col-sm-1"></div>
                 
                 <div class="col-lg-6 col-md-6">
-                  <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (All Time)">EIR: <span id="eir"></span>%</span></h5>
-                  <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (Only for Current Month)">This month's EIR: <span id="month_eir"></span>%</span></h5>
+                  <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (All Time)">EIR: <span id="eir"></span></span></h5>
+                  <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (Only for Current Month)">This month's EIR: <span id="month_eir"></span></span></h5>
                 </div>
 
               </div>
@@ -92,14 +92,20 @@
 <script type="text/javascript">
 
   function fetchBasicInfo() {
+    spinner = '<i class="fas fa-spinner fa-sm"></i>'
+    $("#today_expense").html(spinner);
+    $("#month_expense").html(spinner);
+    $("#eir").html(spinner);
+    $("#month_eir").html(spinner);
+
     $.ajax({
       type: "GET",
       url: '{% url "expense:get-basic-info" %}',
       success: function(data){
         $("#today_expense").html(data.today_expense);
         $("#month_expense").html(data.this_month_expense);
-        $("#eir").html(data.expense_to_income_ratio);
-        $("#month_eir").html(data.this_month_eir);
+        $("#eir").html(data.expense_to_income_ratio + "%");
+        $("#month_eir").html(data.this_month_eir + "%");
       },
       error: function(data){
         console.log(data);
