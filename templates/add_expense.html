@@ -142,6 +142,10 @@
           setTimeout(function() {
             $("#id_success").hide();
           }, 5000);
+          // updating Information data
+          if ( $("#basicInfoCollapsible.in").size() == 1 ) {
+            fetchBasicInfo();
+          }
         },
         error: function(data){
           $("#id_success").css("display", "none");
