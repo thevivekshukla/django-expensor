@@ -22,8 +22,6 @@
 </div>
 </div>
 
-{% if objects %}
-
 <div class="col-sm-12 col-md-6 col-lg-6">
 
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -72,7 +70,8 @@
         </div>
         <div id="recentTxn" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
           <div class="panel-body">
-            {% include 'expense_table.html' %}
+            <table class="table table-striped" id="txn-list"></table>
+
             <center><a href="{% url 'expense:expense_list' %}">See All</a></center>
           </div>
         </div>
@@ -82,17 +81,15 @@
 
 </div>
 
-{% endif %}
-
 
 {% endblock %}
 
 
 {% block js %}
 <script type="text/javascript">
+  spinner = '<i class="fas fa-spinner fa-sm"></i>'
 
   function fetchBasicInfo() {
-    spinner = '<i class="fas fa-spinner fa-sm"></i>'
     $("#today_expense").html(spinner);
     $("#month_expense").html(spinner);
     $("#eir").html(spinner);
@@ -114,6 +111,37 @@
     });
   }
 
+  function fetchLatestExpenses() {
+    rows = $("#txn-list")
+    header = "<tr><th>Date</th><th>Amount</th><th>Remark</th><th>Action</th></tr>"
+    spinner_row = "<tr><td>"+ spinner +"</td><td>"+ spinner +"</td><td>"+ spinner +"</td><td>"+ spinner +"</td></tr>"
+    rows.empty();
+    rows.append(header);
+    rows.append(spinner_row);
+
+    $.ajax({
+      type: "GET",
+      url: '{% url "expense:get-latest-expenses" %}',
+      success: function(data){
+        row = header
+        for (i=0; i < data.length; i++) {
+          row += "<tr>"
+          row += "<td>"+ data[i].timestamp +"</td>"
+          row += "<td>"+ data[i].amount +"</td>"
+          row += "<td>"+ data[i].remark +"</td>"
+          row += '<td><a href="/update/'+ data[i].id +'/"><span class="glyphicon glyphicon-pencil"></span> Edit</a></td>'
+          row += "</tr>"
+        }
+        rows.empty();
+        rows.append(row);
+      },
+      error: function(data){
+        console.log(data);
+        console.log('error while fetching basic info data');
+      }
+    });
+  }
+
   $(document).ready(function(){
 
     $("#id_remark").autocomplete({
@@ -124,6 +152,10 @@
 
     $('#basicInfoCollapsible').on('show.bs.collapse', function () {
       fetchBasicInfo();
+    });
+
+    $('#recentTxn').on('show.bs.collapse', function () {
+      fetchLatestExpenses();
     });
 
     var form = $("#id_add_expense");
@@ -142,10 +174,14 @@
           setTimeout(function() {
             $("#id_success").hide();
           }, 5000);
-          // updating Information data
+          // updating accordion if new expense is added and accordion is open
           if ( $("#basicInfoCollapsible.in").size() == 1 ) {
             fetchBasicInfo();
           }
+          if ( $("#recentTxn.in").size() == 1 ) {
+            fetchLatestExpenses();
+          }
+
         },
         error: function(data){
           $("#id_success").css("display", "none");

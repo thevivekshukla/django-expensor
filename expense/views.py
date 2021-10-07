@@ -30,11 +30,6 @@ class AddExpense(LoginRequiredMixin, View):
     }
 
     def get(self, request, *args, **kwargs):
-        last_10_expenses = Expense.objects.all(user=request.user).order_by(
-                            '-created_at', '-timestamp',
-                        )[:10]
-                        
-        self.context['objects'] = last_10_expenses
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
@@ -82,6 +77,24 @@ class GetBasicInfo(LoginRequiredMixin, View):
             (timestamp__year=today.year, timestamp__month=today.month).aggregate(Sum('amount'))['amount__sum'] or 0
         data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
 
+        data = json.dumps(data)
+        return HttpResponse(data, content_type='application/json')
+
+
+class LatestExpenses(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        last_10_expenses = Expense.objects.all(user=request.user).order_by(
+                            '-created_at', '-timestamp',
+                        )[:10]
+        data = []
+        for expense in last_10_expenses:
+            data.append({
+                "id": expense.id,
+                "amount": f"{expense.amount:,}",
+                "remark": expense.remark.name if expense.remark else "",
+                "timestamp": expense.timestamp.strftime("%d %b, %Y")
+            })
         data = json.dumps(data)
         return HttpResponse(data, content_type='application/json')
 

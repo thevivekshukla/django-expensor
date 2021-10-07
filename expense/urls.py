@@ -29,4 +29,5 @@ urlpatterns = [
         re_path(r'^$', views.AddExpense.as_view(), name='add_expense'),
 
         re_path(r'^basic-info/$', views.GetBasicInfo.as_view(), name='get-basic-info'),
+        re_path(r'^latest-expenses/$', views.LatestExpenses.as_view(), name='get-latest-expenses'),
 ]
