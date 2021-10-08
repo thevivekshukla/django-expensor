@@ -93,7 +93,7 @@ class LatestExpenses(LoginRequiredMixin, View):
                 "id": expense.id,
                 "amount": f"{expense.amount:,}",
                 "remark": expense.remark.name if expense.remark else "",
-                "timestamp": expense.timestamp.strftime("%d %b, %Y")
+                "timestamp": expense.timestamp.strftime("%d %b %y")
             })
         data = json.dumps(data)
         return HttpResponse(data, content_type='application/json')
