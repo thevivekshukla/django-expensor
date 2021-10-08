@@ -84,11 +84,11 @@ class GetBasicInfo(LoginRequiredMixin, View):
 class LatestExpenses(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        last_10_expenses = Expense.objects.all(user=request.user).order_by(
+        recent_expenses = Expense.objects.all(user=request.user).order_by(
                             '-created_at', '-timestamp',
-                        )[:10]
+                        )[:15]
         data = []
-        for expense in last_10_expenses:
+        for expense in recent_expenses:
             data.append({
                 "id": expense.id,
                 "amount": f"{expense.amount:,}",
