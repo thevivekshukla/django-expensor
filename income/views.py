@@ -365,7 +365,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         DAYS = MONTHS * 30
         now = helpers.get_ist_datetime().date()
         amounts = []
-        for offset_days in [-7, 0, 7]:
+        for offset_days in [-10, 0, 10]:
             offset_now = now + timedelta(days=offset_days)
             past = offset_now - timedelta(days=DAYS)
 
