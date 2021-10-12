@@ -1,5 +1,6 @@
 from datetime import timedelta, date
 import math
+import statistics
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
@@ -363,13 +364,17 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         MONTHS = 6
         DAYS = MONTHS * 30
         now = helpers.get_ist_datetime().date()
-        past = now - timedelta(days=DAYS)
+        amounts = []
+        for offset_days in [-7, 0, 7]:
+            offset_now = now + timedelta(days=offset_days)
+            past = offset_now - timedelta(days=DAYS)
 
-        incomes = self.request.user.incomes.filter(timestamp__range=(past, now))
-        income_sum = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-        avg_income = income_sum / MONTHS
+            incomes = self.request.user.incomes.filter(timestamp__range=(past, offset_now))
+            income_sum = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+            avg_income = income_sum / MONTHS
+            amounts.append(avg_income)
 
-        return avg_income
+        return statistics.mean(amounts)
 
     def get(self, request, *args, **kwargs):
         user = request.user
