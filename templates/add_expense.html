@@ -150,6 +150,10 @@
 
     $("#id_timestamp").datepicker();
 
+    document.getElementById('id_amount').onkeyup = function () {
+        document.getElementById('hint_id_amount').innerHTML = inWords(document.getElementById('id_amount').value);
+    };
+
     $('#basicInfoCollapsible').on('show.bs.collapse', function () {
       fetchBasicInfo();
     });

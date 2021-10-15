@@ -8,7 +8,7 @@ from utils.helpers import get_ist_datetime
 
 
 class ExpenseForm(forms.Form):
-    amount = forms.IntegerField()
+    amount = forms.IntegerField(help_text=" ")
     remark = forms.CharField(required=False)
     timestamp = forms.DateField()
 

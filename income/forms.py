@@ -10,7 +10,7 @@ from utils.helpers import get_ist_datetime
 
 
 class IncomeForm(forms.Form):
-    amount = forms.IntegerField()
+    amount = forms.IntegerField(help_text=" ")
     source = forms.CharField(max_length=30, required=False)
     timestamp = forms.DateField()
 

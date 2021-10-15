@@ -42,6 +42,10 @@
 
     $("#id_timestamp").datepicker();
 
+    document.getElementById('id_amount').onkeyup = function () {
+        document.getElementById('hint_id_amount').innerHTML = inWords(document.getElementById('id_amount').value);
+    };
+
     var form = $("#id_add_income");
 
     form.submit(function(){
