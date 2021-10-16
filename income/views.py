@@ -361,7 +361,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        MONTHS = 6
+        MONTHS = 3
         DAYS = MONTHS * 30
         now = helpers.get_ist_datetime().date()
         amounts = []
