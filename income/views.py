@@ -365,12 +365,13 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         DAYS = MONTHS * 30
         now = helpers.get_ist_datetime().date()
         amounts = []
+        incomes = self.request.user.incomes
+
         for offset_days in [-15, 0, 15]:
             offset_now = now + timedelta(days=offset_days)
             past = offset_now - timedelta(days=DAYS)
-
-            incomes = self.request.user.incomes.filter(timestamp__range=(past, offset_now))
-            income_sum = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+            offset_incomes = incomes.filter(timestamp__range=(past, offset_now))
+            income_sum = offset_incomes.aggregate(Sum('amount'))['amount__sum'] or 0
             avg_income = income_sum / MONTHS
             amounts.append(avg_income)
 
