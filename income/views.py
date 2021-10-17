@@ -400,12 +400,12 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT)
-                defaults_message.append(f"Amount To Keep In Bank used is auto generated.")
+                defaults_message.append(f"Amount To Keep In Bank is auto generated.")
 
             if not savings.savings_min_amount and savings.auto_fill_savings_min_amount:
                 income_to_use = income if income else BANK_AMOUNT
                 initial_data['savings_min_amount'] = self.return_in_multiples(income_to_use * MIN_SAVINGS_PCT)
-                defaults_message.append("Savings Min Amount used is auto generated.")
+                defaults_message.append("Savings Min Amount is auto generated.")
 
         except SavingCalculation.DoesNotExist:
             pass
