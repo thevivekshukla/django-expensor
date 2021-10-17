@@ -1,6 +1,7 @@
 from datetime import timedelta, date
 import math
 import statistics
+import markdown
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
@@ -381,12 +382,12 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         user = request.user
         income = request.GET.get('income')
         initial_data = {}
-        message = None
+        message = ""
         defaults_message = []
 
         try:
             savings = user.saving_calculation
-            message = savings.message
+            message = markdown.markdown(savings.message if savings.message else "")
             initial_data['savings_min_amount'] = savings.savings_min_amount
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
