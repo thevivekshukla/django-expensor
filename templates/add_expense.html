@@ -2,6 +2,17 @@
 {% load crispy_forms_tags %}
 {% load humanize %}
 
+{% block head %}
+
+<style>
+form input[type="text"]#id_remark {
+    text-transform: lowercase;
+}
+</style>
+
+{% endblock head %}
+
+
 {% block body %}
 
 <div class="row">
