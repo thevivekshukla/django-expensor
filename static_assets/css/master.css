@@ -1,3 +1,7 @@
 .dropdown:hover .dropdown-menu {
     display: block;
   }
+
+form input[type="text"]#id_expense_search {
+  text-transform: lowercase;
+}
