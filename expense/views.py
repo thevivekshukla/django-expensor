@@ -86,7 +86,7 @@ class LatestExpenses(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         recent_expenses = Expense.objects.all(user=request.user).order_by(
                             '-created_at', '-timestamp',
-                        )[:15]
+                        )[:10]
         data = []
         for expense in recent_expenses:
             data.append({
