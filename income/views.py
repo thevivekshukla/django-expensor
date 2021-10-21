@@ -208,7 +208,7 @@ class SourceView(LoginRequiredMixin, View):
 
 
 class IncomeDateSearch(LoginRequiredMixin, View):
-    range_form_class = SelectDateRangeIncomeForm
+    form_class = SelectDateRangeIncomeForm
     template_name = "income-search.html"
     context = {
         "title": "Income: Search"
@@ -216,23 +216,29 @@ class IncomeDateSearch(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         context = self.context.copy()
-        range_form = self.range_form_class(request.GET or None)
+        form = self.form_class(request.GET or None)
 
-        if range_form.is_valid():
-            source = range_form.cleaned_data.get('source').strip()
-            f_dt = range_form.cleaned_data.get('from_date')
-            t_dt = range_form.cleaned_data.get('to_date')
-            objects = Income.objects.filter(user=request.user).filter(timestamp__range=(f_dt, t_dt))
+        if form.is_valid():
+            source = form.cleaned_data.get('source').strip()
+            from_date = form.cleaned_data.get('from_date')
+            to_date = form.cleaned_data.get('to_date')
+            objects = Income.objects.filter(user=request.user).filter(timestamp__range=(from_date, to_date))
 
             if source:
                 objects = objects.filter(source__name=source)
 
             object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
+            try:
+                days = (to_date - from_date).days
+                months = days / 30
+                context['monthly_average'] = int(object_total/months)
+            except:
+                pass
 
             context['objects'] = objects
             context['object_total'] = object_total
 
-        context['range_form'] = range_form
+        context['form'] = form
         return render(request, self.template_name, context)
 
 

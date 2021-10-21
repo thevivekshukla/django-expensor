@@ -8,6 +8,7 @@
 {% if object_total %}
 <div class="alert alert-info">
   <h4>Total: {{ object_total|intcomma }}</h4>
+  <h4>Monthly Average: {{ monthly_average|intcomma }}</h4>
 </div>
 {% endif %}
 
@@ -42,21 +43,18 @@
 {% endif %}
 
 
-<div class="row">
+<div class="col-md-4 col-sm-offset-1">
 
-{% if range_form %}
-  <div class="col-sm-4 col-sm-offset-2">
-
-    <form action="" method="GET">
-      {% csrf_token %}
-      {{ range_form|crispy }}
-      <input type="text" name="search" value="1" hidden>
-      <input type="submit" class="btn btn-default" name="" value="Search">
-    </form>
-  </div>
-{% endif %}
+  <form action="" method="GET">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="text" name="search" value="1" hidden>
+    <input type="submit" class="btn btn-default" name="" value="Search">
+  </form>
 
 </div>
+
+
 
 
 {% endblock body %}
