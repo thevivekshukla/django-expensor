@@ -307,8 +307,10 @@ class DateSearch(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = self.context.copy()
         form = self.form_class(request.GET or None)
+
         objects = None
         object_total = None
+        monthly_average = None
 
         if form.is_valid():
             remark = form.cleaned_data.get('remark', '').strip()
@@ -319,10 +321,17 @@ class DateSearch(LoginRequiredMixin, View):
                 objects = objects.filter(remark__name__icontains=remark)
 
             object_total = objects.aggregate(Sum('amount'))['amount__sum']
+            try:
+                days = (to_date - from_date).days
+                month = days / 30
+                monthly_average = int(object_total/month)
+            except:
+                pass
 
         context['form'] = form
         context['objects'] = objects
         context['object_total'] = object_total
+        context['monthly_average'] = monthly_average
 
         return render(request, self.template_name, context)
 
