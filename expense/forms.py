@@ -18,19 +18,6 @@ class ExpenseForm(forms.Form):
         self.fields['timestamp'].initial = get_ist_datetime().date()
 
 
-class SelectDateExpenseForm(forms.Form):
-    remark = forms.CharField(required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'remark lowercase_field',
-        })
-    )
-    date = forms.DateField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['date'].initial = get_ist_datetime().date()
-
-
 class SelectDateRangeExpenseForm(forms.Form):
     remark = forms.CharField(required=False,
         widget=forms.TextInput(attrs={
@@ -45,3 +32,4 @@ class SelectDateRangeExpenseForm(forms.Form):
         today_date = get_ist_datetime().date()
         self.fields['from_date'].initial = today_date - timedelta(days=30)
         self.fields['to_date'].initial = today_date
+

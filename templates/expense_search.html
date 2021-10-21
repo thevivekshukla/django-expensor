@@ -5,11 +5,7 @@
 {% block body %}
 
 
-{% if request.GET.q %}
-  <div class="alert alert-info">
-    <h4>Total for search "{{ request.GET.q }}": {{ object_total|intcomma }}</h4>
-  </div>
-{% elif object_total %}
+{% if object_total %}
   <div class="alert alert-info">
     <h4>Total: {{ object_total|intcomma }}</h4>
   </div>
@@ -24,30 +20,14 @@
 {% endif %}
 
 
-<div class="row">
+<div class="col-md-4 col-md-offset-1">
 
-  {% if date_form %}
-    <div class="col-sm-4 col-sm-offset-0">
-      <form action="{% url 'expense:search' %}" method="GET">
-        {% csrf_token %}
-        {{ date_form|crispy }}
-        <input type="text" name="search" value="1" hidden>
-        <input type="submit" class="btn btn-default" name="" value="Search">
-      </form>
-    </div>
-  {% endif %}
-
-  {% if range_form %}
-    <div class="col-sm-4 col-sm-offset-2">
-
-      <form action="{% url 'expense:search' %}" method="GET">
-        {% csrf_token %}
-        {{ range_form|crispy }}
-        <input type="text" name="search" value="1" hidden>
-        <input type="submit" class="btn btn-default" name="" value="Search">
-      </form>
-    </div>
-  {% endif %}
+  <form action="" method="GET">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="text" name="search" value="1" hidden>
+    <input type="submit" class="btn btn-default" name="" value="Search">
+  </form>
 
 </div>
 
@@ -66,7 +46,6 @@ $(".remark").autocomplete({
   });
 
 $(function(){
-  $("#id_date").datepicker();
   $("#id_from_date").datepicker();
   $("#id_to_date").datepicker();
 });

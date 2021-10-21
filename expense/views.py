@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import date, timedelta
 import json
 
-from .forms import ExpenseForm, SelectDateExpenseForm, SelectDateRangeExpenseForm
+from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
 from utils import helpers
 
@@ -298,8 +298,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
 
 
 class DateSearch(LoginRequiredMixin, View):
-    date_form_class = SelectDateExpenseForm
-    range_form_class = SelectDateRangeExpenseForm
+    form_class = SelectDateRangeExpenseForm
     template_name = "expense_search.html"
     context = {
         "title": "Expense: Search"
@@ -307,43 +306,23 @@ class DateSearch(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         context = self.context.copy()
-        context['date_form'] = self.date_form_class()
-        context['range_form'] = self.range_form_class()
+        form = self.form_class(request.GET or None)
+        objects = None
+        object_total = None
 
-        if request.GET:
-            date_form = self.date_form_class(request.GET)
-            range_form = self.range_form_class(request.GET)
+        if form.is_valid():
+            remark = form.cleaned_data.get('remark', '').strip()
+            from_date = form.cleaned_data.get('from_date')
+            to_date = form.cleaned_data.get('to_date')
+            objects = Expense.objects.all(user=request.user).filter(timestamp__range=(from_date, to_date))
+            if remark:
+                objects = objects.filter(remark__name__icontains=remark)
 
-            objects = None
+            object_total = objects.aggregate(Sum('amount'))['amount__sum']
 
-            if range_form.is_valid():
-                remark = range_form.cleaned_data.get('remark', '').strip()
-                f_dt = range_form.cleaned_data.get('from_date')
-                t_dt = range_form.cleaned_data.get('to_date')
-                objects = Expense.objects.all(user=request.user).filter(timestamp__range=(f_dt, t_dt))
-                if remark:
-                    objects = objects.filter(remark__name__icontains=remark)
-            else:
-                range_form = self.range_form_class()
-
-            if date_form.is_valid():
-                remark = date_form.cleaned_data.get('remark', '').strip()
-                dt = date_form.cleaned_data.get('date')
-                objects = Expense.objects.all(user=request.user).filter(timestamp=dt)
-                if remark:
-                    objects = objects.filter(remark__name__icontains=remark)
-            else:
-                date_form = self.date_form_class()
-
-            if objects:
-                object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
-            else:
-                object_total = None
-
-            context['date_form'] = date_form
-            context['range_form'] = range_form
-            context['objects'] = objects
-            context['object_total'] = object_total
+        context['form'] = form
+        context['objects'] = objects
+        context['object_total'] = object_total
 
         return render(request, self.template_name, context)
 
