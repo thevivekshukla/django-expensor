@@ -18,7 +18,7 @@ $(document).ready(function(){
 
   $('[data-toggle="tooltip"]').tooltip();
   
-  $("#id_search").autocomplete({
+  $("#id_expense_search").autocomplete({
     source: "/autocomplete/get_remark/",
   });
 

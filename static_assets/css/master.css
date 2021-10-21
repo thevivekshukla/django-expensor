@@ -2,10 +2,6 @@
     display: block;
   }
 
-#id_expense_search {
-  text-transform: lowercase;
-}
-
-.cls_expense_remark {
+.lowercase_field {
   text-transform: lowercase;
 }

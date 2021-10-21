@@ -300,9 +300,9 @@ class YearWiseExpense(LoginRequiredMixin, View):
 class DateSearch(LoginRequiredMixin, View):
     date_form_class = SelectDateExpenseForm
     range_form_class = SelectDateRangeExpenseForm
-    template_name = "search.html"
+    template_name = "expense_search.html"
     context = {
-        "title": "Search"
+        "title": "Expense: Search"
     }
 
     def get(self, request, *args, **kwargs):
