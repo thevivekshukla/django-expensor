@@ -2,6 +2,10 @@
     display: block;
   }
 
-form input[type="text"]#id_expense_search {
+#id_expense_search {
+  text-transform: lowercase;
+}
+
+.cls_expense_remark {
   text-transform: lowercase;
 }

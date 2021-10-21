@@ -9,7 +9,8 @@ from utils.helpers import get_ist_datetime
 
 class ExpenseForm(forms.Form):
     amount = forms.IntegerField(help_text=" ")
-    remark = forms.CharField(required=False)
+    remark = forms.CharField(required=False,
+                widget=forms.TextInput(attrs={'class': 'cls_expense_remark'}))
     timestamp = forms.DateField()
 
     def __init__(self, *args, **kwargs):
@@ -20,7 +21,7 @@ class ExpenseForm(forms.Form):
 class SelectDateExpenseForm(forms.Form):
     remark = forms.CharField(required=False,
         widget=forms.TextInput(attrs={
-            'class': 'remark',
+            'class': 'remark cls_expense_remark',
         })
     )
     date = forms.DateField()
@@ -33,7 +34,7 @@ class SelectDateExpenseForm(forms.Form):
 class SelectDateRangeExpenseForm(forms.Form):
     remark = forms.CharField(required=False,
         widget=forms.TextInput(attrs={
-            'class': 'remark',
+            'class': 'remark cls_expense_remark',
         })
     )
     from_date = forms.DateField()
