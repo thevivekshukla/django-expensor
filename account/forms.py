@@ -1,79 +1,66 @@
 from django import forms
-from django.contrib.auth import (authenticate,
-                                login,
-                                logout,
-                                get_user_model
-                                )
+from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
 
 
 class RegisterUserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    password = forms.CharField(required=True, widget=forms.PasswordInput)
+    confirm_password = forms.CharField(required=True, widget=forms.PasswordInput)
 
-    def clean_password2(self, *args, **kwargs):
+    def clean_username(self, *args, **kwargs):
+        return self.cleaned_data.get("username", "").lower()
+        
+    def clean_email(self, *args, **kwargs):
+        return self.cleaned_data.get("email", "").lower()
+
+    def clean_confirm_password(self, *args, **kwargs):
         password = self.cleaned_data.get("password")
-        password2 = self.cleaned_data.get("password2")
-
-        if password != password2:
+        confirm_password = self.cleaned_data.get("confirm_password")
+        if password != confirm_password:
             raise forms.ValidationError("Password does not match.")
 
-        return password
+        return confirm_password
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
 
     class Meta():
         model = User
-        fields = ["username", "email", "password", "password2"]
-
-
-
+        fields = [
+            "username",
+            "email",
+            "password",
+            "confirm_password",
+        ]
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'lowercase_field'}),
+            'email': forms.EmailInput(attrs={'class': 'lowercase_field'}),
+        }
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput)
-    password = forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'lowercase_field'}))
+    password = forms.CharField(required=True, widget=forms.PasswordInput)
 
     def clean_username(self, *args, **kwargs):
-        username = self.cleaned_data.get("username")
-
-        if username == '':
-            raise forms.ValidationError("Username cannot be blank.")
-
-        user = User.objects.filter(username=username)
-
-        if not user:
-            raise forms.ValidationError("User with this username does not exist.")
-
-        return username
-
-    def clean_password(self, *args, **kwargs):
-        username = self.cleaned_data.get("username")
-        password = self.cleaned_data.get("password")
-
-        if password == '':
-            raise forms.ValidationError("Password cannot be blank.")
-
-        user = authenticate(username=username, password=password)
-
-        if not user:
-            raise forms.ValidationError("You have entered wrong password.")
-
-        return password
+        return self.cleaned_data.get("username", "").lower()
 
 
 class ChangePasswordForm(forms.Form):
-    password = forms.CharField(widget=forms.PasswordInput)
-    new_password = forms.CharField(widget=forms.PasswordInput)
-    confirm_new_password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(required=True, widget=forms.PasswordInput)
+    new_password = forms.CharField(required=True, widget=forms.PasswordInput)
+    confirm_new_password = forms.CharField(required=True, widget=forms.PasswordInput)
 
-    def clean_confirm_new_password(self, *args, **kwargs):
-        password = self.cleaned_data.get("new_password")
-        password2 = self.cleaned_data.get("confirm_new_password")
+    def clean(self, *args, **kwargs):
+        cleaned_data = super().clean(*args, **kwargs)
+        new_password = cleaned_data.get("new_password")
+        confirm_new_password = cleaned_data.get("confirm_new_password")
 
-        if password != password2:
-            raise forms.ValidationError("Password must match.")
+        if new_password != confirm_new_password:
+            raise forms.ValidationError("New password must match.")
         
-        return password2
+        return cleaned_data
             
