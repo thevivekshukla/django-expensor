@@ -29,7 +29,7 @@ class SelectDateRangeExpenseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        today_date = get_ist_datetime().date()
-        self.fields['from_date'].initial = today_date - timedelta(days=30)
-        self.fields['to_date'].initial = today_date
+        year = get_ist_datetime().year
+        self.fields['from_date'].initial = f"{year}-01-01"
+        self.fields['to_date'].initial = f"{year}-12-31"
 
