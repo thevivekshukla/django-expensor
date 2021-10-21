@@ -29,9 +29,9 @@ class SelectDateRangeIncomeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        year = get_ist_datetime().year
-        self.fields['from_date'].initial = f"{year}-01-01"
-        self.fields['to_date'].initial = f"{year}-12-31"
+        today = get_ist_datetime()
+        self.fields['from_date'].initial = today.strftime("01/01/%Y")
+        self.fields['to_date'].initial = today.strftime("%m/%d/%Y")
 
 
 class SavingCalculationModelForm(forms.ModelForm):
