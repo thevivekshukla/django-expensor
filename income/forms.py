@@ -1,6 +1,7 @@
 from datetime import date
 
 from django import forms
+from django.conf import settings
 from .models import SavingCalculation
 
 from utils.helpers import get_ist_datetime, default_date_format
@@ -9,7 +10,7 @@ from utils.helpers import get_ist_datetime, default_date_format
 class IncomeForm(forms.Form):
     amount = forms.IntegerField(help_text=" ")
     source = forms.CharField(max_length=30, required=False)
-    timestamp = forms.DateField()
+    timestamp = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,8 +22,8 @@ class IncomeForm(forms.Form):
 
 class SelectDateRangeIncomeForm(forms.Form):
     source = forms.CharField(required=False)
-    from_date = forms.DateField()
-    to_date = forms.DateField()
+    from_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
+    to_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

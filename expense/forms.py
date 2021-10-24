@@ -1,6 +1,7 @@
 from datetime import date
 
 from django import forms
+from django.conf import settings
 from utils.helpers import get_ist_datetime, default_date_format
 
 
@@ -8,7 +9,7 @@ class ExpenseForm(forms.Form):
     amount = forms.IntegerField(help_text=" ")
     remark = forms.CharField(required=False,
                 widget=forms.TextInput(attrs={'class': 'lowercase_field'}))
-    timestamp = forms.DateField()
+    timestamp = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,8 +22,8 @@ class SelectDateRangeExpenseForm(forms.Form):
             'class': 'remark lowercase_field',
         })
     )
-    from_date = forms.DateField()
-    to_date = forms.DateField()
+    from_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
+    to_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
