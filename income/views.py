@@ -439,7 +439,8 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             cal_amount = max(bank_balance - amount_to_keep_in_bank, 0)
 
             # savings calculation
-            savings = max(savings_min_amount, cal_amount * savings_percentage)
+            # savings = max(savings_min_amount, cal_amount * savings_percentage)
+            savings = savings_min_amount + (cal_amount * savings_percentage)
             cal_amount -= savings
             if cal_amount < 0:
                 savings += cal_amount
