@@ -23,15 +23,15 @@ $(document).ready(function(){
   });
 
   $.datepicker.setDefaults({
-    showOn: "button",
-    showButtonPanel: true,
+    showOn: "focus",
     buttonImage: "/static/images/calendar.gif",
     buttonImageOnly: true,
     dateFormat: "dd/mm/yy",
     changeMonth: true,
     changeYear: true,
-    showOptions: { direction: "down" },
-    showOtherMonths: true,
+    showAnim: "blind",
+    showOptions: { direction: "up" },
+    showOtherMonths: false,
     selectOtherMonths: true
   });
 
