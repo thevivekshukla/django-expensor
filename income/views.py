@@ -440,11 +440,15 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
             # savings calculation
             # savings = max(savings_min_amount, cal_amount * savings_percentage)
-            savings = savings_min_amount + (cal_amount * savings_percentage)
+            savings = savings_min_amount
             cal_amount -= savings
             if cal_amount < 0:
                 savings += cal_amount
                 cal_amount = 0
+            else:
+                savings_percentage_amount = cal_amount * savings_percentage
+                savings += savings_percentage_amount
+                cal_amount -= savings_percentage_amount
 
             data = {
                 'savings': self.return_in_multiples(savings),
