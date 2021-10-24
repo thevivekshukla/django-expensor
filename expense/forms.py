@@ -29,6 +29,8 @@ class SelectDateRangeExpenseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['from_date'].help_text = "dd/mm/yyyy"
+        self.fields['to_date'].help_text = "dd/mm/yyyy"
         today = get_ist_datetime()
         self.fields['from_date'].initial = today.strftime("01/01/%Y")
         self.fields['to_date'].initial = today.strftime("%d/%m/%Y")
