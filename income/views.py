@@ -382,7 +382,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             avg_income = income_sum / MONTHS
             amounts.append(avg_income)
 
-        return statistics.mean(amounts) * 0.8
+        return statistics.mean(amounts) * 0.9
 
     def get(self, request, *args, **kwargs):
         user = request.user
