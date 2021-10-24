@@ -30,7 +30,7 @@ $(document).ready(function(){
     dateFormat: "dd/mm/yy",
     changeMonth: true,
     changeYear: true,
-    showAnim: "slide",
+    showOptions: { direction: "down" },
     showOtherMonths: true,
     selectOtherMonths: true
   });
