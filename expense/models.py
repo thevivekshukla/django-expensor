@@ -14,6 +14,7 @@ from utils.helpers import get_ist_datetime
 
 
 class ExpenseManager(models.Manager):
+
     def all(self, user=None, *args, **kwargs):
         return super(ExpenseManager, self).filter(user=user)
 
@@ -50,7 +51,6 @@ class ExpenseManager(models.Manager):
         qs = Expense.objects.this_month(user=user, year=year, month=month).filter(timestamp__day=d)
         return qs
 
-
     def amount_sum(self, user=None, year=None, month=None, day=None, *args, **kwargs):
         total = {}
         qs = Expense.objects
@@ -61,7 +61,6 @@ class ExpenseManager(models.Manager):
         total['day'] = qs.this_day(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
 
         return total
-
 
 
 class Remark(BaseModel):
@@ -98,3 +97,4 @@ def preprocess_remark(instance, sender, *args, **kwargs):
         instance.name = instance.name.strip().lower()
 
 pre_save.connect(preprocess_remark, sender=Remark)
+
