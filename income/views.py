@@ -105,7 +105,7 @@ class IncomeUpdateView(LoginRequiredMixin, View):
         initial_data = {
             'amount': income.amount,
             'source': income.source,
-            'timestamp': income.timestamp,
+            'timestamp': helpers.default_date_format(income.timestamp),
         }
         
         self.context['income_form'] = self.form_class(initial=initial_data)

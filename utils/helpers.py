@@ -2,6 +2,7 @@ import pytz
 from django.utils import timezone
 from django.db.models import Sum
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.conf import settings
 
 
 def get_ist_datetime(dt=None):
@@ -38,5 +39,9 @@ def get_paginator_object(request, queryset, paginate_by):
         objects = paginator.page(paginator.num_pages)
         
     return objects
+
+
+def default_date_format(dt):
+    return dt.strftime(settings.DEFAULT_DATE_FORMAT)
     
 

@@ -20,8 +20,13 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 STATIC_DIR = os.path.join(BASE_DIR, "static_assets")
 
 
-
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+DEFAULT_DATE_FORMAT = "%d/%m/%Y"
+DATE_INPUT_FORMATS = [
+    DEFAULT_DATE_FORMAT,
+    "%Y-%m-%d",
+]
 
 
 # Quick-start development settings - unsuitable for production

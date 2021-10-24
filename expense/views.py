@@ -120,7 +120,7 @@ class UpdateExpense(LoginRequiredMixin, View):
         initial_data = {
             'amount': instance.amount,
             'remark': instance.remark,
-            'timestamp': instance.timestamp
+            'timestamp': helpers.default_date_format(instance.timestamp),
         }
         form = self.form_class(initial=initial_data)
         self.context['form'] = form

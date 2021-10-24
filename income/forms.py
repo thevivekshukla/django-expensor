@@ -1,12 +1,9 @@
-from typing import Dict, Any
+from datetime import date
 
-from datetime import timedelta
 from django import forms
-from django.forms import widgets
-from django.utils import timezone
-from .models import SavingCalculation, InvestmentEntity
+from .models import SavingCalculation
 
-from utils.helpers import get_ist_datetime
+from utils.helpers import get_ist_datetime, default_date_format
 
 
 class IncomeForm(forms.Form):
@@ -16,7 +13,7 @@ class IncomeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['timestamp'].initial = get_ist_datetime().date()
+        self.fields['timestamp'].initial = default_date_format(get_ist_datetime())
         
     class Meta():
         fields = ['amount', 'source', 'timestamp']
@@ -24,16 +21,14 @@ class IncomeForm(forms.Form):
 
 class SelectDateRangeIncomeForm(forms.Form):
     source = forms.CharField(required=False)
-    from_date = forms.DateField(input_formats=["%d/%m/%Y"])
-    to_date = forms.DateField(input_formats=["%d/%m/%Y"])
+    from_date = forms.DateField()
+    to_date = forms.DateField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['from_date'].help_text = "dd/mm/yyyy"
-        self.fields['to_date'].help_text = "dd/mm/yyyy"
         today = get_ist_datetime()
-        self.fields['from_date'].initial = today.strftime("01/01/%Y")
-        self.fields['to_date'].initial = today.strftime("%d/%m/%Y")
+        self.fields['from_date'].initial = default_date_format(date(today.year, 1, 1))
+        self.fields['to_date'].initial = default_date_format(today)
 
 
 class SavingCalculationModelForm(forms.ModelForm):

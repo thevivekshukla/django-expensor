@@ -1,10 +1,7 @@
-from datetime import date, timedelta
+from datetime import date
 
 from django import forms
-from django.utils import timezone
-
-from .models import Expense
-from utils.helpers import get_ist_datetime
+from utils.helpers import get_ist_datetime, default_date_format
 
 
 class ExpenseForm(forms.Form):
@@ -15,7 +12,7 @@ class ExpenseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['timestamp'].initial = get_ist_datetime().date()
+        self.fields['timestamp'].initial = default_date_format(get_ist_datetime())
 
 
 class SelectDateRangeExpenseForm(forms.Form):
@@ -24,15 +21,13 @@ class SelectDateRangeExpenseForm(forms.Form):
             'class': 'remark lowercase_field',
         })
     )
-    from_date = forms.DateField(input_formats=["%d/%m/%Y"])
-    to_date = forms.DateField(input_formats=["%d/%m/%Y"])
+    from_date = forms.DateField()
+    to_date = forms.DateField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['from_date'].help_text = "dd/mm/yyyy"
-        self.fields['to_date'].help_text = "dd/mm/yyyy"
         today = get_ist_datetime()
-        self.fields['from_date'].initial = today.strftime("01/01/%Y")
-        self.fields['to_date'].initial = today.strftime("%d/%m/%Y")
+        self.fields['from_date'].initial = default_date_format(date(today.year, 1, 1))
+        self.fields['to_date'].initial = default_date_format(today)
 
 
