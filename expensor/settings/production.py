@@ -6,6 +6,16 @@ ALLOWED_HOSTS = config('HOST', cast=Csv())
 
 SECRET_KEY = config('SECRET_KEY')
 
+"""
+*************************** SECURITY ****************************************
+"""
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_HSTS_SECONDS = 600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 
 ####################### django-dbbackup ##############3
 DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
