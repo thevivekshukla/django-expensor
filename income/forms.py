@@ -24,14 +24,14 @@ class IncomeForm(forms.Form):
 
 class SelectDateRangeIncomeForm(forms.Form):
     source = forms.CharField(required=False)
-    from_date = forms.DateField()
-    to_date = forms.DateField()
+    from_date = forms.DateField(input_formats=["%d/%m/%Y"])
+    to_date = forms.DateField(input_formats=["%d/%m/%Y"])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         today = get_ist_datetime()
         self.fields['from_date'].initial = today.strftime("01/01/%Y")
-        self.fields['to_date'].initial = today.strftime("%m/%d/%Y")
+        self.fields['to_date'].initial = today.strftime("%d/%m/%Y")
 
 
 class SavingCalculationModelForm(forms.ModelForm):

@@ -22,6 +22,19 @@ $(document).ready(function(){
     source: "/autocomplete/get_remark/",
   });
 
+  $.datepicker.setDefaults({
+    showOn: "button",
+    showButtonPanel: true,
+    buttonImage: "/static/images/calendar.gif",
+    buttonImageOnly: true,
+    dateFormat: "dd/mm/yy",
+    changeMonth: true,
+    changeYear: true,
+    showAnim: "slide",
+    showOtherMonths: true,
+    selectOtherMonths: true
+  });
+
 });
 
 
