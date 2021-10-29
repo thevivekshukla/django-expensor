@@ -382,7 +382,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             avg_income = income_sum / MONTHS
             amounts.append(avg_income)
 
-        return statistics.mean(amounts) * 0.8
+        return statistics.mean(amounts)
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -406,7 +406,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 defaults_message.append(f"Income: ₹ {income:,}")
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
-                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT)
+                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * 0.8)
                 defaults_message.append(f"<b>Amount to keep in bank</b> is auto generated.")
 
             if not savings.savings_min_amount and savings.auto_fill_savings_min_amount:
