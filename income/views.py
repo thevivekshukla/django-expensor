@@ -367,15 +367,26 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         final_amount = (amount // multiples_of) * multiples_of
         return final_amount
 
-    def gen_bank_amount(self):
+    def gen_bank_amount(self, offset_times=None):
         MONTHS = 3
         DAYS = MONTHS * 30
         now = helpers.get_ist_datetime().date()
         amounts = []
         incomes = self.request.user.incomes
 
-        for offset_days in [-15, -7, 0, 7, 15]:
-            offset_now = now + timedelta(days=offset_days)
+        if not offset_times:
+            offset_times = 2
+        else:
+            offset_times = int(offset_times)
+        offset = [-7, 7]
+        offset_days = [0]
+        for x in range(1, offset_times+1):
+            offset_days.extend([x * i for i in offset])
+        print(sorted(offset_days))
+        
+        # for offset_days in [-15, -7, 0, 7, 15]:
+        for offset_day in offset_days:
+            offset_now = now + timedelta(days=offset_day)
             past = offset_now - timedelta(days=DAYS)
             offset_incomes = incomes.filter(timestamp__range=(past, offset_now))
             income_sum = offset_incomes.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -399,7 +410,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
             MIN_SAVINGS_PCT = 0.1
-            BANK_AMOUNT = self.gen_bank_amount()
+            BANK_AMOUNT = self.gen_bank_amount(offset_times=request.GET.get('offset_times'))
 
             if income:
                 income = int(income)
