@@ -374,7 +374,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         amounts = []
         incomes = self.request.user.incomes
 
-        for offset_days in [-15, 0, 15]:
+        for offset_days in [-15, -7, 0, 7, 15]:
             offset_now = now + timedelta(days=offset_days)
             past = offset_now - timedelta(days=DAYS)
             offset_incomes = incomes.filter(timestamp__range=(past, offset_now))
