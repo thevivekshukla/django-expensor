@@ -39,13 +39,13 @@ class SavingCalculationModelForm(forms.ModelForm):
             'message',
             'amount_to_keep_in_bank',
             'auto_fill_amount_to_keep_in_bank',
-            'savings_min_amount',
-            'auto_fill_savings_min_amount',
+            'savings_fixed_amount',
+            'auto_fill_savings_fixed_amount',
             'savings_percentage',
         )
         widgets = {
             'message': forms.Textarea(attrs={'rows':10,}),
-            'savings_min_amount': forms.NumberInput(attrs={'placeholder': 'amount', 'min': 0}),
+            'savings_fixed_amount': forms.NumberInput(attrs={'placeholder': 'amount', 'min': 0}),
             'savings_percentage': forms.NumberInput(attrs={'placeholder': '(0-100)%', 'min': 0, 'max': 100}),
             'amount_to_keep_in_bank': forms.NumberInput(attrs={'placeholder': 'amount', 'min': 0}),
         }
@@ -53,7 +53,7 @@ class SavingCalculationModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['auto_fill_amount_to_keep_in_bank'].help_text = "only works if Amount to keep in bank is 0"
-        self.fields['auto_fill_savings_min_amount'].help_text = "only works if Savings min amount is 0"
+        self.fields['auto_fill_savings_fixed_amount'].help_text = "only works if Savings fixed amount is 0"
 
 
 class InvestmentEntityForm(forms.Form):
@@ -92,7 +92,7 @@ class SavingCalculatorForm(forms.Form):
 
     bank_balance = forms.IntegerField(min_value=0, widget=common_amt_widget)
     amount_to_keep_in_bank = forms.IntegerField(min_value=0, widget=common_amt_widget)
-    savings_min_amount = forms.IntegerField(initial=0, min_value=0, widget=common_amt_widget)
+    savings_fixed_amount = forms.IntegerField(initial=0, min_value=0, widget=common_amt_widget)
     savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100,
                              widget=forms.NumberInput(attrs={'placeholder': '(0-100)%'}))
 

@@ -394,7 +394,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         try:
             savings = user.saving_calculation
             message = markdown.markdown(savings.message if savings.message else "")
-            initial_data['savings_min_amount'] = savings.savings_min_amount
+            initial_data['savings_fixed_amount'] = savings.savings_fixed_amount
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
@@ -409,10 +409,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * 0.8)
                 defaults_message.append(f"<b>Amount to keep in bank</b> is auto generated.")
 
-            if not savings.savings_min_amount and savings.auto_fill_savings_min_amount:
+            if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount:
                 income_to_use = income if income else BANK_AMOUNT
-                initial_data['savings_min_amount'] = self.return_in_multiples(income_to_use * MIN_SAVINGS_PCT)
-                defaults_message.append("<b>Savings min amount</b> is auto generated.")
+                initial_data['savings_fixed_amount'] = self.return_in_multiples(income_to_use * MIN_SAVINGS_PCT)
+                defaults_message.append("<b>Savings fixed amount</b> is auto generated.")
 
         except SavingCalculation.DoesNotExist:
             pass
@@ -430,7 +430,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         inv_form = self.inv_form_class(user=request.user, data=request.POST)
 
         if form.is_valid() and inv_form.is_valid():
-            savings_min_amount = form.cleaned_data['savings_min_amount']
+            savings_fixed_amount = form.cleaned_data['savings_fixed_amount']
             savings_percentage = form.cleaned_data['savings_percentage']/100
             amount_to_keep_in_bank = form.cleaned_data['amount_to_keep_in_bank']
             bank_balance = form.cleaned_data['bank_balance']
@@ -439,7 +439,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             cal_amount = max(bank_balance - amount_to_keep_in_bank, 0)
 
             # savings calculation
-            savings = savings_min_amount
+            savings = savings_fixed_amount
             cal_amount -= savings
             if cal_amount < 0:
                 savings += cal_amount
