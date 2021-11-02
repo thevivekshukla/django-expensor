@@ -156,7 +156,7 @@ class ExpenseList(LoginRequiredMixin, View):
     template_name = "expense_list.html"
 
     def get(self, request, *args, **kwargs):
-        objects_list = Expense.objects.all(user=request.user)
+        objects_list = Expense.objects.all(user=request.user).order_by("-timestamp")
         first_date = None
 
         if objects_list:
