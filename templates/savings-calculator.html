@@ -8,7 +8,12 @@
     tr, td, th {
         border: none !important;
     }
-    ul li { padding: 1px 0px; }
+    ul .defaults_message {
+        padding: 1px 0px;
+    }
+    .defaults_message {
+        margin-left: -15px;
+    }
 </style>
 {% endblock head %}
 
@@ -53,10 +58,10 @@
 
         {% if defaults_message %}
             <div class="alert alert-warning" role="alert">
-                <ul>
-                {% for dm in defaults_message %}
-                    <li>{{ dm|safe }}</li>
-                {% endfor %}
+                <ul class="defaults_message">
+                    {% for dm in defaults_message %}
+                        <li>{{ dm|safe }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         {% endif %}
