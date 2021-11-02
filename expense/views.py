@@ -165,17 +165,7 @@ class ExpenseList(LoginRequiredMixin, View):
         q = request.GET.get("q")
         object_total = None
         if q:
-            filter_Q = Q(amount__iexact=q)
-            queries = [x.strip() for x in q.split(',')]
-
-            for query in queries:
-                if query.count('"') == 2 and (query[0] == '"' and query[-1] == '"'):
-                    query = query.strip('"')
-                    filter_Q |= Q(remark__name__iexact=query)
-                else:
-                    filter_Q |= Q(remark__name__icontains=query)
-            
-            objects_list = objects_list.filter(filter_Q).distinct()
+            objects_list = helpers.search_expense_remark(objects_list, q)
             object_total = objects_list.aggregate(Sum('amount'))['amount__sum'] or 0
 
         order_field = request.GET.get("field")
@@ -321,7 +311,7 @@ class DateSearch(LoginRequiredMixin, View):
             to_date = form.cleaned_data.get('to_date')
             objects = Expense.objects.all(user=request.user).filter(timestamp__range=(from_date, to_date))
             if remark:
-                objects = objects.filter(remark__name__icontains=remark)
+                objects = helpers.search_expense_remark(objects, remark)
 
             object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
             try:

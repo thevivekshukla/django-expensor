@@ -1,6 +1,6 @@
 import pytz
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.conf import settings
 
@@ -44,4 +44,18 @@ def get_paginator_object(request, queryset, paginate_by):
 def default_date_format(dt):
     return dt.strftime(settings.DEFAULT_DATE_FORMAT)
     
+
+def search_expense_remark(queryset, q):
+    filter_Q = Q(amount__iexact=q)
+    queries = [x.strip() for x in q.split(',')]
+
+    for query in queries:
+        if query.count('"') == 2 and (query[0] == '"' and query[-1] == '"'):
+            query = query.strip('"')
+            filter_Q |= Q(remark__name__iexact=query)
+        else:
+            filter_Q |= Q(remark__name__icontains=query)
+    
+    queryset = queryset.filter(filter_Q).distinct()
+    return queryset
 
