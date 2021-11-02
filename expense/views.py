@@ -165,10 +165,17 @@ class ExpenseList(LoginRequiredMixin, View):
         q = request.GET.get("q")
         object_total = None
         if q:
-            objects_list = objects_list.filter(
-                        Q(remark__name__icontains=q) |
-                        Q(amount__icontains=q)
-                        ).distinct()
+            filter_Q = Q(amount__iexact=q)
+            queries = [x.strip() for x in q.split(',')]
+
+            for query in queries:
+                if query.count('"') == 2 and (query[0] == '"' and query[-1] == '"'):
+                    query = query.strip('"')
+                    filter_Q |= Q(remark__name__iexact=query)
+                else:
+                    filter_Q |= Q(remark__name__icontains=query)
+            
+            objects_list = objects_list.filter(filter_Q).distinct()
             object_total = objects_list.aggregate(Sum('amount'))['amount__sum'] or 0
 
         order_field = request.GET.get("field")

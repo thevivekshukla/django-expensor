@@ -19,7 +19,7 @@
 
 {% if request.GET.q %}
   <div class="alert alert-info">
-    <h4>Total for search "{{ request.GET.q }}": {{ object_total|intcomma }}</h4>
+    <h4>Total for search <i>{{ request.GET.q }}</i>: {{ object_total|intcomma }}</h4>
   </div>
 {% elif object_total %}
   <div class="alert alert-info">
