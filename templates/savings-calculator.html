@@ -8,9 +8,6 @@
     tr, td, th {
         border: none !important;
     }
-    ul .defaults_message {
-        padding: 1px 0px;
-    }
     .defaults_message {
         margin-left: -15px;
     }
@@ -60,7 +57,7 @@
             <div class="alert alert-warning" role="alert">
                 <ul class="defaults_message">
                     {% for dm in defaults_message %}
-                        <li>{{ dm|safe }}</li>
+                        <li style="padding: 2px 0px;">{{ dm|safe }}</li>
                     {% endfor %}
                 </ul>
             </div>
