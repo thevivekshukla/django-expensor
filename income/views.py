@@ -398,7 +398,8 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            FIXED_SAVINGS_PCT = 0.1
+            BANK_AMOUNT_PCT = 80
+            FIXED_SAVINGS_PCT = 10
             BANK_AMOUNT = int(self.gen_bank_amount())
 
             if income:
@@ -406,13 +407,13 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 defaults_message.append(f"Income: {income:,}")
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
-                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * 0.8)
-                defaults_message.append(f"Amount to keep in bank is 80% of {BANK_AMOUNT:,}")
+                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * (BANK_AMOUNT_PCT/100))
+                defaults_message.append(f"Amount to keep in bank is {BANK_AMOUNT_PCT}% of {BANK_AMOUNT:,}")
 
             if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount:
                 income_to_use = income if income else BANK_AMOUNT
-                initial_data['savings_fixed_amount'] = self.return_in_multiples(income_to_use * FIXED_SAVINGS_PCT)
-                defaults_message.append(f"Savings fixed amount is 10% of {income_to_use:,}")
+                initial_data['savings_fixed_amount'] = self.return_in_multiples(income_to_use * (FIXED_SAVINGS_PCT/100))
+                defaults_message.append(f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income_to_use:,}")
 
         except SavingCalculation.DoesNotExist:
             pass
