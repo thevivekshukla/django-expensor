@@ -382,7 +382,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             past = offset_now - timedelta(days=DAYS)
             offset_incomes = incomes.filter(timestamp__range=(past, offset_now))
             income_sum = offset_incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-            avg_income = income_sum / MONTHS
+            avg_income = income_sum // MONTHS
             amounts.append(avg_income)
 
         if not amounts:
