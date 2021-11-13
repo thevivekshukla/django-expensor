@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load humanize %}
+{% load income_utils %}
 
 
 {% block head %}
@@ -26,7 +27,7 @@
                 <table class="table">
                     <tr>
                         <td><strong>Savings:</strong></td>
-                        <td><strong>{{ data.savings|intcomma }}</strong></td>
+                        <td><strong>{{ data.savings|intcomma }}</strong> ({% get_percent data.savings total %}%)</td>
                     </tr>
 
                     {% if data.investment.items  %}
@@ -39,7 +40,7 @@
                     {% for inv_name, inv_amount in data.investment.items %}
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;<i>{{ inv_name }}</i></td>
-                            <td><i>{{ inv_amount|intcomma }}</i></td>
+                            <td><i>{{ inv_amount|intcomma }}</i> ({% get_percent inv_amount total %}%)</td>
                         </tr>
                     {% endfor %}
 

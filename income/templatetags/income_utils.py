@@ -14,3 +14,10 @@ def show_calculator(income_object):
     if now < later_created_time:
         return True
     return False
+
+
+@register.simple_tag(name='get_percent')
+def get_percent(amount, total):
+    return int(round((amount/total) * 100, 0))
+
+
