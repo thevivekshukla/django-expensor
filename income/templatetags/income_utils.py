@@ -18,6 +18,9 @@ def show_calculator(income_object):
 
 @register.simple_tag(name='get_percent')
 def get_percent(amount, total):
-    return int(round((amount/total) * 100, 0))
+    try:
+        return int(round((amount/total) * 100, 0))
+    except ZeroDivisionError:
+        return 0
 
 
