@@ -55,7 +55,7 @@
         {% endif %}
 
         {% if defaults_message %}
-            <div class="alert alert-warning" role="alert">
+            <div class="alert alert-warning" role="alert" style="background-color: lightgray;">
                 <ul class="defaults_message">
                     {% for dm in defaults_message %}
                         <li style="padding: 2px 0px;">{{ dm|safe }}</li>
