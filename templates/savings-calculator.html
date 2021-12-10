@@ -136,6 +136,7 @@
     $("#curr_income").on("click", function() {
         let income = parseInt($("#curr_income").html().replace(/,/g, ''));
         $("#id_bank_balance").val( income );
+        $("#notification").collapse('hide');
     });
 
 </script>
