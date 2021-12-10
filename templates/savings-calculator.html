@@ -57,15 +57,51 @@
             </div>
         {% endif %}
 
-        {% if defaults_message %}
-            <div class="alert alert-default" role="alert" style="background-color: lightgray;">
-                <ul class="defaults_message">
-                    {% for dm in defaults_message %}
-                        <li style="padding: 2px 0px;">{{ dm|safe }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+            {% if defaults_message %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#notification" aria-expanded="false" aria-controls="recentTxn">
+                                Notification
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="notification" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <div class="alert alert-default" role="alert" style="background-color: lightgray;">
+                                <ul class="defaults_message">
+                                    {% for dm in defaults_message %}
+                                        <li style="padding: 2px 0px;">{{ dm|safe }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if message %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false" aria-controls="recentTxn">
+                                Message
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <div class="alert alert-info">
+                                <p>{{ message|safe|linebreaks }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        
+        </div>
 
         <form action="" method="POST">
             {% csrf_token %}
@@ -78,14 +114,6 @@
 
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
-
-            {% if message %}
-                <br>
-                <div class="alert alert-info">
-                    <!-- <strong><u>Message</u>:</strong> -->
-                    <p>{{ message|safe|linebreaks }}</p>
-                </div>
-            {% endif %}
 
             <a style="float:right;" class="btn btn-primary" href="{% url 'income:savings-calculation-detail' %}"><i class="glyphicon glyphicon-cog"></i></a>
         </form>
