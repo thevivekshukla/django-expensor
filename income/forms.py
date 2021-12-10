@@ -42,6 +42,7 @@ class SavingCalculationModelForm(forms.ModelForm):
             'savings_fixed_amount',
             'auto_fill_savings_fixed_amount',
             'savings_percentage',
+            'amount_in_multiples_of',
         )
         widgets = {
             'message': forms.Textarea(attrs={'rows':10,}),

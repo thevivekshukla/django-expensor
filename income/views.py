@@ -363,7 +363,13 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         'title': 'Savings Calculator',
     }
 
-    def return_in_multiples(self, amount, multiples_of=100):
+    def return_in_multiples(self, amount):
+        user = self.request.user
+        try:
+            multiples_of = user.saving_calculation.amount_in_multiples_of
+        except:
+            multiples_of = 100
+            
         amount = math.ceil(amount)
         final_amount = (amount // multiples_of) * multiples_of
         return final_amount
