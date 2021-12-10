@@ -12,6 +12,9 @@
     .defaults_message {
         margin-left: -15px;
     }
+    #curr_income {
+        cursor: pointer;
+    }
 </style>
 {% endblock head %}
 
@@ -125,5 +128,17 @@
 
 <p><br><br><br><br><br></p>
 {% endblock body %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+    $("#curr_income").on("click", function() {
+        let income = parseInt($("#curr_income").html().replace(/,/g, ''));
+        $("#id_bank_balance").val( income );
+    });
+
+</script>
+{% endblock js %}
 
 

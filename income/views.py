@@ -421,7 +421,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
             if income:
                 income = int(income)
-                defaults_message.append(f"Income: {income:,}")
+                defaults_message.append(f'Income: <span id="curr_income" class="badge">{income:,}</span>')
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * (BANK_AMOUNT_PCT/100))
