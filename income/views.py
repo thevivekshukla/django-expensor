@@ -425,7 +425,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * (BANK_AMOUNT_PCT/100))
-                defaults_message.append(f"Amount to keep in bank is {BANK_AMOUNT_PCT}% of {BANK_AMOUNT:,}")
+                defaults_message.append(f'Amount to keep in bank is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>% of {BANK_AMOUNT:,}')
 
             if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount:
                 income_to_use = income if income else BANK_AMOUNT

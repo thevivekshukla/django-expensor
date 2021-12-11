@@ -134,8 +134,12 @@
 <script type="text/javascript">
 
     $("#curr_income").on("click", function() {
-        let income = parseInt($("#curr_income").html().replace(/,/g, ''));
+        let income = parseInt( $("#curr_income").html().replace(/,/g, '') );
         $("#id_bank_balance").val( income );
+
+        let bank_amount_pct = parseInt( $("#bank_amount_pct").html() ) | 80;
+        $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
+
         $("#notification").collapse('hide');
     });
 
