@@ -137,8 +137,10 @@
         let income = parseInt( $("#curr_income").html().replace(/,/g, '') );
         $("#id_bank_balance").val( income );
 
-        let bank_amount_pct = parseInt( $("#bank_amount_pct").html() ) | 80;
-        $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
+        let bank_amount_pct = parseInt( $("#bank_amount_pct").html() );
+        if ( !isNaN(bank_amount_pct) ) {
+            $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
+        }
 
         $("#notification").collapse('hide');
     });
