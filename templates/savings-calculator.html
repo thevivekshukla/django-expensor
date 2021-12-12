@@ -60,30 +60,17 @@
             </div>
         {% endif %}
 
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% if defaults_message %}
+            <div class="alert alert-default" role="alert" style="background-color: lightgray;">
+                <ul class="defaults_message">
+                    {% for dm in defaults_message %}
+                        <li style="padding: 2px 0px;">{{ dm|safe }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
-            {% if defaults_message %}
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingTwo">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#notification" aria-expanded="false" aria-controls="recentTxn">
-                                Notification
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="notification" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                        <div class="panel-body">
-                            <div class="alert alert-default" role="alert" style="background-color: lightgray;">
-                                <ul class="defaults_message">
-                                    {% for dm in defaults_message %}
-                                        <li style="padding: 2px 0px;">{{ dm|safe }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
             {% if message %}
                 <div class="panel panel-default">
@@ -141,8 +128,6 @@
         if ( !isNaN(bank_amount_pct) ) {
             $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
         }
-
-        $("#notification").collapse('hide');
     });
 
 </script>
