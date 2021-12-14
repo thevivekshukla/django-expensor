@@ -26,7 +26,7 @@ class AddExpense(LoginRequiredMixin, View):
     template_name = "add_expense.html"
     context = {
         'form': form_class,
-        'title': "Add expense"
+        'title': "Add Expense"
     }
 
     def get(self, request, *args, **kwargs):
