@@ -19,8 +19,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 STATIC_DIR = os.path.join(BASE_DIR, "static_assets")
 
-
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 DEFAULT_DATE_FORMAT = "%d/%m/%Y"
 DATE_INPUT_FORMATS = [
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'expense',
     'crispy_forms',
+    'crispy_bootstrap5',
     'dbbackup',
     'storages',
     'income',

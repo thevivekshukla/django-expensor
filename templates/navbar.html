@@ -1,74 +1,68 @@
-<nav class="navbar-default">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar" style="color:black;"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+    <div class="navbar-brand">
+      <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#myNavbar">
+        <span class="navbar-toggler-icon"></span>
       </button>
       <a class="navbar-brand" href="{% url 'expense:expense_list' %}">Expensor</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
         {% if request.user.is_authenticated %}
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="far fa-credit-card"></i> Expense
-          <span class="caret"></span></a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href=""><i class="far fa-credit-card"></i> Expense</a>
           <ul class="dropdown-menu">
-            <li><a class="navbar-link" href="{% url 'expense:add_expense' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:expense_list' %}"><i class="fas fa-list"></i> All</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:year-wise-expense' %}"><i class="far fa-calendar-alt"></i> Yearly</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:month-wise-expense' %}"><i class="far fa-calendar-alt"></i> Monthly</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:day-wise-expense' %}"><i class="far fa-calendar-alt"></i> Daily</a></li>
-            <li><a class="navbar-link" href="{% url 'expense:search' %}"><i class="fas fa-search"></i> Advance Search</a></li>
+            <li><a class="dropdown-item" href="{% url 'expense:add_expense' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
+            <li><a class="dropdown-item" href="{% url 'expense:expense_list' %}"><i class="fas fa-list"></i> All</a></li>
+            <li><a class="dropdown-item" href="{% url 'expense:year-wise-expense' %}"><i class="far fa-calendar-alt"></i> Yearly</a></li>
+            <li><a class="dropdown-item" href="{% url 'expense:month-wise-expense' %}"><i class="far fa-calendar-alt"></i> Monthly</a></li>
+            <li><a class="dropdown-item" href="{% url 'expense:day-wise-expense' %}"><i class="far fa-calendar-alt"></i> Daily</a></li>
+            <li><a class="dropdown-item" href="{% url 'expense:search' %}"><i class="fas fa-search"></i> Advance Search</a></li>
           </ul>
         </li>
 
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fas fa-coins"></i> Income
-          <span class="caret"></span></a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href=""><i class="fas fa-coins"></i> Income</a>
           <ul class="dropdown-menu">
-            <li><a class="navbar-link" href="{% url 'income:add-income' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
-            <li><a class="navbar-link" href="{% url 'income:income-list' %}"><i class="fas fa-list"></i> All</a></li>
-            <li><a class="navbar-link" href="{% url 'income:month-income-list' %}"><i class="far fa-calendar-alt"></i> Monthly</a></li>
-            <li><a class="navbar-link" href="{% url 'income:search' %}"><i class="fas fa-search"></i> Advance Search</a></li>
+            <li><a class="dropdown-item" href="{% url 'income:add-income' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
+            <li><a class="dropdown-item" href="{% url 'income:income-list' %}"><i class="fas fa-list"></i> All</a></li>
+            <li><a class="dropdown-item" href="{% url 'income:month-income-list' %}"><i class="far fa-calendar-alt"></i> Monthly</a></li>
+            <li><a class="dropdown-item" href="{% url 'income:search' %}"><i class="fas fa-search"></i> Advance Search</a></li>
           </ul>
         </li>
 
-        <li class="dropdown">
-          <li><a class="navbar-link" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Savings Calculator</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Savings Calculator</a>
         </li>
+
       </ul>
 
-      <form class="navbar-form navbar-left" action="{% url 'expense:expense_list' %}" method="GET">
-        <div class="input-group">
-          <input type="text" id="id_expense_search" class="form-control lowercase_field" name="q" placeholder="Search expenses" value="{{ request.GET.q }}" required>
-          <span class="input-group-btn">
-            <button type="submit" class="btn btn-default">Search</button>
-          </span>
-        </div>
+      <form class="d-flex" action="{% url 'expense:expense_list' %}" method="GET">
+        <input class="form-control me-2 lowercase_field" type="search" id="id_expense_search" name="q" placeholder="Search expenses" value="{{ request.GET.q }}" required aria-label="Search">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
       </form>
 
       {% endif %}
 
       <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="">
               <span class="glyphicon glyphicon-user"></span> {{ request.user.username }}
-          <span class="caret"></span></a>
+          </a>
           <ul class="dropdown-menu">
-              <li><a class="navbar-link" href="{% url 'account:change-password' %}"><span class="glyphicon glyphicon-cog"></span> Change Password</a></li>
-              <li><a class="navbar-link" href="{% url 'account:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+              <li><a class="dropdown-item" href="{% url 'account:change-password' %}"><span class="glyphicon glyphicon-cog"></span> Change Password</a></li>
+              <li><a class="dropdown-item" href="{% url 'account:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           </ul>
         </li>
 
         {% else %}
-        <li><a class="navbar-link" href="{% url 'account:register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-        <li><a class="navbar-link" href="{% url 'account:login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li><a class="dropdown-item" href="{% url 'account:register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+        <li><a class="dropdown-item" href="{% url 'account:login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         {% endif %}
       </ul>
+
     </div>
   </div>
 </nav>
