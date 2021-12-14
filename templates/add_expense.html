@@ -180,10 +180,10 @@
             $("#id_success").hide();
           }, 5000);
           // updating accordion if new expense is added and accordion is open
-          if ( $("#basicInfoCollapsible.in").size() == 1 ) {
+          if ( $("#basicInfoCollapsible.in").length == 1 ) {
             fetchBasicInfo();
           }
-          if ( $("#recentTxn.in").size() == 1 ) {
+          if ( $("#recentTxn.in").length == 1 ) {
             fetchLatestExpenses();
           }
 
