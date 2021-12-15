@@ -11,7 +11,7 @@
     <form method="post" id="id_add_income" action="">
       {% csrf_token %}
       {{ income_form|crispy }}
-      <input type="submit" class="btn btn-primary" value="{{ title }}">
+      <input type="submit" class="btn btn-primary btn-block" value="{{ title }}">
     </form>
   </div>
 
@@ -54,16 +54,14 @@
         url: form.attr('action'),
         data: form.serialize(),
         success: function(data){
-          // window.location = "{% url 'income:savings-calculator' %}?income="+ form[0]['amount']['value']
-          window.location = "{% url 'income:income-list' %}"
+          document.getElementById('hint_id_amount').innerHTML = "";
+
           $("#id_error").css("display", "none");
           form[0].reset();
           $("#id_success").text("Added successfully.");
           $("#id_success").css("display", "inline-block");
 
-          setTimeout(function() {
-            $("#id_success").hide();
-          }, 5000);
+          window.location = "{% url 'income:income-list' %}";
         },
         error: function(data){
           $("#id_success").css("display", "none");
