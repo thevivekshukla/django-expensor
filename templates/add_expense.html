@@ -18,8 +18,8 @@
 <br>
 <div class="row">
   <div class="col-sm-12 col-md-6 col-lg-6">
-    <p id="id_success" class="alert alert-success" style="display:none;"></p>
-    <p id="id_error" class="alert alert-danger" style="display:none;"></p>
+    <p id="id_success" class="alert alert-success" style="display:none;">Expense added</p>
+    <p id="id_error" class="alert alert-danger" style="display:none;">Some error has occured. Failed to save.</p>
   </div>
 </div>
 
@@ -172,10 +172,9 @@
         data: form.serialize(),
         success: function(data){
           document.getElementById('hint_id_amount').innerHTML = "";
+          form[0].reset();
 
           $("#id_error").css("display", "none");
-          form[0].reset();
-          $("#id_success").text("Expense added");
           $("#id_success").css("display", "inline-block");
 
           setTimeout(function() {
@@ -193,7 +192,6 @@
         },
         error: function(data){
           $("#id_success").css("display", "none");
-          $("#id_error").text("Some error has occured. Failed to save.");
           $("#id_error").css("display", "inline-block");
         }
       });
