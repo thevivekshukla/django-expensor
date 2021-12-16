@@ -13,19 +13,14 @@
       {{ income_form|crispy }}
       <input type="submit" class="btn btn-success btn-block" value="{{ title }}">
     </form>
+
+    <br>
+    <div id="id_success" class="alert alert-success" role="alert" style="display:none;">Income added successfully.</div>
+    <div id="id_error" class="alert alert-danger" role="alert" style="display:none;">Some error has occured. Failed to save.</div>
+
   </div>
 
 </div>
-
-<br>
-<div class="row">
-<div class="col-sm-12 col-md-6 col-lg-6">
-  <p id="id_success" class="alert alert-success" style="display:none;">Income added</p>
-  <p id="id_error" class="alert alert-danger" style="display:none;">Some error has occured. Failed to save.</p>
-</div>
-</div>
-
-
 
 
 {% endblock %}
@@ -42,9 +37,9 @@
 
     $("#id_timestamp").datepicker();
 
-    document.getElementById('id_amount').onkeyup = function () {
-        document.getElementById('hint_id_amount').innerHTML = inWords(document.getElementById('id_amount').value);
-    };
+    $("#id_amount").keyup(function() {
+      $("#hint_id_amount").html( inWords($('#id_amount').val()) )
+    });
 
     var form = $("#id_add_income");
 
@@ -53,18 +48,18 @@
         type: form.attr('method'),
         url: form.attr('action'),
         data: form.serialize(),
-        success: function(data){
-          document.getElementById('hint_id_amount').innerHTML = "";
+        success: function(data) {
+          $("#hint_id_amount").html("");
           form[0].reset();
 
-          $("#id_error").css("display", "none");
-          $("#id_success").css("display", "inline-block");
+          $("#id_error").hide();
+          $("#id_success").show();
 
           window.location = "{% url 'income:income-list' %}";
         },
-        error: function(data){
-          $("#id_success").css("display", "none");
-          $("#id_error").css("display", "inline-block");
+        error: function(data) {
+          $("#id_success").hide();
+          $("#id_error").show();
         }
       });
       return false;
