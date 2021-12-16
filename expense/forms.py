@@ -9,7 +9,7 @@ class ExpenseForm(forms.Form):
     amount = forms.IntegerField(help_text=" ")
     remark = forms.CharField(required=False,
                 widget=forms.TextInput(attrs={'class': 'lowercase_field'}))
-    timestamp = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
+    timestamp = forms.DateField(label='Date', input_formats=settings.DATE_INPUT_FORMATS)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
