@@ -415,7 +415,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            BANK_AMOUNT_PCT = 80
+            BANK_AMOUNT_PCT = 90
             FIXED_SAVINGS_PCT = 10
             BANK_AMOUNT = int(self.gen_bank_amount())
 
