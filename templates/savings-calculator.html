@@ -31,14 +31,12 @@
                     <tr>
                         <td><strong>Savings:</strong></td>
                         <td><strong>{{ data.savings|intcomma }}</strong></td>
-                        <td>({% get_percent data.savings total %}%)</td>
                     </tr>
 
                     {% if data.investment.items  %}
                     <tr>
                         <td><strong>Investments:</strong></td>
                         <td><strong>{{ investment_total|intcomma }}</strong></td>
-                        <td></td>
                     </tr>
                     {% endif %}
 
@@ -46,7 +44,6 @@
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;<i>{{ inv_name }}</i></td>
                             <td><i>{{ inv_amount|intcomma }}</i></td>
-                            <td>({% get_percent inv_amount total %}%)</td>
                         </tr>
                     {% endfor %}
 
