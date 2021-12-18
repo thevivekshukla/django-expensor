@@ -8,20 +8,25 @@
 
 {% if data %}
   <table class="table table-striped">
-    <tr>
-      <th>Day</th>
-      <th>Amount</th>
-    </tr>
+    
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+
     {% for object in data %}
-    <tr>
-      <td>
-        <a href="{% url 'expense:goto_expense' year=object.0.year month=object.0.month day=object.0.day %}">
-          {{ object.0|date:"d M, Y" }}
-        </a>
-      </td>
-      <td>{{ object.1|intcomma }}</td>
-    </tr>
+      <tr>
+        <td>
+          <a href="{% url 'expense:goto_expense' year=object.0.year month=object.0.month day=object.0.day %}">
+            {{ object.0|date:"d M, Y" }}
+          </a>
+        </td>
+        <td>{{ object.1|intcomma }}</td>
+      </tr>
     {% endfor %}
+
   </table>
 
   {% include 'paginator.html' %}

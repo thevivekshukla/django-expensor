@@ -10,14 +10,15 @@
 {% include "total_alert_info.html" %}
 
 <table class="table table-striped">
-    
+
+  <thead>
     <tr>
       <th>Remark</th>
       <th>Total Amount</th>
     </tr>
+  </thead>
 
-    {% for remark in remarks %}
-    
+  {% for remark in remarks %}
     <tr>
       <td>
         {% if not remark.0 %}
@@ -33,11 +34,10 @@
           </span>
       </td>
     </tr> 
-
-    {% endfor %}
-    
+  {% endfor %}
 
   </table>
+  
   {% else %}
 
   <h2>No data to show.</h2>

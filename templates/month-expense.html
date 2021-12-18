@@ -8,13 +8,15 @@
 
 {% if data %}
 <table class="table table-striped">
-    
+
+  <thead>
     <tr>
       <th>Month</th>
       <th>Amount</th>
     </tr>
+  </thead>
     
-    {% for object in data %}
+  {% for object in data %}
     <tr>
 
       <td>
@@ -34,11 +36,9 @@
       </td>
       
     </tr> 
-
-    {% endfor %}
+  {% endfor %}
     
-
-  </table>
+</table>
 
   {% include 'paginator.html' %}
   

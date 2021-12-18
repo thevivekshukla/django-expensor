@@ -16,13 +16,16 @@
 {% if objects %}
 
   <table class="table table-striped">
+    
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Source</th>
+        <th>Action</th>
+      </tr>
+    </thead>
 
-    <tr>
-      <th>Date</th>
-      <th>Amount</th>
-      <th>Source</th>
-      <th>Action</th>
-    </tr>
     {% for object in objects %}
       <tr>
         <td>{{ object.timestamp }}</td>

@@ -6,12 +6,15 @@
 
 {% if data %}
 <table class="table table-striped">
-    
+
+  <thead>
     <tr>
       <th>Month</th>
       <th>Amount</th>
     </tr>
-    {% for object in data %}
+  </thead>
+
+  {% for object in data %}
     <tr>
       <td>
         <a href="{% url 'income:goto-income-list' year=object.0.year month=object.0.month %}">
@@ -21,12 +24,11 @@
       <td>
           {{ object.1|intcomma }}
       </td>
-    </tr> 
-
-    {% endfor %}
+    </tr>
+  {% endfor %}
     
 
-  </table>
+</table>
 
   {% include 'paginator.html' %}
   
