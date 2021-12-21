@@ -309,7 +309,14 @@ class DateSearch(LoginRequiredMixin, View):
             remark = form.cleaned_data.get('remark', '').strip()
             from_date = form.cleaned_data.get('from_date')
             to_date = form.cleaned_data.get('to_date')
-            objects = Expense.objects.all(user=request.user).filter(timestamp__range=(from_date, to_date))
+            objects = Expense.objects.all(user=request.user)
+            
+            if from_date and to_date:
+                objects = objects.filter(timestamp__range=(from_date, to_date))
+            elif from_date or to_date:
+                the_date = from_date or to_date
+                objects = objects.filter(timestamp=the_date)
+            
             if remark:
                 objects = helpers.search_expense_remark(objects, remark)
 

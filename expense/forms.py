@@ -22,8 +22,8 @@ class SelectDateRangeExpenseForm(forms.Form):
             'class': 'remark lowercase_field',
         })
     )
-    from_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
-    to_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS)
+    from_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS, required=False)
+    to_date = forms.DateField(input_formats=settings.DATE_INPUT_FORMATS, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

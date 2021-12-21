@@ -228,7 +228,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
             if from_date and to_date:
                 objects = objects.filter(timestamp__range=(from_date, to_date))
             elif from_date or to_date:
-                the_date = from_date if from_date else to_date
+                the_date = from_date or to_date
                 objects = objects.filter(timestamp=the_date)
 
             if source:
