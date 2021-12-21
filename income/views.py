@@ -223,7 +223,13 @@ class IncomeDateSearch(LoginRequiredMixin, View):
             source = form.cleaned_data.get('source').strip()
             from_date = form.cleaned_data.get('from_date')
             to_date = form.cleaned_data.get('to_date')
-            objects = Income.objects.filter(user=request.user).filter(timestamp__range=(from_date, to_date))
+            objects = Income.objects.filter(user=request.user)
+
+            if from_date and to_date:
+                objects = objects.filter(timestamp__range=(from_date, to_date))
+            elif from_date or to_date:
+                the_date = from_date if from_date else to_date
+                objects = objects.filter(timestamp=the_date)
 
             if source:
                 objects = objects.filter(source__name=source)

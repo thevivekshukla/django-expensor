@@ -8,7 +8,10 @@
 {% if object_total %}
 <div class="alert alert-info">
   <h4>Total: {{ object_total|intcomma }}</h4>
-  <h4>Monthly Average: {{ monthly_average|intcomma }}</h4>
+  
+  {% if monthly_average %}
+    <h4>Monthly Average: {{ monthly_average|intcomma }}</h4>
+  {% endif %}
 </div>
 {% endif %}
 

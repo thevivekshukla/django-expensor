@@ -31,7 +31,11 @@
       <tr>
         <td>{{ object.timestamp|date:"d M, Y" }}</td>
         <td>{{ object.amount|intcomma }}</td>
-        <td>{% if object.source %}{{ object.source }}{% endif %}</td>
+        <td>
+          {% if object.source %}
+            <a class="black-font" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
+          {% endif %}
+        </td>
         <td>
           {% if object|show_calculator %}
             <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator' style='color:green;'></i></a>
