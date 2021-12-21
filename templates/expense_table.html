@@ -16,7 +16,11 @@
     <tr>
       <td>{{ object.timestamp|date:"d M, Y" }}</td>
       <td>{{ object.amount|intcomma }}</td>
-      <td>{% if object.remark %}{{ object.remark }}{% endif %}</td>
+      <td>
+        {% if object.remark %}
+          <a class="black-font" href="{% url 'expense:expense_list' %}?q=%22{{ object.remark }}%22">{{ object.remark }}</a>
+        {% endif %}
+      </td>
       <td>
         <a href="{% url "expense:update_expense" id=object.id %}">
           <span class="glyphicon glyphicon-pencil"></span> Edit

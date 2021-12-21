@@ -129,7 +129,7 @@
           row += "<tr>"
           row += "<td>"+ data[i].timestamp +"</td>"
           row += "<td>"+ data[i].amount +"</td>"
-          row += "<td>"+ data[i].remark +"</td>"
+          row += '<td><a class="black-font" href="/list/?q=%22'+ data[i].remark +'%22">'+ data[i].remark +'</td>'
           row += '<td><a href="/update/'+ data[i].id +'/">Edit</a></td>'
           row += "</tr>"
         }

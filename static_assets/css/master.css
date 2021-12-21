@@ -5,3 +5,7 @@
 .lowercase_field {
   text-transform: lowercase;
 }
+
+.black-font {
+  color: black;
+}
