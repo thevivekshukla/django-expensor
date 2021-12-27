@@ -42,8 +42,8 @@
 
                     {% for inv_name, inv_amount in data.investment.items %}
                         <tr>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<i>{{ inv_name }}</i></td>
-                            <td><i>{{ inv_amount|intcomma }}</i></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;{{ inv_name }}</td>
+                            <td>{{ inv_amount|intcomma }}</td>
                         </tr>
                     {% endfor %}
 
