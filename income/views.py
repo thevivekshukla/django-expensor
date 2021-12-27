@@ -376,7 +376,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         except:
             multiples_of = 100
             
-        amount = math.ceil(amount)
+        amount = int(round(amount, 0))
         final_amount = (amount // multiples_of) * multiples_of
         return final_amount
 
