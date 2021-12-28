@@ -28,16 +28,11 @@
         {% if data %}
             <div class="alert alert-info">
                 <table class="table">
-                    <tr>
-                        <td><strong>Savings:</strong></td>
-                        <td><strong>{{ data.savings|intcomma }}</strong></td>
-                    </tr>
-
                     {% if data.investment.items  %}
-                    <tr>
-                        <td><strong>Investments:</strong></td>
-                        <td><strong>{{ investment_total|intcomma }}</strong></td>
-                    </tr>
+                        <tr>
+                            <td><strong>Investments:</strong></td>
+                            <td><strong>{{ investment_total|intcomma }}</strong></td>
+                        </tr>
                     {% endif %}
 
                     {% for inv_name, inv_amount in data.investment.items %}
@@ -46,6 +41,11 @@
                             <td>{{ inv_amount|intcomma }}</td>
                         </tr>
                     {% endfor %}
+
+                    <tr>
+                        <td><strong>Savings:</strong></td>
+                        <td><strong>{{ data.savings|intcomma }}</strong></td>
+                    </tr>
 
                     <tr><td></td><td></td></tr>
                     
