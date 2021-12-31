@@ -130,7 +130,7 @@
           row += "<td>"+ data[i].timestamp +"</td>"
           row += "<td>"+ data[i].amount +"</td>"
           row += '<td><a class="black-font" href="/list/?q=%22'+ data[i].remark +'%22">'+ data[i].remark +'</td>'
-          row += '<td><a href="/update/'+ data[i].id +'/"><i class="fas fa-pencil-alt" title="edit"></i></a></td>'
+          row += '<td><a href="/update/'+ data[i].id +'/"><i class="fas fa-edit" title="Edit"></i></a></td>'
           row += "</tr>"
         }
         rows.empty();
