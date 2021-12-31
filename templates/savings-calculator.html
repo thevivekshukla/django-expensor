@@ -58,36 +58,38 @@
         {% endif %}
 
         {% if defaults_message %}
-            <div class="alert alert-default" role="alert" style="background-color: lightgray;">
-                <ul class="defaults_message">
-                    {% for dm in defaults_message %}
-                        <li style="padding: 2px 0px;">{{ dm|safe }}</li>
-                    {% endfor %}
-                </ul>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Notifications</h3>
+                </div>
+
+                <div class="panel-body">
+                    <ul class="defaults_message">
+                        {% for dm in defaults_message %}
+                            <li style="padding: 2px 0px;">{{ dm|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         {% endif %}
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
             {% if message %}
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingTwo">
+                    <div class="panel-heading" role="tab" id="headingMessage">
                         <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false" aria-controls="recentTxn">
                                 <div>Message</div>
                             </a>
                         </h4>
                     </div>
-                    <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
                         <div class="panel-body">
-                            <div class="alert alert-info">
-                                <p>{{ message|safe|linebreaks }}</p>
-                            </div>
+                            <p>{{ message|safe|linebreaks }}</p>
                         </div>
                     </div>
                 </div>
             {% endif %}
-        
         </div>
 
         <form action="" method="POST">
