@@ -24,7 +24,7 @@
         {% if not remark.0 %}
             Others<sup>*</sup>
         {% else %}
-            {{ remark.0.name }}
+          <a class="black-font" href="{% url 'expense:expense_list' %}?q=%22{{ remark.0.name }}%22">{{ remark.0.name }}</a>
         {% endif %}
       </td>
 
