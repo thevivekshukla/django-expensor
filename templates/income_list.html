@@ -33,7 +33,7 @@
         <td>{{ object.amount|intcomma }}</td>
         <td>
           {% if object.source %}
-            <a class="black-font" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
+            <a class="black-text" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
           {% endif %}
         </td>
         <td>

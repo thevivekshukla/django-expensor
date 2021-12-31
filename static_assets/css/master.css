@@ -6,6 +6,10 @@
   text-transform: lowercase;
 }
 
-.black-font {
+.black-text {
   color: black;
+}
+
+.red-text {
+  color: red;
 }

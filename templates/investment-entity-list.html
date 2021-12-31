@@ -34,7 +34,7 @@
       <td>
         {% if not object.percentage %}
           <a href="{% url 'income:investment-entity-delete' pk=object.id %}">
-            <i class="fas fa-trash-alt"></i>
+            <i class="fas fa-trash-alt red-text"></i>
           </a>
         {% else %}
           <span data-toggle="tooltip" data-placement="top" title="Percentage value must be 0 to enable delete"><i class="fas fa-info-circle"></i></span>

@@ -35,7 +35,7 @@
         <td>{{ object.amount|intcomma }}</td>
         <td>
           {% if object.source %}
-            <a class="black-font" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
+            <a class="black-text" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
           {% endif %}
         </td>
         <td>
@@ -59,7 +59,7 @@
     {% csrf_token %}
     {{ form|crispy }}
     <input type="text" name="search" value="1" hidden>
-    <input type="submit" class="btn btn-default" name="" value="Search">
+    <input type="submit" class="btn btn-info btn-block" name="" value="Search Income">
   </form>
 
 </div>
