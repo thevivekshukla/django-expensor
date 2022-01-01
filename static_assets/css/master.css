@@ -13,3 +13,7 @@
 .red-text {
   color: red;
 }
+
+.panel-white-bg > .panel-heading {
+  background-color: white!important;
+}
