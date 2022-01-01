@@ -54,15 +54,15 @@
               <div class="rows">
 
                 <div class="col-lg-6 col-md-6">
-                  <h5>Spent today: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5>
-                  <h5>Spent this month: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5>
+                  <h5>Day Expense: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5>
+                  <h5>Month Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5>
                 </div>
 
                 <div class="col-sm-1"></div>
                 
                 <div class="col-lg-6 col-md-6">
                   <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (All Time)">EIR: <span id="eir"></span></span></h5>
-                  <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (Only for Current Month)">This month's EIR: <span id="month_eir"></span></span></h5>
+                  <h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (Only for Current Month)">Month EIR: <span id="month_eir"></span></span></h5>
                 </div>
 
               </div>
