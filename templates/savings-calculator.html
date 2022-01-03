@@ -60,7 +60,7 @@
         {% endif %}
 
         {% if defaults_message %}
-            <div class="panel panel-primary panel-white-bg">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title black-text">Notifications</h3>
                 </div>
@@ -93,6 +93,8 @@
                 </div>
             {% endif %}
         </div>
+        
+        {% if data or message or defaults_message %}<hr>{% endif %}
 
         <form action="" method="POST">
             {% csrf_token %}
