@@ -24,3 +24,15 @@ def get_percent(amount, total):
         return 0
 
 
+@register.filter(name='simplify_amount')
+def simplify_amount(amount):
+    M = 1_000_000
+    K = 1000
+    if amount > M:
+        return f"{round(amount/M, 2)}M"
+    elif amount > K:
+        return f"{int(round(amount/K, 0))}k"
+    else:
+        return f"{amount}"
+
+
