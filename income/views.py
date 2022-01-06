@@ -33,6 +33,8 @@ from .forms import (
     InvestmentEntityForm,
 )
 from utils import helpers
+
+from expense.models import Expense
 # Create your views here.
 
 
@@ -164,6 +166,43 @@ class YearWiseIncome(LoginRequiredMixin, View):
 
         self.context['data'] = data
         self.context['objects'] = dates
+        return render(request, self.template_name, self.context)
+
+
+class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
+    template_name = "report.html"
+    context = {
+        'title': 'Report',
+    }
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        
+        incomes = Income.objects.filter(user=user)
+        income_dates = incomes.dates('timestamp', 'year', order='DESC')
+        
+        expenses = Expense.objects.all(user=user)
+        expense_dates = expenses.dates('timestamp', 'year', order='DESC')
+        
+        dates = sorted(set([*income_dates, *expense_dates]), reverse=True)
+
+        data = []
+        for date in dates:
+            income_sum = incomes.filter(timestamp__year=date.year,)\
+                    .aggregate(Sum('amount'))['amount__sum'] or 0
+            expense_sum = expenses.filter(timestamp__year=date.year,)\
+                    .aggregate(Sum('amount'))['amount__sum'] or 0
+            expense_ratio = helpers.calculate_ratio(expense_sum, income_sum)
+
+            data.append({
+                'date': date,
+                'income_sum': income_sum,
+                'expense_sum': expense_sum,
+                'saved': max(income_sum - expense_sum, 0),
+                'expense_ratio': expense_ratio,
+            })
+
+        self.context['data'] = data
         return render(request, self.template_name, self.context)
 
 

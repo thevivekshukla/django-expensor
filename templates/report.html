@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+
+{% block body %}
+
+<div class="col-md-8 col-md-offset-2">
+
+{% if data %}
+    <table class="table table-bordered table-hover">
+
+        <thead>
+            <tr>
+                <th class="active"><i class="far fa-calendar-alt"></i> Year</th>
+                <th class="success"><i class="fas fa-coins"></i> Income</th>
+                <th class="danger"><i class="far fa-credit-card"></i> Expense</th>
+                <th class="success"><i class="fas fa-piggy-bank"></i> Saved</th>
+                <th class="info"><i class="fas fa-percentage"></i> Expense Rate</th>
+            </tr>
+        </thead>
+
+        {% for row in data %}
+            <tr>
+                <td class="active">
+                    <strong>{{ row.date.year }}</strong>
+                </td>
+                <td>
+                    {{ row.income_sum|intcomma }}
+                </td>
+                <td>
+                    {{ row.expense_sum|intcomma }}
+                </td>
+                <td>
+                    {{ row.saved|intcomma }}
+                </td>
+                <td 
+                    {% if row.expense_ratio > 100 %}
+                        class="red-text" style="font-weight:700;"
+                    {% elif row.expense_ratio > 80 %}
+                        class="red-text"
+                    {% else %}
+                        class="green-text"
+                    {% endif %}
+                >
+                    {{ row.expense_ratio }} %
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
+  
+{% else %}
+  <h2>No data to show.</h2>
+{% endif %}
+
+</div>
+
+{% endblock body %}
+
+
+{% block js %}
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+  });
+
+</script>
+
+{% endblock js %}
