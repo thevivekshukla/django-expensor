@@ -38,6 +38,8 @@
                         class="red-text" style="font-weight:700;"
                     {% elif row.expense_ratio > 80 %}
                         class="red-text"
+                    {% elif row.expense_ratio > 70 %}
+                        class="warning-text"
                     {% else %}
                         class="green-text"
                     {% endif %}
