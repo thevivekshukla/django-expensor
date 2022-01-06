@@ -282,14 +282,13 @@ class YearWiseExpense(LoginRequiredMixin, View):
         for year in [yr.year for yr in years]:
             amount = Expense.objects.this_year(user=user, year=year)\
                         .aggregate(Sum('amount'))['amount__sum'] or 0
-            avg_expense = amount // 12
             
             year_income_sum = user.incomes.filter(timestamp__year=year).aggregate(Sum('amount'))['amount__sum'] or 0
             expense_ratio = helpers.calculate_ratio(amount, expense_sum)
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             year_expense_to_income_ratio = helpers.calculate_ratio(amount, year_income_sum)
             
-            data.append((year, amount, expense_ratio, expense_to_income_ratio, year_expense_to_income_ratio, avg_expense))
+            data.append((year, amount, expense_ratio, expense_to_income_ratio, year_expense_to_income_ratio))
 
         self.context['data'] = data
         self.context['objects'] = years
