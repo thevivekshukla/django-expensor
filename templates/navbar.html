@@ -40,9 +40,11 @@
         <li>
           <a class="navbar-link" href="{% url 'income:report' %}"><i class="fas fa-file-invoice-dollar"></i> Report</a>
         </li>
+
         <li>
           <a class="navbar-link" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Savings Calculator</a>
         </li>
+        
       </ul>
 
       <form class="navbar-form navbar-left" action="{% url 'expense:expense_list' %}" method="GET">

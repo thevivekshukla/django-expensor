@@ -272,14 +272,15 @@ class YearWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        years = Expense.objects.all(user=user).dates('timestamp', 'year', order='DESC')
+        dates = Expense.objects.all(user=user).dates('timestamp', 'year', order='DESC')
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
         income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        years = helpers.get_paginator_object(request, years, 5)
+        dates = helpers.get_paginator_object(request, dates, 5)
 
         data = []
-        for year in [yr.year for yr in years]:
+        for date in dates:
+            year = date.year
             amount = Expense.objects.this_year(user=user, year=year)\
                         .aggregate(Sum('amount'))['amount__sum'] or 0
             
@@ -291,7 +292,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
             data.append((year, amount, expense_ratio, expense_to_income_ratio, year_expense_to_income_ratio))
 
         self.context['data'] = data
-        self.context['objects'] = years
+        self.context['objects'] = dates
         return render(request, self.template_name, self.context)
 
 
