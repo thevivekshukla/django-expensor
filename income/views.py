@@ -159,7 +159,8 @@ class YearWiseIncome(LoginRequiredMixin, View):
             amount = incomes.filter(
                 timestamp__year=date.year,
             ).aggregate(Sum('amount'))['amount__sum'] or 0
-            data.append((date, amount))
+            avg_income = amount // 12
+            data.append((date, amount, avg_income))
 
         self.context['data'] = data
         self.context['objects'] = dates

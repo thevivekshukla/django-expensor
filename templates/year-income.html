@@ -12,7 +12,8 @@
         <thead>
             <tr>
                 <th>Year</th>
-                <th>Total Income</th>
+                <th>Income</th>
+                <th>Monthly Avg. Income</th>
             </tr>
         </thead>
 
@@ -25,6 +26,9 @@
                 </td>
                 <td>
                     {{ object.1|intcomma }}
+                </td>
+                <td>
+                    {{ object.2|intcomma }}
                 </td>
             </tr>
         {% endfor %}
