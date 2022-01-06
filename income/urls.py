@@ -8,6 +8,7 @@ app_name = 'income'
 
 urlpatterns = [
     re_path(r'^list/$', views.IncomeList.as_view(), name='income-list'),
+    re_path(r'^list/year/$', views.YearWiseIncome.as_view(), name='year-income-list'),
     re_path(r'^list/month/$', views.MonthWiseIncome.as_view(), name='month-income-list'),
     re_path(r'^list/month/(?P<year>\d+)/(?P<month>\d+)/$', views.GoToIncome.as_view(), name='goto-income-list'),
     re_path(r'^add/$', views.IncomeAdd.as_view(), name='add-income'),

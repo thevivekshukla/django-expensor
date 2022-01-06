@@ -142,6 +142,30 @@ class IncomeUpdateView(LoginRequiredMixin, View):
             return HttpResponse(status=400)
 
 
+class YearWiseIncome(LoginRequiredMixin, View):
+    template_name = "year-income.html"
+    context = {
+        'title': 'Yearly Income',
+    }
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        incomes = Income.objects.filter(user=user)
+        dates = incomes.dates('timestamp', 'year', order='DESC')
+        dates = helpers.get_paginator_object(request, dates, 5)
+
+        data = []
+        for date in dates:
+            amount = incomes.filter(
+                timestamp__year=date.year,
+            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            data.append((date, amount))
+
+        self.context['data'] = data
+        self.context['objects'] = dates
+        return render(request, self.template_name, self.context)
+
+
 class MonthWiseIncome(LoginRequiredMixin, View):
     template_name = "month-income.html"
     context = {
@@ -150,7 +174,12 @@ class MonthWiseIncome(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        
         incomes = Income.objects.filter(user=user)
+        year = request.GET.get('year')
+        if year:
+            incomes = incomes.filter(timestamp__year=int(year))
+            
         dates = incomes.dates('timestamp', 'month', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 12)
 
