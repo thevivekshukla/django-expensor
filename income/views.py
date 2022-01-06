@@ -175,11 +175,13 @@ class MonthWiseIncome(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        context = self.context.copy()
         
         incomes = Income.objects.filter(user=user)
         year = request.GET.get('year')
         if year:
             incomes = incomes.filter(timestamp__year=int(year))
+            context['title'] = f"{context['title']}: {year}"
             
         dates = incomes.dates('timestamp', 'month', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 12)
@@ -192,9 +194,9 @@ class MonthWiseIncome(LoginRequiredMixin, View):
             ).aggregate(Sum('amount'))['amount__sum'] or 0
             data.append((date, amount))
 
-        self.context['data'] = data
-        self.context['objects'] = dates
-        return render(request, self.template_name, self.context)
+        context['data'] = data
+        context['objects'] = dates
+        return render(request, self.template_name, context)
 
 
 class GoToIncome(LoginRequiredMixin, View):
