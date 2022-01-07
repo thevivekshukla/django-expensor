@@ -11,7 +11,9 @@
     <form method="post" id="id_add_income" action="">
       {% csrf_token %}
       {{ income_form|crispy }}
-      <input type="submit" class="btn btn-success btn-block" value="{{ title }}">
+      <button type="submit" class="btn btn-success btn-block">
+        <i class="fas fa-plus-circle"></i> {{ title }}
+      </button>
     </form>
 
     <br>

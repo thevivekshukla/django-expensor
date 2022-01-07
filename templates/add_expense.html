@@ -31,7 +31,9 @@
     <form method="post" id="id_add_expense" action="">
       {% csrf_token %}
       {{ form|crispy }}
-      <input type="submit" class="btn btn-primary btn-block" value="{{ title }}">
+      <button type="submit" class="btn btn-primary btn-block">
+        <i class="fas fa-cloud-upload-alt"></i> {{ title }}
+      </button>
     </form>
 
     <br>
