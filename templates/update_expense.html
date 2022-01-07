@@ -5,23 +5,21 @@
 {% block body %}
 
 <div class="row">
-<div class="ui-widget col-sm-12 col-md-6 col-lg-6">
-  <form method="post" id="id_update_expense" action="">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" class="btn btn-primary btn-block" value="{{ title }}">
-  </form>
-</div>
-</div>
+  <div class="ui-widget col-sm-12 col-md-6 col-lg-6">
 
-<br>
-<div class="row">
-<div class="col-sm-12 col-md-6 col-lg-6">
-  <p id="id_success" class="alert alert-success" style="display:none;"></p>
-  <p id="id_error" class="alert alert-danger" style="display:none;"></p>
-</div>
-</div>
+    <form method="post" id="id_update_expense" action="">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <input type="submit" class="btn btn-primary btn-block" value="{{ title }}">
+    </form>
 
+    <br>
+    <div id="id_success" class="alert alert-success" role="alert" style="display:none;">Updated successfully.</div>
+    <div id="id_error" class="alert alert-danger" role="alert" style="display:none;">Some error has occured. Failed to save.</div>
+    <br>
+
+  </div>
+</div>
 
 
 
@@ -45,23 +43,22 @@
         type: form.attr('method'),
         url: form.attr('action'),
         data: form.serialize(),
-        success: function(data){
-          $("#id_error").css("display", "none");
-          $("#id_success").text("Updated successfully.");
-          $("#id_success").css("display", "inline-block");
+        success: function(data) {
+          $("#id_error").hide();
+          $("#id_success").show();
 
           setTimeout(function() {
             $("#id_success").hide();
           }, 5000);
         },
-        error: function(data){
-          $("#id_success").css("display", "none");
-          $("#id_error").text("Some error has occured. Failed to save.");
-          $("#id_error").css("display", "inline-block");
+        error: function(data) {
+          $("#id_success").hide();
+          $("#id_error").show();
         }
       });
       return false;
     });
+
   });
 
 
