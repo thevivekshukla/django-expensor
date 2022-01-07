@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load income_utils %}
 
 
 {% block body %}
@@ -26,16 +27,16 @@
                 </td>
                 <td>
                     <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
-                        {{ row.income_sum|intcomma }}
+                        {{ row.income_sum|simplify_amount }}
                     </a>
                 </td>
                 <td>
                     <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
-                        {{ row.expense_sum|intcomma }}
+                        {{ row.expense_sum|simplify_amount }}
                     </a>
                 </td>
                 <td>
-                    {{ row.saved|intcomma }}
+                    {{ row.saved|simplify_amount }}
                 </td>
                 <td 
                     {% if row.expense_ratio > 100 %}
