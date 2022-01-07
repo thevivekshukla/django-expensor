@@ -22,22 +22,26 @@
 
         {% for row in data %}
             <tr>
-                <td class="active">
+                <td>
                     <strong>{{ row.date.year }}</strong>
                 </td>
+
                 <td>
                     <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
                         {{ row.income_sum|simplify_amount }}
                     </a>
                 </td>
+
                 <td>
                     <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
                         {{ row.expense_sum|simplify_amount }}
                     </a>
                 </td>
+
                 <td>
                     {{ row.saved|simplify_amount }}
                 </td>
+                
                 <td 
                     {% if row.expense_ratio > 100 %}
                         class="red-text" style="font-weight:700;"
