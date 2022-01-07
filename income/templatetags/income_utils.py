@@ -28,9 +28,11 @@ def get_percent(amount, total):
 def simplify_amount(amount):
     M = 1_000_000
     K = 1000
-    if amount > M:
+    abs_amount = abs(amount)
+    
+    if abs_amount > M:
         return f"{round(amount/M, 2)}M"
-    elif amount > K:
+    elif abs_amount > K:
         return f"{int(round(amount/K, 0))}K"
     else:
         return f"{amount}"

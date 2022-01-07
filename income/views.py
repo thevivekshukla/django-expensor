@@ -172,7 +172,7 @@ class YearWiseIncome(LoginRequiredMixin, View):
 class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
     template_name = "report.html"
     context = {
-        'title': 'Report',
+        'title': 'Report Card',
     }
 
     def get(self, request, *args, **kwargs):
@@ -198,7 +198,7 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
                 'date': date,
                 'income_sum': income_sum,
                 'expense_sum': expense_sum,
-                'saved': max(income_sum - expense_sum, 0),
+                'saved': income_sum - expense_sum,
                 'expense_ratio': expense_ratio,
             })
 
