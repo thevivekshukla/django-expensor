@@ -31,13 +31,13 @@
             <div class="alert alert-info">
                 <table class="table">
                     <tr>
-                        <td><strong>Savings</strong></td>
+                        <td><strong><i class="fas fa-piggy-bank"></i> Savings</strong></td>
                         <td><strong>{{ data.savings|intcomma }}</strong></td>
                     </tr>
 
                     {% if data.investment.items  %}
                         <tr>
-                            <td><strong>Investments</strong></td>
+                            <td><strong><i class="fas fa-chart-line"></i> Investments</strong></td>
                             <td><strong>{{ investment_total|intcomma }}</strong></td>
                         </tr>
                     {% endif %}
