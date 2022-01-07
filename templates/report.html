@@ -8,6 +8,8 @@
 <div class="col-md-10 col-md-offset-1">
 
 {% if data %}
+
+<div class="table-responsive">
     <table class="table table-bordered table-hover">
 
         <thead>
@@ -41,7 +43,7 @@
                 <td>
                     {{ row.saved|simplify_amount }}
                 </td>
-                
+
                 <td 
                     {% if row.expense_ratio > 100 %}
                         class="red-text" style="font-weight:700;"
@@ -59,7 +61,8 @@
         {% endfor %}
 
     </table>
-  
+</div>
+
 {% else %}
   <h2>No data to show.</h2>
 {% endif %}
