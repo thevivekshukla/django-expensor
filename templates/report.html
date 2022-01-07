@@ -7,65 +7,63 @@
 
 <div class="col-md-10 col-md-offset-1">
 
-{% if data %}
+    {% if data %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="active"><i class="far fa-calendar-alt"></i> Year</th>
+                        <th class="info"><i class="fas fa-coins"></i> Income</th>
+                        <th class="danger"><i class="far fa-credit-card"></i> Expense</th>
+                        <th class="success"><i class="fas fa-piggy-bank"></i> Saved</th>
+                        <th class="warning"><i class="fas fa-percentage"></i> Expense Rate</th>
+                    </tr>
+                </thead>
 
-        <thead>
-            <tr>
-                <th class="active"><i class="far fa-calendar-alt"></i> Year</th>
-                <th class="info"><i class="fas fa-coins"></i> Income</th>
-                <th class="danger"><i class="far fa-credit-card"></i> Expense</th>
-                <th class="success"><i class="fas fa-piggy-bank"></i> Saved</th>
-                <th class="warning"><i class="fas fa-percentage"></i> Expense Rate</th>
-            </tr>
-        </thead>
+                {% for row in data %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.date.year }}</strong>
+                        </td>
 
-        {% for row in data %}
-            <tr>
-                <td>
-                    <strong>{{ row.date.year }}</strong>
-                </td>
+                        <td>
+                            <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
+                                {{ row.income_sum|simplify_amount }}
+                            </a>
+                        </td>
 
-                <td>
-                    <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
-                        {{ row.income_sum|simplify_amount }}
-                    </a>
-                </td>
+                        <td>
+                            <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
+                                {{ row.expense_sum|simplify_amount }}
+                            </a>
+                        </td>
 
-                <td>
-                    <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
-                        {{ row.expense_sum|simplify_amount }}
-                    </a>
-                </td>
+                        <td>
+                            {{ row.saved|simplify_amount }}
+                        </td>
 
-                <td>
-                    {{ row.saved|simplify_amount }}
-                </td>
+                        <td 
+                            {% if row.expense_ratio > 100 %}
+                                class="red-text" style="font-weight:700;"
+                            {% elif row.expense_ratio > 90 %}
+                                class="red-text"
+                            {% elif row.expense_ratio > 70 %}
+                                class="warning-text"
+                            {% else %}
+                                class="green-text"
+                            {% endif %}
+                        >
+                            {{ row.expense_ratio }} %
+                        </td>
+                    </tr>
+                {% endfor %}
 
-                <td 
-                    {% if row.expense_ratio > 100 %}
-                        class="red-text" style="font-weight:700;"
-                    {% elif row.expense_ratio > 90 %}
-                        class="red-text"
-                    {% elif row.expense_ratio > 70 %}
-                        class="warning-text"
-                    {% else %}
-                        class="green-text"
-                    {% endif %}
-                >
-                    {{ row.expense_ratio }} %
-                </td>
-            </tr>
-        {% endfor %}
-
-    </table>
-</div>
-
-{% else %}
-  <h2>No data to show.</h2>
-{% endif %}
+            </table>
+        </div>
+    {% else %}
+        <h2>No data to show.</h2>
+    {% endif %}
 
 </div>
 
