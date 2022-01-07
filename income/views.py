@@ -221,6 +221,7 @@ class MonthWiseIncome(LoginRequiredMixin, View):
         if year:
             incomes = incomes.filter(timestamp__year=int(year))
             context['title'] = f"{context['title']}: {year}"
+            context['total'] = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
             
         dates = incomes.dates('timestamp', 'month', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 12)
