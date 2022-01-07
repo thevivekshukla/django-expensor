@@ -31,7 +31,7 @@ def simplify_amount(amount):
     if amount > M:
         return f"{round(amount/M, 2)}M"
     elif amount > K:
-        return f"{int(round(amount/K, 0))}k"
+        return f"{int(round(amount/K, 0))}K"
     else:
         return f"{amount}"
 
