@@ -454,30 +454,24 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
     def gen_bank_amount(self):
         MONTHS = 3
-        DAYS = MONTHS * 30
-        OFFSET_DAYS = [-15, 0, 15]
+        today = helpers.get_ist_datetime().date()
+        days = [today, ]
+        first_day = today.replace(day=1)
+        
+        for _ in range(MONTHS - 1):
+            previous_month = first_day - timedelta(days=7)
+            days.append(previous_month)
+            first_day = previous_month.replace(day=1)
 
-        now = helpers.get_ist_datetime().date()
         amounts = []
         incomes = self.request.user.incomes
 
-        for offset_day in OFFSET_DAYS:
-            offset_now = now + timedelta(days=offset_day)
-            past = offset_now - timedelta(days=DAYS)
-            offset_incomes = incomes.filter(timestamp__range=(past, offset_now))
-            income_sum = offset_incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-            avg_income = income_sum // MONTHS
-            amounts.append(avg_income)
+        for day in days:
+            month_income = incomes.filter(timestamp__year=day.year, timestamp__month=day.month)
+            income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
+            amounts.append(income_sum)
 
-        if not amounts:
-            return 0
-
-        most_common = Counter(amounts).most_common(1)
-        _, count = most_common[0]
-        if count > (len(OFFSET_DAYS) // 2):
-            return statistics.median(amounts)
-        else:
-            return statistics.mean(amounts)
+        return max(amounts)
 
     def get(self, request, *args, **kwargs):
         user = request.user
