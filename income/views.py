@@ -203,6 +203,7 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
             })
 
         self.context['data'] = data
+        self.context['now'] = helpers.get_ist_datetime()
         return render(request, self.template_name, self.context)
 
 
