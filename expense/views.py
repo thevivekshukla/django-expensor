@@ -234,6 +234,7 @@ class MonthWiseExpense(LoginRequiredMixin, View):
         if year:
             expenses = expenses.filter(timestamp__year=int(year))
             context['total'] = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+            context['monthly_average'] = context['total'] // 12
             date_str = f": {year}"
 
         dates = expenses.dates('timestamp', 'month', order='DESC')
@@ -322,16 +323,16 @@ class DateSearch(LoginRequiredMixin, View):
             if remark:
                 objects = helpers.search_expense_remark(objects, remark)
 
-            object_total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
+            total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
             try:
                 days = (to_date - from_date).days
                 months = days / 30
-                context['monthly_average'] = int(object_total/months)
+                context['monthly_average'] = int(total/months)
             except:
                 pass
 
             context['objects'] = objects
-            context['object_total'] = object_total
+            context['total'] = total
 
         context['form'] = form
 
