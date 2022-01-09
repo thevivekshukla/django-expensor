@@ -29,18 +29,18 @@
 
                         <td>
                             <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
-                                {{ row.income_sum|simplify_amount }}
+                                {{ row.income_sum|intcomma }}
                             </a>
                         </td>
 
                         <td>
                             <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
-                                {{ row.expense_sum|simplify_amount }}
+                                {{ row.expense_sum|intcomma }}
                             </a>
                         </td>
 
                         <td>
-                            {{ row.saved|simplify_amount }}
+                            {{ row.saved|intcomma }}
                         </td>
 
                         <td 
