@@ -44,9 +44,7 @@
                         </td>
 
                         <td 
-                            {% if row.expense_ratio > 100 %}
-                                class="red-text" style="font-weight:700;"
-                            {% elif row.expense_ratio > 90 %}
+                            {% if row.expense_ratio > 90 %}
                                 class="red-text"
                             {% elif row.expense_ratio > 70 %}
                                 class="warning-text"
@@ -54,7 +52,7 @@
                                 class="green-text"
                             {% endif %}
                         >
-                            {{ row.expense_ratio }} %
+                            {{ row.expense_ratio }}%
                         </td>
                     </tr>
                 {% endfor %}
