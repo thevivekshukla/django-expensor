@@ -473,7 +473,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
             amounts.append(income_sum)
 
-        return max(amounts)
+        return statistics.mean(amounts)
 
     def get(self, request, *args, **kwargs):
         user = request.user
