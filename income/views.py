@@ -455,7 +455,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        MONTHS = 3
+        MONTHS = 2
         today = helpers.get_ist_datetime().date()
         days = [today, ]
         first_day = today.replace(day=1)
@@ -473,7 +473,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
             amounts.append(income_sum)
 
-        return statistics.mean(amounts) # one should live below their mean :)
+        if 0 in amounts:
+            return max(amounts)
+        else:
+            return statistics.mean(amounts) # one should live below their mean :)
 
     def get(self, request, *args, **kwargs):
         user = request.user
