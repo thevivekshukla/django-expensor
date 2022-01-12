@@ -455,7 +455,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        MONTHS = 2
+        MONTHS = 3
         today = helpers.get_ist_datetime().date()
         days = [today, ]
         first_day = today.replace(day=1)
