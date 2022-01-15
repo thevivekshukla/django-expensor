@@ -136,7 +136,7 @@
         $("#month_expense").html(data.this_month_expense);
         $("#eir").html(data.expense_to_income_ratio + "%");
         $("#month_eir").html(data.this_month_eir + "%");
-        $("#month_eir_progress").css("width", parseInt(data.this_month_eir) + "%");
+        $("#month_eir_progress").css("width", data.this_month_eir + "%");
       },
       error: function(data){
         console.log(data);
