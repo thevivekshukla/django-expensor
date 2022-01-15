@@ -72,17 +72,19 @@
 
               <table class="table table-condensed borderless">
                 <tr>
-                  <div class="progress" data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (For Current Month)">
-                    <div id="month_eir_progress" class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
-                      <span id="month_eir"></span>
+                  <td>
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (For Current Month)">
+                      <div id="month_eir_progress" class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
+                        <span id="month_eir"></span>
+                      </div>
                     </div>
-                  </div>
 
-                  <center>
-                    <h5>
-                      Month Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a>
-                    </h5>
-                  </center>
+                    <center>
+                      <h5>
+                        Month Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a>
+                      </h5>
+                    </center>
+                  </td>
                 </tr>
               </table>
 
