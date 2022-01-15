@@ -62,19 +62,30 @@
           <div class="panel-body">
             
             <div id="basicInfoContent">
+              
               <table class="table table-condensed borderless">
-
                 <tr>
                   <td><h5>Day Expense: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
                   <td><h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (All Time)">EIR: <span id="eir"></span></span></h5></td>
                 </tr>
-
-                <tr>
-                  <td><h5>Month Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
-                  <td><h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (Only for Current Month)">Month EIR: <span id="month_eir"></span></span></h5></td>
-                </tr>
-                
               </table>
+
+              <table class="table table-condensed borderless">
+                <tr>
+                  <div class="progress" data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (For Current Month)">
+                    <div id="month_eir_progress" class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
+                      <span id="month_eir"></span>
+                    </div>
+                  </div>
+
+                  <center>
+                    <h5>
+                      Month Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a>
+                    </h5>
+                  </center>
+                </tr>
+              </table>
+
             </div>
 
           </div>
@@ -125,6 +136,7 @@
         $("#month_expense").html(data.this_month_expense);
         $("#eir").html(data.expense_to_income_ratio + "%");
         $("#month_eir").html(data.this_month_eir + "%");
+        $("#month_eir_progress").css("width", parseInt(data.this_month_eir) + "%");
       },
       error: function(data){
         console.log(data);
