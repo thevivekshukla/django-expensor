@@ -14,7 +14,9 @@
         margin-left: -15px;
     }
     
-    #curr_income {
+    #curr_income, #bank_amount {
+        border-bottom: 1px dotted #000;
+        text-decoration: none;
         cursor: pointer;
     }
 </style>
@@ -126,8 +128,7 @@
     $(document).ready(function() {
 
         $("#curr_income").on("click", function() {
-            let curr_income = $("#curr_income").html();
-
+            let curr_income = $(this).html();
             let income = parseInt( curr_income.replace(/,/g, '') );
             $("#id_bank_balance").val(income);
 
@@ -136,6 +137,12 @@
                 $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
                 $("#bank_amount").html(curr_income);
             }
+        });
+
+        $("#bank_amount").on("click", function() {
+            let bank_amount = $(this).html();
+            let amount = parseInt( bank_amount.replace(/,/g, '') );
+            $("#id_amount_to_keep_in_bank").val(amount);
         });
 
     });
