@@ -457,23 +457,26 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
     def gen_bank_amount(self):
         MONTHS = 3
         today = helpers.get_ist_datetime().date()
-        days = [today, ]
+        dates = []
         first_day = today.replace(day=1)
         
-        for _ in range(MONTHS - 1):
+        while len(dates) < MONTHS:
             previous_month = first_day - timedelta(days=7)
-            days.append(previous_month)
+            dates.append(previous_month)
             first_day = previous_month.replace(day=1)
 
         amounts = []
         incomes = self.request.user.incomes
 
-        for day in days:
-            month_income = incomes.filter(timestamp__year=day.year, timestamp__month=day.month)
-            income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
+        for dt in dates:
+            prev_month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
+            income_sum = prev_month_income.aggregate(Sum('amount'))['amount__sum'] or 0
             amounts.append(income_sum)
+        
+        this_month_income = incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
+        this_month_sum = this_month_income.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        return max(amounts)
+        return max(statistics.mean(amounts), this_month_sum)
 
     def get(self, request, *args, **kwargs):
         user = request.user
