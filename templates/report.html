@@ -59,7 +59,9 @@
 
             </table>
         </div>
-        <sub>{{ now }}</sub>
+
+        <sub>Note: Current year ({{ now|date:"Y" }}) data is not shown.</sub>
+        <sub style="float:right;">{{ now }}</sub>
     {% else %}
         <h2>No data to show.</h2>
     {% endif %}

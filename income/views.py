@@ -177,6 +177,7 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        now = helpers.get_ist_datetime()
         
         incomes = Income.objects.filter(user=user)
         income_dates = incomes.dates('timestamp', 'year', order='DESC')
@@ -188,6 +189,8 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
 
         data = []
         for date in dates:
+            if date.year == now.year:
+                continue
             income_sum = incomes.filter(timestamp__year=date.year,)\
                     .aggregate(Sum('amount'))['amount__sum'] or 0
             expense_sum = expenses.filter(timestamp__year=date.year,)\
@@ -203,7 +206,7 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
             })
 
         self.context['data'] = data
-        self.context['now'] = helpers.get_ist_datetime()
+        self.context['now'] = now
         return render(request, self.template_name, self.context)
 
 
