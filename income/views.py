@@ -466,10 +466,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         incomes = self.request.user.incomes
         
         for _ in range(MONTHS):
-            income = incomes.filter(timestamp__year=first_day.year, timestamp__month=first_day.month)
-            income_sum = income.aggregate(Sum('amount'))['amount__sum'] or 0
-            if income_sum > max_amount:
-                max_amount = income_sum
+            month_income = incomes.filter(timestamp__year=first_day.year, timestamp__month=first_day.month)
+            month_income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
+            if month_income_sum > max_amount:
+                max_amount = month_income_sum
             previous_month = first_day - timedelta(days=7)
             first_day = previous_month.replace(day=1)
 
