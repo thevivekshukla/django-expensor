@@ -473,10 +473,20 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        income = request.GET.get('income')
         initial_data = {}
         message = ""
         defaults_message = []
+        
+        income = request.GET.get('income')
+        if income:
+            income = int(income)
+            defaults_message.append(f'Income: <span id="curr_income">{income:,}</span>')
+        
+        today = helpers.get_ist_datetime().date()
+        month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
+        month_income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
+        if month_income_sum != income:
+            defaults_message.append(f'This month\'s income: <span id="month_income">{month_income_sum:,}</span>')
 
         try:
             savings = user.saving_calculation
@@ -488,10 +498,6 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             BANK_AMOUNT_PCT = 80
             FIXED_SAVINGS_PCT = 10
             BANK_AMOUNT = int(self.gen_bank_amount())
-
-            if income:
-                income = int(income)
-                defaults_message.append(f'Income: <span id="curr_income">{income:,}</span>')
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * (BANK_AMOUNT_PCT/100))

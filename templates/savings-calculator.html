@@ -14,7 +14,7 @@
         margin-left: -15px;
     }
     
-    #curr_income, #bank_amount {
+    #curr_income, #bank_amount, #month_income {
         border-bottom: 1px dotted #000;
         text-decoration: none;
         cursor: pointer;
@@ -127,10 +127,14 @@
 
     $(document).ready(function() {
 
-        $("#curr_income").on("click", function() {
+        $("#curr_income, #month_income").on("click", function() {
             let curr_income = $(this).html();
             let income = parseInt( curr_income.replace(/,/g, '') );
-            $("#id_bank_balance").val(income);
+            if (this.id == "curr_income") {
+                $("#id_bank_balance").val(income);
+            } else {
+                $("#id_bank_balance").val('');
+            }
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() );
             if ( !isNaN(bank_amount_pct) ) {
@@ -143,6 +147,7 @@
             let bank_amount = $(this).html();
             let amount = parseInt( bank_amount.replace(/,/g, '') );
             $("#id_amount_to_keep_in_bank").val(amount);
+            $("#bank_amount_pct").html(100);
         });
 
     });
