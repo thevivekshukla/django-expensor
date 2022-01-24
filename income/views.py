@@ -485,8 +485,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         today = helpers.get_ist_datetime().date()
         month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
         month_income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
-        if month_income_sum != income:
-            defaults_message.append(f'This month\'s income: <span id="month_income">{month_income_sum:,}</span>')
+        defaults_message.append(f'This month\'s income: <span id="month_income">{month_income_sum:,}</span>')
 
         try:
             savings = user.saving_calculation
