@@ -171,26 +171,20 @@ class YearWiseIncome(LoginRequiredMixin, View):
 
 class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
     template_name = "report.html"
-    context = {
-        'title': 'Report Card',
-    }
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        now = helpers.get_ist_datetime()
         
-        incomes = Income.objects.filter(user=user)
+        incomes = user.incomes
         income_dates = incomes.dates('timestamp', 'year', order='DESC')
         
-        expenses = Expense.objects.all(user=user)
+        expenses = user.expenses
         expense_dates = expenses.dates('timestamp', 'year', order='DESC')
         
         dates = sorted(set([*income_dates, *expense_dates]), reverse=True)
 
         data = []
         for date in dates:
-            if date.year == now.year:
-                continue
             income_sum = incomes.filter(timestamp__year=date.year,)\
                     .aggregate(Sum('amount'))['amount__sum'] or 0
             expense_sum = expenses.filter(timestamp__year=date.year,)\
@@ -205,9 +199,13 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
                 'expense_ratio': expense_ratio,
             })
 
-        self.context['data'] = data
-        self.context['now'] = now
-        return render(request, self.template_name, self.context)
+        context = {
+            'title': 'Report Card',
+            'now': helpers.get_ist_datetime(),
+            'eir': helpers.expense_to_income_ratio(user),
+            'data': data,
+        }
+        return render(request, self.template_name, context)
 
 
 class MonthWiseIncome(LoginRequiredMixin, View):

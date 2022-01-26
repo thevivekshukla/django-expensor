@@ -91,11 +91,11 @@
           </tr>
           {% endif %}
           <tr>
-              <td><strong>Total expenses of {% now "Y" %}:</strong></td>
+              <td><strong>Total expense of {% now "Y" %}:</strong></td>
               <td>{{ total.year|intcomma }}</td>
           </tr>
           <tr>
-              <td><strong>All time {% if first_date %}(since {{ first_date }}){% endif %}:</strong></td>
+              <td><strong>All time expense {% if first_date %}(since {{ first_date }}){% endif %}:</strong></td>
               <td>{{ total.all|intcomma }}</td>
           </tr>
           {% if expense_to_income_ratio %}

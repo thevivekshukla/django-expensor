@@ -7,6 +7,21 @@
 
 <div class="col-md-10 col-md-offset-1">
 
+    {% if eir %}
+        <h4>All Time EIR:
+        <span
+            {% if eir > 100 %}
+                class="red-text"
+            {% elif eir > 80 %}
+                class="warning-text"
+            {% else %}
+                class="green-text"
+            {% endif %}
+        >{{ eir }}%<span>
+        </h4>
+        <br>
+    {% endif %}
+
     {% if data %}
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
@@ -60,8 +75,8 @@
             </table>
         </div>
 
-        <sub>Note: Current year ({{ now|date:"Y" }}) data is not shown.</sub>
         <sub style="float:right;">{{ now }}</sub>
+        <sub>EIR = Expense to Income Ratio</sub><br>
     {% else %}
         <h2>No data to show.</h2>
     {% endif %}
