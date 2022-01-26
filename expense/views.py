@@ -71,15 +71,15 @@ class GetBasicInfo(LoginRequiredMixin, View):
         
         today_expense = aggregate_sum(expenses.this_day(user=user))
         this_month_expense = aggregate_sum(expenses.this_month(user=user))
-
-        data['today_expense'] = f"{today_expense:,}"
-        data['this_month_expense'] = f"{this_month_expense:,}"
+        this_year_expense = aggregate_sum(expenses.this_year(user=user))
 
         this_month_income = aggregate_sum(incomes.filter(timestamp__year=today.year, timestamp__month=today.month))
-        data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
-
-        this_year_expense = aggregate_sum(expenses.this_year(user=user))
         this_year_income = aggregate_sum(incomes.filter(timestamp__year=today.year))
+        
+        data['today_expense'] = f"{today_expense:,}"
+        data['this_month_expense'] = f"{this_month_expense:,}"
+        
+        data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
         data['this_year_eir'] = helpers.calculate_ratio(this_year_expense, this_year_income)
 
         data = json.dumps(data)
