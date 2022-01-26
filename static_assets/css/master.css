@@ -22,6 +22,10 @@
   color: green;
 }
 
+.gold-text {
+  color: #da9100;
+}
+
 .panel-white-bg > .panel-heading {
   background-color: white!important;
 }

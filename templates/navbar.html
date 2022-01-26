@@ -13,7 +13,7 @@
 
         {% if request.user.is_authenticated %}
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="far fa-credit-card"></i> Expense
+          <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="far fa-credit-card gold-text"></i> Expense
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a class="navbar-link" href="{% url 'expense:add_expense' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
@@ -26,7 +26,7 @@
         </li>
 
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fas fa-coins"></i> Income
+          <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fas fa-coins gold-text"></i> Income
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a class="navbar-link" href="{% url 'income:add-income' %}"><i class="fas fa-plus-circle"></i> Add</a></li>
@@ -38,11 +38,11 @@
         </li>
 
         <li>
-          <a class="navbar-link" href="{% url 'income:report' %}"><i class="fas fa-file-invoice-dollar"></i> Report Card</a>
+          <a class="navbar-link" href="{% url 'income:report' %}"><i class="fas fa-file-invoice-dollar gold-text"></i> Report Card</a>
         </li>
 
         <li>
-          <a class="navbar-link" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Savings Calculator</a>
+          <a class="navbar-link" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator gold-text'></i> Savings Calculator</a>
         </li>
         
       </ul>
@@ -62,7 +62,7 @@
         {% if request.user.is_authenticated %}
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="">
-              <i class="fas fa-user"></i> {{ request.user.username }}
+              <i class="fas fa-user gold-text"></i> {{ request.user.username }}
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a class="navbar-link" href="{% url 'account:change-password' %}"><i class="fas fa-user-cog"></i> Change Password</a></li>
