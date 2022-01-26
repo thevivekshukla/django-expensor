@@ -4,7 +4,7 @@ from django.db.models import Sum
 from django.conf import settings
 from django.db.models.signals import pre_save
 
-from datetime import date
+from datetime import date, timedelta
 
 from utils.base_model import BaseModel
 from utils.helpers import get_ist_datetime
@@ -19,36 +19,25 @@ class ExpenseManager(models.Manager):
         return super(ExpenseManager, self).filter(user=user)
 
     def this_year(self, user=None, year=None, *args, **kwargs):
-        if year:
-            y = year
-        else:
-            y = get_ist_datetime().date().year
-        qs = super(ExpenseManager, self).filter(user=user).filter(timestamp__year=y)
+        year = year if year else get_ist_datetime().year
+        qs = super(ExpenseManager, self).filter(user=user).filter(timestamp__year=year)
         return qs
 
     def this_month(self, user=None, year=None, month=None, *args, **kwargs):
-        if month:
-            m = month
-        else:
-            m = get_ist_datetime().date().month
-        qs = Expense.objects.this_year(user=user, year=year).filter(timestamp__month=m)
+        month = month if month else get_ist_datetime().month
+        qs = Expense.objects.this_year(user=user, year=year).filter(timestamp__month=month)
         return qs
 
     def last_month(self, user=None, *args, **kwargs):
         today = get_ist_datetime().date()
-        year = today.year
-        last_month = (today.month - 1) or 12
-        if last_month == 12:
-            year -= 1
-        qs = Expense.objects.this_year(user=user, year=year).filter(timestamp__month=last_month)
+        first_day = today.replace(day=1)
+        prev_month = first_day - timedelta(days=7)
+        qs = Expense.objects.this_month(user=user, year=prev_month.year, month=prev_month.month)
         return qs
 
     def this_day(self, user=None, year=None, month=None, day=None, *args, **kwargs):
-        if day:
-            d = day
-        else:
-            d = get_ist_datetime().date().day
-        qs = Expense.objects.this_month(user=user, year=year, month=month).filter(timestamp__day=d)
+        day = day if day else get_ist_datetime().day
+        qs = Expense.objects.this_month(user=user, year=year, month=month).filter(timestamp__day=day)
         return qs
 
     def amount_sum(self, user=None, year=None, month=None, day=None, *args, **kwargs):
