@@ -159,9 +159,7 @@ class YearWiseIncome(LoginRequiredMixin, View):
 
         data = []
         for date in dates:
-            amount = incomes.filter(
-                timestamp__year=date.year,
-            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            amount = aggregate_sum(incomes.filter(timestamp__year=date.year))
             avg_income = amount // 12
             data.append((date, amount, avg_income))
 
@@ -264,7 +262,7 @@ class GoToIncome(LoginRequiredMixin, View):
         context = {
             "title": f"Income: {date_str}",
             "objects": incomes,
-            "total": incomes.aggregate(Sum('amount'))['amount__sum'] or 0,
+            "total": aggregate_sum(incomes),
         }
         return render(request, self.template_name, context)
 
@@ -308,7 +306,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
             if source:
                 objects = objects.filter(source__name=source)
 
-            total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
+            total = aggregate_sum(objects)
             try:
                 days = (to_date - from_date).days
                 months = days / 30
@@ -462,7 +460,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         
         for income_date in income_dates[:MONTHS]:
             month_income = incomes.filter(timestamp__year=income_date.year, timestamp__month=income_date.month)
-            month_income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
+            month_income_sum = aggregate_sum(month_income)
             if month_income_sum > max_amount:
                 max_amount = month_income_sum
 
@@ -481,7 +479,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         
         today = helpers.get_ist_datetime().date()
         month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
-        month_income_sum = month_income.aggregate(Sum('amount'))['amount__sum'] or 0
+        month_income_sum = aggregate_sum(month_income)
         defaults_message.append(f'This month\'s income: <span id="month_income">{month_income_sum:,}</span>')
 
         try:
