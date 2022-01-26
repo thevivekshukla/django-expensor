@@ -33,6 +33,7 @@ from .forms import (
     InvestmentEntityForm,
 )
 from utils import helpers
+from utils.helpers import aggregate_sum
 
 from expense.models import Expense
 # Create your views here.
@@ -185,10 +186,8 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
 
         data = []
         for date in dates:
-            income_sum = incomes.filter(timestamp__year=date.year,)\
-                    .aggregate(Sum('amount'))['amount__sum'] or 0
-            expense_sum = expenses.filter(timestamp__year=date.year,)\
-                    .aggregate(Sum('amount'))['amount__sum'] or 0
+            income_sum = aggregate_sum(incomes.filter(timestamp__year=date.year,))
+            expense_sum = aggregate_sum(expenses.filter(timestamp__year=date.year,))
             expense_ratio = helpers.calculate_ratio(expense_sum, income_sum)
 
             data.append({
@@ -223,7 +222,7 @@ class MonthWiseIncome(LoginRequiredMixin, View):
         if year:
             incomes = incomes.filter(timestamp__year=int(year))
             context['title'] = f"{context['title']}: {year}"
-            context['total'] = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+            context['total'] = aggregate_sum(incomes)
             context['monthly_average'] = context['total'] // 12
             
         dates = incomes.dates('timestamp', 'month', order='DESC')
