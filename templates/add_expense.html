@@ -66,7 +66,7 @@
               <table class="table table-condensed borderless">
                 <tr>
                   <td><h5>Day Expense: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
-                  <td><h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio (All Time)">EIR: <span id="eir"></span></span></h5></td>
+                  <td><h5><span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio">This Year's EIR: <span id="year_eir"></span></span></h5></td>
                 </tr>
               </table>
 
@@ -136,7 +136,7 @@
       success: function(data){
         $("#today_expense").html(data.today_expense);
         $("#month_expense").html(data.this_month_expense);
-        $("#eir").html(data.expense_to_income_ratio + "%");
+        $("#year_eir").html(data.this_year_eir + "%");
         $("#month_eir").html(data.this_month_eir + "%");
         $("#month_eir_progress").css("width", data.this_month_eir + "%");
       },

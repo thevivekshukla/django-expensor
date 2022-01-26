@@ -15,6 +15,10 @@ def get_ist_datetime(dt=None):
     return dt.astimezone(tz)
 
 
+def aggregate_sum(queryset, field_name='amount'):
+    return queryset.aggregate(Sum(field_name))[field_name + '__sum'] or 0
+
+
 def calculate_ratio(amount, total):
     if total > 0:
         ratio = (amount/total) * 100

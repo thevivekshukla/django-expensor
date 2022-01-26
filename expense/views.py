@@ -17,6 +17,7 @@ import json
 from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
 from utils import helpers
+from utils.helpers import aggregate_sum
 
 # Create your views here.
 
@@ -62,20 +63,24 @@ class GetBasicInfo(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        today = helpers.get_ist_datetime().date()
         data = dict()
 
-        qs = Expense.objects
-        today_expense = qs.this_day(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
-        this_month_expense = qs.this_month(user=user).aggregate(Sum('amount'))['amount__sum'] or 0
+        expenses = Expense.objects
+        incomes = user.incomes
+        
+        today_expense = aggregate_sum(expenses.this_day(user=user))
+        this_month_expense = aggregate_sum(expenses.this_month(user=user))
 
         data['today_expense'] = f"{today_expense:,}"
         data['this_month_expense'] = f"{this_month_expense:,}"
-        data['expense_to_income_ratio'] = helpers.expense_to_income_ratio(request.user)
 
-        today = helpers.get_ist_datetime()
-        this_month_income = user.incomes.filter\
-            (timestamp__year=today.year, timestamp__month=today.month).aggregate(Sum('amount'))['amount__sum'] or 0
+        this_month_income = aggregate_sum(incomes.filter(timestamp__year=today.year, timestamp__month=today.month))
         data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
+
+        this_year_expense = aggregate_sum(expenses.this_year(user=user))
+        this_year_income = aggregate_sum(incomes.filter(timestamp__year=today.year))
+        data['this_year_eir'] = helpers.calculate_ratio(this_year_expense, this_year_income)
 
         data = json.dumps(data)
         return HttpResponse(data, content_type='application/json')
