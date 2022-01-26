@@ -132,8 +132,6 @@
             let income = parseInt( curr_income.replace(/,/g, '') );
             if (this.id == "curr_income") {
                 $("#id_bank_balance").val(income);
-            } else {
-                $("#id_bank_balance").val('');
             }
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() );
