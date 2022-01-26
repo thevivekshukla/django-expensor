@@ -18,19 +18,19 @@
     </tr>
   </thead>
 
-  {% for remark in remarks %}
+  {% for row in remarks %}
     <tr>
       <td>
-        {% if not remark.0 %}
+        {% if not row.remark %}
             Others<sup>*</sup>
         {% else %}
-          <a class="black-text" href="{% url 'expense:expense_list' %}?q=%22{{ remark.0.name }}%22">{{ remark.0.name }}</a>
+          <a class="black-text" href="{% url 'expense:expense_list' %}?q=%22{{ row.remark.name }}%22">{{ row.remark.name }}</a>
         {% endif %}
       </td>
 
       <td>
-          <span data-toggle="tooltip" data-placement="top" title="Expense Ratio: {{ remark.2 }}% & Expense to Income Ratio: {{ remark.3 }}%">
-            {{ remark.1|intcomma }}
+          <span data-toggle="tooltip" data-placement="top" title="Expense to Income Ratio: {{ row.eir }}% & Expense Ratio: {{ row.expense_ratio }}%">
+            {{ row.amount|intcomma }}
           </span>
       </td>
     </tr> 

@@ -19,11 +19,11 @@
     {% for object in data %}
       <tr>
         <td>
-          <a href="{% url 'expense:goto_expense' year=object.0.year month=object.0.month day=object.0.day %}">
-            {{ object.0|date:"d M, Y" }}
+          <a href="{% url 'expense:goto_expense' year=object.day.year month=object.day.month day=object.day.day %}">
+            {{ object.day|date:"d M, Y" }}
           </a>
         </td>
-        <td>{{ object.1|intcomma }}</td>
+        <td>{{ object.day_sum|intcomma }}</td>
       </tr>
     {% endfor %}
 

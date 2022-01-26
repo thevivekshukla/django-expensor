@@ -20,18 +20,18 @@
     <tr>
 
       <td>
-        <a href="{% url 'expense:goto_expense' year=object.0.year month=object.0.month %}">
-          {{ object.0|date:"M Y" }}
+        <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
+          {{ object.date|date:"M Y" }}
         </a>
         ( By
-          <a href="{% url 'expense:day-wise-expense' %}?year={{object.0.year}}&month={{object.0.month}}">day</a> |
-          <a href="{% url 'expense:remark_monthly_expense' year=object.0.year month=object.0.month %}">remark</a>
+          <a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
+          <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>
         )
       </td>
 
       <td>
-          <span data-toggle="tooltip" data-placement="top" title="This month's EIR: {{ object.4 }}%; All Time EIR: {{ object.3 }}%; Expense Ratio: {{ object.2 }}%">
-            {{ object.1|intcomma }}
+          <span data-toggle="tooltip" data-placement="top" title="Month's EIR: {{ object.month_eir }}%">
+            {{ object.amount|intcomma }}
           </span>
       </td>
       

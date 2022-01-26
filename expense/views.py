@@ -199,7 +199,7 @@ class DayWiseExpense(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {}
         date_str = ""
-        expense = Expense.objects.all(user=request.user)
+        expense = request.user.expenses
 
         year = int(request.GET.get('year', 0))
         month = int(request.GET.get('month', 0))
@@ -211,6 +211,7 @@ class DayWiseExpense(LoginRequiredMixin, View):
                 expense = expense.filter(timestamp__month=month)
                 dt = date(year, month, 1)
                 date_str = f": {dt.strftime('%B %Y')}"
+            
             context['total'] = expense.aggregate(Sum('amount'))['amount__sum'] or 0
 
         days = expense.dates('timestamp', 'day', order='DESC')
@@ -218,8 +219,11 @@ class DayWiseExpense(LoginRequiredMixin, View):
 
         data = []
         for day in days:
-            sum_day = expense.filter(timestamp=day).aggregate(Sum('amount'))['amount__sum'] or 0
-            data.append((day, sum_day))
+            day_sum = aggregate_sum(expense.filter(timestamp=day))
+            data.append({
+                'day': day,
+                'day_sum': day_sum,
+            })
         
         context['title'] = f'Day-Wise Expense {date_str}'
         context['data'] = data
@@ -243,23 +247,21 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             date_str = f": {year}"
 
         dates = expenses.dates('timestamp', 'month', order='DESC')
-        expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-        income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-
         dates = helpers.get_paginator_object(request, dates, 12)
 
         data = []
         for date in dates:
-            amount = Expense.objects.this_month(
-                user=user, year=date.year, month=date.month
-                ).aggregate(Sum('amount'))['amount__sum'] or 0
-            month_income_sum = user.incomes.filter(timestamp__year=date.year, timestamp__month=date.month)\
-                                .aggregate(Sum('amount'))['amount__sum'] or 0
+            month_expense = Expense.objects.this_month(user=user, year=date.year, month=date.month)
+            amount = aggregate_sum(month_expense)
+            month_income = user.incomes.filter(timestamp__year=date.year, timestamp__month=date.month)
+            month_income_sum = aggregate_sum(month_income)
 
-            expense_ratio = helpers.calculate_ratio(amount, expense_sum)
-            expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             month_expense_to_income_ratio = helpers.calculate_ratio(amount, month_income_sum)
-            data.append((date, amount, expense_ratio, expense_to_income_ratio, month_expense_to_income_ratio))
+            data.append({
+                'date': date,
+                'amount': amount,
+                'month_eir': month_expense_to_income_ratio,
+            })
 
         context['title'] = f'Monthly Expense {date_str}'
         context['data'] = data
@@ -295,7 +297,13 @@ class YearWiseExpense(LoginRequiredMixin, View):
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             year_expense_to_income_ratio = helpers.calculate_ratio(amount, year_income_sum)
             
-            data.append((year, amount, expense_ratio, expense_to_income_ratio, year_expense_to_income_ratio))
+            data.append({
+                'year': year,
+                'amount': amount,
+                'year_eir': year_expense_to_income_ratio,
+                'eir': expense_to_income_ratio,
+                'expense_ratio': expense_ratio,
+            })
 
         self.context['data'] = data
         self.context['objects'] = dates
@@ -392,17 +400,21 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         month = int(kwargs.get('month', 0))
         year = int(kwargs.get('year', 0))
         date_str = ""
+        incomes = user.incomes
         
         if day:
             objects = Expense.objects.this_day(user=user, year=year, month=month, day=day)
+            incomes = incomes.filter(timestamp__year=year, timestamp__month=month, timestamp__day=day)
             _day = date(year, month, day)
             date_str = f': {_day.strftime("%d %b %Y")}'
         elif month:
             objects = Expense.objects.this_month(user=user, year=year, month=month)
+            incomes = incomes.filter(timestamp__year=year, timestamp__month=month)
             _month = date(year, month, 1)
             date_str = f': {_month.strftime("%b %Y")}'
         elif year:
             objects = Expense.objects.this_year(user=user, year=year)
+            incomes = incomes.filter(timestamp__year=year)
             date_str = f': {year}'
         else:
             objects = Expense.objects.all(user=user)
@@ -412,24 +424,27 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         for instance in objects:
             remarks.add(instance.remark)
 
-        expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-        income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+        expense_sum = aggregate_sum(objects)
+        income_sum = aggregate_sum(incomes)
 
         remark_data = []
         for remark in remarks:
-            amount = objects.filter(remark=remark)\
-                        .aggregate(Sum('amount'))['amount__sum'] or 0
+            amount = aggregate_sum(objects.filter(remark=remark))
             expense_ratio = helpers.calculate_ratio(amount, expense_sum)
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
-            remark_data.append((remark, amount, expense_ratio, expense_to_income_ratio))
+            remark_data.append({
+                'remark': remark,
+                'amount': amount,
+                'eir': expense_to_income_ratio,
+                'expense_ratio': expense_ratio,
+            })
 
-        remark_data = sorted(remark_data, key=lambda x: x[1], reverse=True)
-        total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
+        remark_data = sorted(remark_data, key=lambda x: x['amount'], reverse=True)
 
         context = {
             "title": f"Remark-Wise Expenses {date_str}",
             "remarks": remark_data,
-            "total": total,
+            "total": expense_sum,
         }
 
         return render(request, self.template_name, context)
