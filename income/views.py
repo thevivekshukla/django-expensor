@@ -453,7 +453,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        MONTHS = 4
+        MONTHS = 3
         amounts = []
         incomes = self.request.user.incomes.exclude(amount=0)
         income_dates = incomes.dates('timestamp', 'month', order='DESC')
