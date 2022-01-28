@@ -9,7 +9,7 @@ from utils.helpers import get_ist_datetime, default_date_format
 
 class IncomeForm(forms.Form):
     amount = forms.IntegerField(help_text=" ")
-    source = forms.CharField(max_length=30, required=False)
+    source = forms.CharField(max_length=128, required=False)
     timestamp = forms.DateField(label='Date', input_formats=settings.DATE_INPUT_FORMATS)
 
     def __init__(self, *args, **kwargs):

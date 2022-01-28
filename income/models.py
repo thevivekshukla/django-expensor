@@ -11,7 +11,7 @@ User = get_user_model()
 
 class Source(BaseModel):
     user = models.ForeignKey(User, related_name='sources', on_delete=models.CASCADE)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=128)
 
     def __str__(self):
         return self.name
