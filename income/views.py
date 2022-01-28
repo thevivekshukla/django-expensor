@@ -475,7 +475,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         income = request.GET.get('income')
         if income:
             income = int(income)
-            defaults_message.append(f'Income: <span class="btn btn-default btn-xs" id="curr_income">{income:,}</span>')
+            defaults_message.append(f'Income: <a class="btn btn-default btn-xs" id="curr_income">{income:,}</a>')
         
         today = helpers.get_ist_datetime().date()
         month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
