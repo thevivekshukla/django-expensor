@@ -460,8 +460,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         
         for dt in income_dates[:MONTHS]:
             month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
-            month_income_sum = aggregate_sum(month_income)
-            amounts.append(month_income_sum)
+            amounts.append(aggregate_sum(month_income))
             
         if amounts:
             return max(statistics.mean(amounts), *amounts[:2])
