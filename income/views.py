@@ -34,6 +34,7 @@ from .forms import (
 )
 from utils import helpers
 from utils.helpers import aggregate_sum
+from utils.constants import BANK_AMOUNT_PCT, FIXED_SAVINGS_PCT
 
 from expense.models import Expense
 # Create your views here.
@@ -489,17 +490,15 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            BANK_AMOUNT_PCT = 80
-            FIXED_SAVINGS_PCT = 10
             BANK_AMOUNT = int(self.gen_bank_amount())
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
-                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * (BANK_AMOUNT_PCT/100))
-                defaults_message.append(f'Amount to keep in bank is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>% of <span id="bank_amount">{BANK_AMOUNT:,}</span>')
+                initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * BANK_AMOUNT_PCT)
+                defaults_message.append(f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>% of <span id="bank_amount">{BANK_AMOUNT:,}</span>')
 
             if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount and income:
-                initial_data['savings_fixed_amount'] = self.return_in_multiples(income * (FIXED_SAVINGS_PCT/100))
-                defaults_message.append(f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income:,}")
+                initial_data['savings_fixed_amount'] = self.return_in_multiples(income * FIXED_SAVINGS_PCT)
+                defaults_message.append(f"Savings fixed amount is {int(FIXED_SAVINGS_PCT*100)}% of {income:,}")
 
         except SavingCalculation.DoesNotExist:
             pass

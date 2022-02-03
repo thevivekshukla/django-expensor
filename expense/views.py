@@ -18,6 +18,7 @@ from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
 from utils import helpers
 from utils.helpers import aggregate_sum
+from utils.constants import BANK_AMOUNT_PCT
 
 # Create your views here.
 
@@ -79,7 +80,7 @@ class GetBasicInfo(LoginRequiredMixin, View):
         data['today_expense'] = f"{today_expense:,}"
         data['this_month_expense'] = f"{this_month_expense:,}"
         
-        data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
+        data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income * BANK_AMOUNT_PCT)
         data['this_year_eir'] = helpers.calculate_ratio(this_year_expense, this_year_income)
 
         data = json.dumps(data)
