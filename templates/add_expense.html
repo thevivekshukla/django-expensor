@@ -65,8 +65,9 @@
               
               <table class="table table-condensed borderless">
                 <tr>
-                  <td><h5>Today's Expense: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
-                  <td><h5><span data-toggle="tooltip" data-placement="top" title="This Year's Expense to Income Ratio">Year's EIR: <span id="year_eir"></span></span></h5></td>
+                  <td><h5>Today: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
+                  <td><h5>This month: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
+                  <!-- <td><h5><span data-toggle="tooltip" data-placement="top" title="This Year's Expense to Income Ratio">Year's EIR: <span id="year_eir"></span></span></h5></td> -->
                 </tr>
               </table>
 
@@ -79,11 +80,11 @@
                       </div>
                     </div>
 
-                    <center>
+                    <!-- <center>
                       <h5>
                         Month's Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a>
                       </h5>
-                    </center>
+                    </center> -->
                   </td>
                 </tr>
               </table>
@@ -136,7 +137,7 @@
       success: function(data){
         $("#today_expense").html(data.today_expense);
         $("#month_expense").html(data.this_month_expense);
-        $("#year_eir").html(data.this_year_eir + "%");
+        // $("#year_eir").html(data.this_year_eir + "%");
         $("#month_eir").html(data.this_month_eir + "%");
         $("#month_eir_progress").css("width", data.this_month_eir + "%");
       },
