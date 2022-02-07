@@ -80,8 +80,9 @@
                     </div>
 
                     <center>
-                      <h5>
-                        Spending Power: <span id="spending_power"></span>
+                      <h5 id="spending_power_heading" style="cursor: pointer;">
+                        Spending Power: <span style="display: none;" id="spending_power"></span>
+                        <i id="spending_power_hide" class="fas fa-eye-slash"></i>
                       </h5>
                     </center>
                   </td>
@@ -196,6 +197,11 @@
 
     $('#recentTxn').on('show.bs.collapse', function () {
       fetchLatestExpenses();
+    });
+
+    $("#spending_power_heading").on('click', function() {
+      $("#spending_power_hide").toggle();
+      $("#spending_power").toggle();
     });
 
     var form = $("#id_add_expense");
