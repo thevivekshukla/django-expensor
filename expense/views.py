@@ -67,21 +67,24 @@ class GetBasicInfo(LoginRequiredMixin, View):
         today = helpers.get_ist_datetime().date()
         data = dict()
 
-        expenses = Expense.objects
-        incomes = user.incomes
-        
-        today_expense = aggregate_sum(expenses.this_day(user=user))
-        this_month_expense = aggregate_sum(expenses.this_month(user=user))
+        today_expense = aggregate_sum(Expense.objects.this_day(user=user))
+        this_month_expense = aggregate_sum(Expense.objects.this_month(user=user))
 
-        this_month_income = aggregate_sum(incomes.filter(timestamp__year=today.year, timestamp__month=today.month))
-        this_month_income *= BANK_AMOUNT_PCT
+        incomes = user.incomes.exclude(amount=0)
+        this_month_income = incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
+        this_month_income = aggregate_sum(this_month_income) * BANK_AMOUNT_PCT
         
         data['today_expense'] = f"{today_expense:,}"
         data['this_month_expense'] = f"{this_month_expense:,}"
-        
         data['this_month_eir'] = helpers.calculate_ratio(this_month_expense, this_month_income)
-        spending_power = max(0, this_month_income - this_month_expense)
-        data['spending_power'] = f"{int(spending_power):,}"
+        
+        last_income_date = incomes.dates('timestamp', 'month', order='DESC').first()
+        if last_income_date:
+            last_income = incomes.filter(timestamp__year=last_income_date.year, timestamp__month=last_income_date.month)
+            last_income_sum = aggregate_sum(last_income) * BANK_AMOUNT_PCT
+            expense_sum = aggregate_sum(user.expenses.filter(timestamp__range=(last_income_date, today)))
+            spending_power = last_income_sum - expense_sum
+            data['spending_power'] = f"{int(spending_power):,}"
 
         data = json.dumps(data)
         return HttpResponse(data, content_type='application/json')
