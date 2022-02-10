@@ -65,8 +65,8 @@
               
               <table class="table table-condensed borderless">
                 <tr>
-                  <td><h5>Today's Expense: <span id="today_expense"></span> <a href="{% url 'expense:day-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
-                  <td><h5>Month's Expense: <span id="month_expense"></span> <a href="{% url 'expense:month-wise-expense' %}"><i class="fas fa-external-link-square-alt"></i></a></h5></td>
+                  <td><h5><a class="black-text" href="{% url 'expense:day-wise-expense' %}">Today's Expense: <span id="today_expense"></span></a></h5></td>
+                  <td><h5><a class="black-text" href="{% url 'expense:month-wise-expense' %}">Month's Expense: <span id="month_expense"></span></a></h5></td>
                 </tr>
               </table>
 
