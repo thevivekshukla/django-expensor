@@ -9,6 +9,7 @@
 
 
 {% if objects %}
+  <a class="btn btn-primary btn-xs" href="{% url 'expense:all_remark_expenses' %}?from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}">See by Remark</a>
   {% include 'expense_table.html' %}
 {% elif request.GET.search == "1" %}
   <h1>Nothing found.</h1>

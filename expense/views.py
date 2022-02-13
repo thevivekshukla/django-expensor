@@ -17,7 +17,7 @@ import json
 from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
 from utils import helpers
-from utils.helpers import aggregate_sum
+from utils.helpers import aggregate_sum, default_date_format
 from utils.constants import BANK_AMOUNT_PCT, AVG_MONTH_DAYS
 
 # Create your views here.
@@ -337,7 +337,7 @@ class DateSearch(LoginRequiredMixin, View):
             if remark:
                 objects = helpers.search_expense_remark(objects, remark)
 
-            total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
+            total = aggregate_sum(objects)
             try:
                 days = (to_date - from_date).days
                 months = days / AVG_MONTH_DAYS
@@ -394,6 +394,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
     provies expenses for particular day, month or year.
     """
     template_name = 'remark-wise-expenses.html'
+    date_form_class = SelectDateRangeExpenseForm
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -401,6 +402,8 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         month = int(kwargs.get('month', 0))
         year = int(kwargs.get('year', 0))
         date_str = ""
+        
+        date_form = self.date_form_class(request.GET or None)
         incomes = user.incomes
         
         if day:
@@ -417,6 +420,12 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
             objects = Expense.objects.this_year(user=user, year=year)
             incomes = incomes.filter(timestamp__year=year)
             date_str = f': {year}'
+        elif date_form.is_valid():
+            from_date = date_form.cleaned_data.get('from_date')
+            to_date = date_form.cleaned_data.get('to_date')
+            objects = user.expenses.filter(timestamp__range=(from_date, to_date))
+            incomes = incomes.filter(timestamp__range=(from_date, to_date))
+            date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
         else:
             objects = Expense.objects.all(user=user)
 
@@ -443,7 +452,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         remark_data = sorted(remark_data, key=lambda x: x['amount'], reverse=True)
 
         context = {
-            "title": f"Remark-Wise Expenses {date_str}",
+            "title": f"Remark-Wise Expenses{date_str}",
             "remarks": remark_data,
             "total": expense_sum,
         }
