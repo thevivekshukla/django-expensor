@@ -34,7 +34,9 @@ from .forms import (
 )
 from utils import helpers
 from utils.helpers import aggregate_sum
-from utils.constants import BANK_AMOUNT_PCT, FIXED_SAVINGS_PCT
+from utils.constants import (
+    BANK_AMOUNT_PCT, FIXED_SAVINGS_PCT, AVG_MONTH_DAYS,
+)
 
 from expense.models import Expense
 # Create your views here.
@@ -310,7 +312,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
             total = aggregate_sum(objects)
             try:
                 days = (to_date - from_date).days
-                months = days / 30
+                months = days / AVG_MONTH_DAYS
                 context['monthly_average'] = int(total/months)
             except:
                 pass

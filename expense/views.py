@@ -18,7 +18,7 @@ from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
 from utils import helpers
 from utils.helpers import aggregate_sum
-from utils.constants import BANK_AMOUNT_PCT
+from utils.constants import BANK_AMOUNT_PCT, AVG_MONTH_DAYS
 
 # Create your views here.
 
@@ -340,7 +340,7 @@ class DateSearch(LoginRequiredMixin, View):
             total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
             try:
                 days = (to_date - from_date).days
-                months = days / 30
+                months = days / AVG_MONTH_DAYS
                 context['monthly_average'] = int(total/months)
             except:
                 pass
