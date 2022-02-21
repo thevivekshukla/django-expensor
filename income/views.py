@@ -204,6 +204,7 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
             'now': helpers.get_ist_datetime(),
             'eir': helpers.expense_to_income_ratio(user),
             'data': data,
+            'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
         }
         return render(request, self.template_name, context)
 

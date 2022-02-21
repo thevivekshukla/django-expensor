@@ -61,7 +61,7 @@
                         <td 
                             {% if row.expense_ratio > 100 %}
                                 class="red-text"
-                            {% elif row.expense_ratio > 80 %}
+                            {% elif row.expense_ratio > BANK_AMOUNT_PCT %}
                                 class="warning-text"
                             {% else %}
                                 class="green-text"
