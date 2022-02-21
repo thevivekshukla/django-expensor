@@ -12,7 +12,7 @@
         <span
             {% if eir > 100 %}
                 class="red-text"
-            {% elif eir > 80 %}
+            {% elif eir > BANK_AMOUNT_PCT %}
                 class="warning-text"
             {% else %}
                 class="green-text"
