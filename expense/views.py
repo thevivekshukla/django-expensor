@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from datetime import date, timedelta
+from calendar import monthrange
 import json
 
 from .forms import ExpenseForm, SelectDateRangeExpenseForm
@@ -80,7 +81,7 @@ class GetBasicInfo(LoginRequiredMixin, View):
             last_income_sum = aggregate_sum(last_income) * BANK_AMOUNT_PCT
             expense_sum = aggregate_sum(user.expenses.filter(timestamp__range=(last_income_date, today)))
             data['this_month_eir'] = helpers.calculate_ratio(expense_sum, last_income_sum)
-            spending_power = last_income_sum - expense_sum
+            spending_power = max(0, last_income_sum - expense_sum)
             data['spending_power'] = f"{int(spending_power):,}"
 
         data = json.dumps(data)
@@ -258,9 +259,11 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             month_income_sum = aggregate_sum(month_income)
 
             month_expense_to_income_ratio = helpers.calculate_ratio(amount, month_income_sum)
+            _, no_of_days = monthrange(date.year, date.month)
             data.append({
                 'date': date,
                 'amount': amount,
+                'daily_average': amount // no_of_days,
                 'month_eir': month_expense_to_income_ratio,
             })
 
@@ -290,10 +293,9 @@ class YearWiseExpense(LoginRequiredMixin, View):
         data = []
         for date in dates:
             year = date.year
-            amount = Expense.objects.this_year(user=user, year=year)\
-                        .aggregate(Sum('amount'))['amount__sum'] or 0
+            amount = aggregate_sum(Expense.objects.this_year(user=user, year=year))
+            year_income_sum = aggregate_sum(user.incomes.filter(timestamp__year=year))
             
-            year_income_sum = user.incomes.filter(timestamp__year=year).aggregate(Sum('amount'))['amount__sum'] or 0
             expense_ratio = helpers.calculate_ratio(amount, expense_sum)
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             year_expense_to_income_ratio = helpers.calculate_ratio(amount, year_income_sum)
@@ -301,6 +303,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
             data.append({
                 'year': year,
                 'amount': amount,
+                'monthly_average': amount // 12,
                 'year_eir': year_expense_to_income_ratio,
                 'eir': expense_to_income_ratio,
                 'expense_ratio': expense_ratio,
