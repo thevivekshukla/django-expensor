@@ -13,7 +13,7 @@
     <tr>
       <th>Month</th>
       <th>Daily Average</th>
-      <th>Amount</th>
+      <th>Total Expense</th>
     </tr>
   </thead>
     
@@ -24,10 +24,10 @@
         <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
           {{ object.date|date:"M Y" }}
         </a>
-        <sup>[
+        <sup>(
           <a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
           <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>
-        ]</sup>
+        )</sup>
       </td>
 
       <td>
