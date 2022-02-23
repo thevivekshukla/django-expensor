@@ -227,7 +227,7 @@ class DayWiseExpense(LoginRequiredMixin, View):
                 'day_sum': day_sum,
             })
         
-        context['title'] = f'Day-Wise Expense {date_str}'
+        context['title'] = f'Day-Wise Expense{date_str}'
         context['data'] = data
         context['objects'] = days
         return render(request, self.template_name, context)
@@ -267,7 +267,7 @@ class MonthWiseExpense(LoginRequiredMixin, View):
                 'month_eir': month_expense_to_income_ratio,
             })
 
-        context['title'] = f'Monthly Expense {date_str}'
+        context['title'] = f'Monthly Expense{date_str}'
         context['data'] = data
         context['objects'] = dates
         return render(request, self.template_name, context)
@@ -384,7 +384,7 @@ class GoToExpense(LoginRequiredMixin, View):
         objects = helpers.get_paginator_object(request, objects, 50)
 
         context = {
-            "title": f"Expenses {date_str}",
+            "title": f"Expenses{date_str}",
             "objects": objects,
             "total": total,
         }

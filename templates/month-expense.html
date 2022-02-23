@@ -11,9 +11,9 @@
 
   <thead>
     <tr>
-      <th>Month</th>
-      <th>Daily Average</th>
-      <th>Total Expense</th>
+      <th class="active">Month</th>
+      <th class="active">Daily Average</th>
+      <th class="active">Total Expense</th>
     </tr>
   </thead>
     
@@ -22,7 +22,7 @@
 
       <td>
         <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
-          {{ object.date|date:"M Y" }}
+          {{ object.date|date:"M y" }}
         </a>
         (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
           <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>)
@@ -32,7 +32,7 @@
         {{ object.daily_average|intcomma }}
       </td>
 
-      <td>
+      <td class="active">
           <span data-toggle="tooltip" data-placement="top" title="Month's EIR: {{ object.month_eir }}%">
             {{ object.amount|intcomma }}
           </span>

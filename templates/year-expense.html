@@ -9,9 +9,9 @@
 
   <thead>
     <tr>
-      <th>Year</th>
-      <th>Monthly Average</th>
-      <th>Total Expense</th>
+      <th class="active">Year</th>
+      <th class="active">Monthly Average</th>
+      <th class="active">Total Expense</th>
     </tr>
   </thead>
 
@@ -30,7 +30,7 @@
         {{ object.monthly_average|intcomma }}
       </td>
 
-      <td>
+      <td class="active">
           <span data-toggle="tooltip" data-placement="top" title="Year's EIR: {{ object.year_eir }}%; All Time EIR: {{ object.eir }}%; Expense Ratio: {{ object.expense_ratio }}%">
             {{ object.amount|intcomma }}
           </span>
