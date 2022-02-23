@@ -22,10 +22,8 @@
         <a href="{% url 'expense:month-wise-expense' %}?year={{ object.year }}">
           {{ object.year }}
         </a>
-        <sup>( 
-          <a href="{% url 'expense:day-wise-expense' %}?year={{ object.year }}">Day</a> |
-          <a href="{% url 'expense:goto_year_expense' year=object.year %}">Remark</a>
-        )</sup>
+        (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.year }}">day</a> |
+          <a href="{% url 'expense:goto_year_expense' year=object.year %}">remark</a>)
       </td>
 
       <td>
