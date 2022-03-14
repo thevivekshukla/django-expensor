@@ -73,7 +73,11 @@
                         </td>
 
                         <td>
-                            {{ row.saved|intcomma }}
+                            {% if row.saved < 0 %}
+                                <span data-toggle="tooltip" data-placement="top" title="{{ row.saved|intcomma }}">0</span>
+                            {% else %}
+                                {{ row.saved|intcomma }}
+                            {% endif %}
                         </td>
 
                         <td 
