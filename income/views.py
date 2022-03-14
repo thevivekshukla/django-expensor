@@ -218,7 +218,7 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
         
         income_dates = incomes.dates('timestamp', 'month', order='DESC')
         expense_dates = expenses.dates('timestamp', 'month', order='DESC')
-        dates = sorted(set([*income_dates, *expense_dates]))
+        dates = sorted(set([*income_dates, *expense_dates]), reverse=True)
 
         data = []
         for date in dates:
