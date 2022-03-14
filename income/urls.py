@@ -17,6 +17,7 @@ urlpatterns = [
     re_path(r'^income-search/$', views.IncomeDateSearch.as_view(), name='search'),
     
     re_path(r'^report/$', views.YearlyIncomeExpenseReport.as_view(), name='report'),
+    re_path(r'^report/(?P<year>\d+)/$', views.MonthlyIncomeExpenseReport.as_view(), name='yearly-report'),
     
     re_path(r'^saving-calculation/$', views.SavingCalculationDetailView.as_view(), name='savings-calculation-detail'),
 

@@ -176,19 +176,17 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        
         incomes = user.incomes
-        income_dates = incomes.dates('timestamp', 'year', order='DESC')
-        
         expenses = user.expenses
-        expense_dates = expenses.dates('timestamp', 'year', order='DESC')
         
+        income_dates = incomes.dates('timestamp', 'year', order='DESC')
+        expense_dates = expenses.dates('timestamp', 'year', order='DESC')
         dates = sorted(set([*income_dates, *expense_dates]), reverse=True)
 
         data = []
         for date in dates:
-            income_sum = aggregate_sum(incomes.filter(timestamp__year=date.year,))
-            expense_sum = aggregate_sum(expenses.filter(timestamp__year=date.year,))
+            income_sum = aggregate_sum(incomes.filter(timestamp__year=date.year))
+            expense_sum = aggregate_sum(expenses.filter(timestamp__year=date.year))
             expense_ratio = helpers.calculate_ratio(expense_sum, income_sum)
 
             data.append({
@@ -203,6 +201,44 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
             'title': 'Report Card',
             'now': helpers.get_ist_datetime(),
             'eir': helpers.expense_to_income_ratio(user),
+            'data': data,
+            'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
+        }
+        return render(request, self.template_name, context)
+
+
+class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
+    template_name = "report.html"
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        year = kwargs['year']
+        incomes = user.incomes.filter(timestamp__year=year)
+        expenses = user.expenses.filter(timestamp__year=year)
+        
+        income_dates = incomes.dates('timestamp', 'month', order='DESC')
+        expense_dates = expenses.dates('timestamp', 'month', order='DESC')
+        dates = sorted(set([*income_dates, *expense_dates]))
+
+        data = []
+        for date in dates:
+            income_sum = aggregate_sum(incomes.filter(timestamp__month=date.month))
+            expense_sum = aggregate_sum(expenses.filter(timestamp__month=date.month))
+            expense_ratio = helpers.calculate_ratio(expense_sum, income_sum)
+
+            data.append({
+                'date': date,
+                'income_sum': income_sum,
+                'expense_sum': expense_sum,
+                'saved': income_sum - expense_sum,
+                'expense_ratio': expense_ratio,
+            })
+
+        context = {
+            'title': f'Report Card: {year}',
+            'year': year,
+            'now': helpers.get_ist_datetime(),
+            'eir': helpers.calculate_ratio(aggregate_sum(expenses), aggregate_sum(incomes)),
             'data': data,
             'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
         }

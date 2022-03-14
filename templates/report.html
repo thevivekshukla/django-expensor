@@ -8,7 +8,7 @@
 <div class="col-md-10 col-md-offset-1">
 
     {% if eir %}
-        <h4>All Time EIR:
+        <h4>{% if year %}EIR{% else %}All Time EIR{% endif %}:
         <span
             {% if eir > 100 %}
                 class="red-text"
@@ -28,7 +28,7 @@
 
                 <thead>
                     <tr>
-                        <th><i class="far fa-calendar-alt"></i> Year</th>
+                        <th><i class="far fa-calendar-alt"></i> {% if year %}Month{% else %}Year{% endif %}</th>
                         <th class="info"><i class="fas fa-coins"></i> Income</th>
                         <th class="danger"><i class="far fa-credit-card"></i> Expense</th>
                         <th class="success"><i class="fas fa-piggy-bank"></i> Saved</th>
@@ -39,19 +39,37 @@
                 {% for row in data %}
                     <tr>
                         <td class="active">
-                            <strong>{{ row.date.year }}</strong>
+                            {% if year %}
+                                <strong>{{ row.date|date:"M Y" }}</strong>
+                            {% else %}
+                                <a href="{% url 'income:yearly-report' year=row.date.year %}" class="black-text">
+                                    <strong>{{ row.date.year }}</strong>
+                                </a>
+                            {% endif %}
                         </td>
 
                         <td>
-                            <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
-                                {{ row.income_sum|intcomma }}
-                            </a>
+                            {% if year %}
+                                <a class="black-text" href="{% url 'income:goto-income-list' year=row.date.year month=row.date.month %}">
+                                    {{ row.income_sum|intcomma }}
+                                </a>
+                            {% else %}
+                                <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ row.date.year }}">
+                                    {{ row.income_sum|intcomma }}
+                                </a>
+                            {% endif %}
                         </td>
 
                         <td>
-                            <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
-                                {{ row.expense_sum|intcomma }}
-                            </a>
+                            {% if year %}
+                                <a class="black-text" href="{% url 'expense:goto_expense' year=row.date.year month=row.date.month %}">
+                                    {{ row.expense_sum|intcomma }}
+                                </a>
+                            {% else %}
+                                <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ row.date.year }}">
+                                    {{ row.expense_sum|intcomma }}
+                                </a>
+                            {% endif %}
                         </td>
 
                         <td>
