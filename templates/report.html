@@ -14,7 +14,7 @@
                 class="red-text"
             {% elif eir > BANK_AMOUNT_PCT %}
                 class="warning-text"
-            {% else %}
+            {% elif eir > 0 %}
                 class="green-text"
             {% endif %}
         >{{ eir }}%<span>
@@ -85,7 +85,7 @@
                                 class="red-text"
                             {% elif row.expense_ratio > BANK_AMOUNT_PCT %}
                                 class="warning-text"
-                            {% else %}
+                            {% elif row.expense_ratio > 0 %}
                                 class="green-text"
                             {% endif %}
                         >
