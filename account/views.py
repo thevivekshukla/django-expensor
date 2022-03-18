@@ -245,7 +245,7 @@ class AccountNameAmountAddView(LoginRequiredMixin, View):
         if amounts:
             amount = amounts.amount
         else:
-            amount = 0
+            amount = None
         context['form'] = self.form_class(initial={'amount': amount})
         return render(request, self.template_name, context)
     
