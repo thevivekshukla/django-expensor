@@ -7,7 +7,7 @@
 
 {% if networth %}
     <center>
-        <a href="{% url 'account:networth-history' %}">
+        <a href="{% url 'account:networth-history' %}" style="text-decoration:none;">
             <h1 {% if networth.amount > 0 %}class="green-text"{% else %}class="red-text"{% endif %}>
                 {{ networth.amount|intcomma }}
             </h1>
