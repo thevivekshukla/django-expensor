@@ -41,6 +41,7 @@ class AccountNameAmount(BaseModel):
 
 
 def _save_networth(instance, *args, **kwargs):
+    today_date = get_ist_datetime().date()
     user = instance.account_name.user
     account_names = user.account_names.all()
     networth_amount = 0
@@ -51,9 +52,12 @@ def _save_networth(instance, *args, **kwargs):
                 networth_amount -= account_amount.amount
             else:
                 networth_amount += account_amount.amount
-    networth, _ = NetWorth.objects.get_or_create(user=user, date=get_ist_datetime().date())
-    networth.amount = networth_amount
-    networth.save()
+    try:
+        networth = NetWorth.objects.get(user=user, date=today_date)
+        networth.amount = networth_amount
+        networth.save()
+    except NetWorth.DoesNotExist:
+        NetWorth.objects.create(user=user, amount=networth_amount, date=today_date)
 
 post_save.connect(_save_networth, sender=AccountNameAmount)
 post_delete.connect(_save_networth, sender=AccountNameAmount)
