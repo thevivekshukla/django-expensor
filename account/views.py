@@ -286,4 +286,17 @@ class AccountNameAmountAddView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-
+class AccountNameAccountHistory(LoginRequiredMixin, View):
+    template_name = "networth_history.html"
+    
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        instance = AccountName.objects.get(id=pk)
+        history = instance.amounts.all().order_by('-date')
+        objects = get_paginator_object(request, history, 25)
+        context = {
+            'title': f'{instance.name}: {instance.get_type_display()}',
+            'objects': objects,
+            'is_paginated': True,
+        }
+        return render(request, self.template_name, context)

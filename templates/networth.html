@@ -24,7 +24,11 @@
         <table class="table">
             {% for asset in assets %}
             <tr>
-                <td>{{ asset.account_name.name }}</td>
+                <td>
+                    <a class="black-text" href="{% url 'account:account-name-amount-history' pk=asset.account_name.id %}">
+                        {{ asset.account_name.name }}
+                    </a>
+                </td>
                 <td>
                     {% if asset.amount %}
                         {{ asset.amount.amount|intcomma }}
@@ -45,7 +49,11 @@
         <table class="table">
             {% for liability in liabilities %}
             <tr>
-                <td>{{ liability.account_name.name }}</td>
+                <td>
+                    <a class="black-text" href="{% url 'account:account-name-amount-history' pk=liability.account_name.id %}">
+                        {{ liability.account_name.name }}
+                    </a>
+                </td>
                 <td>
                     {% if liability.amount %}
                         {{ liability.amount.amount|intcomma }}

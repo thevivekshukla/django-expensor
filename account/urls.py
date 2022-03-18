@@ -20,5 +20,6 @@ urlpatterns = [
         re_path(r'^net-worth/accounts/(?P<pk>\d+)/$', views.AccountNameUpdateView.as_view(), name='account-name-update'),
         re_path(r'^net-worth/accounts/(?P<pk>\d+)/delete/$', views.AccountNameDeleteView.as_view(), name='account-name-delete'),
         re_path(r'^net-worth/accounts/(?P<pk>\d+)/amount/$', views.AccountNameAmountAddView.as_view(), name='account-name-amount'),
+        re_path(r'^net-worth/accounts/(?P<pk>\d+)/amount/history/$', views.AccountNameAccountHistory.as_view(), name='account-name-amount-history'),
 ]
 
