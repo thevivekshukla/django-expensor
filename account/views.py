@@ -295,8 +295,11 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
         history = instance.amounts.all().order_by('-date')
         objects = get_paginator_object(request, history, 25)
         context = {
-            'title': f'{instance.name}: {instance.get_type_display()}',
+            'title': f'{instance.name} ({instance.get_type_display()})',
             'objects': objects,
             'is_paginated': True,
         }
         return render(request, self.template_name, context)
+
+
+
