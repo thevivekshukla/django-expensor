@@ -18,7 +18,7 @@ from .forms import (
     RegisterUserForm, LoginForm, ChangePasswordForm,
     AccountNameCreateForm, AccountNameAmountForm,
 )
-from utils.helpers import get_ist_datetime
+from utils.helpers import get_ist_datetime, get_paginator_object
 
 # Create your views here.
 
@@ -145,6 +145,20 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+class NetWorthHistoryView(LoginRequiredMixin, View):
+    template_name = "networth_history.html"
+    
+    def get(self, request, *args, **kwargs):
+        networth = NetWorth.objects.filter(user=request.user)
+        objects = get_paginator_object(request, networth, 25)
+        context = {
+            'title': 'NetWorth',
+            'objects': objects,
+            'is_paginated': True,
+        }
+        return render(request, self.template_name, context)
+
+
 class AccountNameListView(LoginRequiredMixin, View):
     template_name = "account_name_list.html"
 
@@ -266,7 +280,7 @@ class AccountNameAmountAddView(LoginRequiredMixin, View):
             else:
                 AccountNameAmount.objects.create(amount=amount, **data)
             messages.success(request, "Account updated!")
-            return HttpResponseRedirect(reverse('account:networth_dashboard'))
+            return HttpResponseRedirect(reverse('account:networth-dashboard'))
 
         context['form'] = form
         return render(request, self.template_name, context)
