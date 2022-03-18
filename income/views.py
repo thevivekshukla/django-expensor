@@ -461,9 +461,10 @@ class InvestmentEntityUpdateView(SuccessMessageMixin, LoginRequiredMixin, Update
 class InvestmentEntityDeleteView(LoginRequiredMixin, DeleteView):
     model = InvestmentEntity
     success_url = reverse_lazy('income:investment-entity-list')
-    template_name = "investment-entity-delete.html"
+    template_name = "entity-delete.html"
     extra_context = {
         'title': 'Confirm Delete',
+        'success_url': success_url,
     }
 
     def get_queryset(self):

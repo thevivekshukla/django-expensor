@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block body %}
+
+
+<div class="row">
+
+    <div class="col-md-4 col-lg-4"></div>
+    <div class="col-md-4 col-lg-4 col-sm-12">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">
+            <br>
+        </form>
+        
+    </div>
+    <div class="col-md-4 col-lg-4"></div>
+
+</div>
+
+<p><br><br><br><br><br></p>
+{% endblock body %}
+
+

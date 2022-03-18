@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block body %}
+
+<a href="{% url 'account:networth_dashboard' %}" class="btn btn-primary"><i class="fas fa-home"></i></a>
+<a href="{% url 'account:account-name-create' %}" class="btn btn-primary">Add New Account</a>
+
+<div class="row">
+
+    <div class="col-md-5 offset-md-1">
+        <h3>Assets</h3><br>
+
+        <table class="table">
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.name }}</td>
+                <td>
+                    <a href="{% url 'account:account-name-update' pk=asset.id %}"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'account:account-name-delete' pk=asset.id %}"><i class="fas fa-trash-alt red-text"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+    <div class="col-md-5 offset-md-1">
+        <h3>Liabilities</h3><br>
+
+        <table class="table">
+            {% for liability in liabilities %}
+            <tr>
+                <td>{{ liability.name }}</td>
+                <td>
+                    <a href="{% url 'account:account-name-update' pk=liability.id %}"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'account:account-name-delete' pk=liability.id %}"><i class="fas fa-trash-alt red-text"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</div>
+
+<p><br><br><br><br><br></p>
+{% endblock body %}
+
+

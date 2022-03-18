@@ -1,6 +1,10 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from .models import (
+    AccountName,
+    AccountNameAmount,
+)
 
 User = get_user_model()
 
@@ -64,3 +68,16 @@ class ChangePasswordForm(forms.Form):
         
         return cleaned_data
             
+
+class AccountNameCreateForm(forms.ModelForm):
+    class Meta:
+        model = AccountName
+        fields = [
+            'name',
+            'type',
+        ]
+
+
+class AccountNameAmountForm(forms.Form):
+    amount = forms.IntegerField()
+

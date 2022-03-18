@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'dbbackup',
     'storages',
     'income',
+    'account',
 ]
 
 MIDDLEWARE = [

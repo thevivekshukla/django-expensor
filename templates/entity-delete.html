@@ -9,7 +9,7 @@
     {% csrf_token %}
     <p>Are you sure you want to delete "{{ object }}"?</p>
     <input type="submit" class="btn btn-danger" value="Confirm">
-    <a href="{% url 'income:investment-entity-list' %}" class="btn btn-success">Cancel</a>
+    <a href="{{ success_url }}" class="btn btn-success">Cancel</a>
 </form>
 
 

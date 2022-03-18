@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block body %}
+
+
+{% if networth %}
+    <center>
+        <h1 {% if networth.amount > 0 %}class="green-text"{% else %}class="red-text"{% endif %}>{{ networth.amount|intcomma }}</h1>
+    </center>
+{% endif %}
+
+
+<hr>
+<div class="row">
+
+    <div class="col-md-6">
+        <h4>Assets: <span class="green-text">{{ asset_amount|intcomma }}</span></h4><br>
+        <table class="table">
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.account_name.name }}</td>
+                <td>
+                    {% if asset.amount %}
+                        {{ asset.amount.amount|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'account:account-name-amount' pk=asset.account_name.id %}"><i class="fas fa-plus-circle"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Liabilities: <span class="red-text">{{ liability_amount|intcomma }}</span></h4><br>
+        <table class="table">
+            {% for liability in liabilities %}
+            <tr>
+                <td>{{ liability.account_name.name }}</td>
+                <td>
+                    {% if liability.amount %}
+                        {{ liability.amount.amount|intcomma }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'account:account-name-amount' pk=liability.account_name.id %}"><i class="fas fa-plus-circle"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<p><br><br><br></p>
+<a href="{% url 'account:account-name-list' %}" class="btn btn-primary">Manage Accounts</a>
+
+<p><br><br><br><br><br></p>
+{% endblock body %}
+
+

@@ -1,15 +1,24 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
+from django.views.generic import DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-
-from .forms import RegisterUserForm, LoginForm, ChangePasswordForm
+from .models import (
+    AccountName,
+    AccountNameAmount,
+    NetWorth,
+)
+from .forms import (
+    RegisterUserForm, LoginForm, ChangePasswordForm,
+    AccountNameCreateForm, AccountNameAmountForm,
+)
+from utils.helpers import get_ist_datetime
 
 # Create your views here.
 
@@ -93,6 +102,173 @@ class ChangePassword(LoginRequiredMixin, View):
                 
         else:
             context['form'] = form
+        return render(request, self.template_name, context)
+
+
+"""
+********************* Networth **************************
+"""
+
+class NetWorthDashboard(LoginRequiredMixin, View):
+    template_name = "networth.html"
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        networth = user.net_worth.order_by('-date').first()
+        
+        liabilities = []
+        assets = []
+        liability_amount = 0
+        asset_amount = 0
+        account_names = user.account_names.all()
+        for account in account_names:
+            amount = account.amounts.order_by('-date').first()
+            data = {
+                'account_name': account,
+                'amount': amount,
+            }
+            if account.type == 0:
+                liabilities.append(data)
+                liability_amount += amount.amount if amount else 0
+            else:
+                assets.append(data)
+                asset_amount += amount.amount if amount else 0
+        
+        context = {
+            'title': 'NetWorth',
+            'networth': networth,
+            'liabilities': liabilities,
+            'liability_amount': liability_amount,
+            'assets': assets,
+            'asset_amount': asset_amount,
+        }
+        return render(request, self.template_name, context)
+
+
+class AccountNameListView(LoginRequiredMixin, View):
+    template_name = "account_name_list.html"
+
+    def get(self, request, *args, **kwargs):
+        account_names = request.user.account_names.all()
+        liabilities = account_names.filter(type=0)
+        assets = account_names.filter(type=1)
+        context = {
+            'title': 'Accounts',
+            'liabilities': liabilities,
+            'assets': assets,
+        }
+        return render(request, self.template_name, context)
+
+
+class AccountNameCreateView(LoginRequiredMixin, View):
+    template_name = "account_name_create.html"
+    form_class = AccountNameCreateForm
+    context = {'title': 'Add Account'}
+    
+    def get(self, request, *args, **kwargs):
+        context = self.context.copy()
+        context['form'] = self.form_class()
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        context = self.context.copy()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            account_name = form.save(commit=False)
+            account_name.user = request.user
+            account_name.save()
+            messages.success(request, "New account added!")
+            return HttpResponseRedirect(reverse('account:account-name-list'))
+
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
+class AccountNameUpdateView(LoginRequiredMixin, View):
+    template_name = "account_name_create.html"
+    form_class = AccountNameCreateForm
+    context = {}
+    
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        account_name = get_object_or_404(AccountName, id=pk)
+        self.context['title'] = f'{account_name.name}'
+        return account_name
+    
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        context = self.context.copy()
+        context['form'] = self.form_class(instance=instance)
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        instance = self.get_object()
+        context = self.context.copy()
+        form = self.form_class(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account updated!")
+            return HttpResponseRedirect(reverse('account:account-name-list'))
+
+        context['form'] = form
+        return render(request, self.template_name, context)
+        
+
+class AccountNameDeleteView(LoginRequiredMixin, DeleteView):
+    model = AccountName
+    success_url = reverse_lazy('account:account-name-list')
+    template_name = "entity-delete.html"
+    extra_context = {
+        'title': 'Confirm Delete',
+        'success_url': success_url,
+    }
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AccountNameAmountAddView(LoginRequiredMixin, View):
+    template_name = "account_name_amount.html"
+    form_class = AccountNameAmountForm
+    context = {}
+    
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        account_name = get_object_or_404(AccountName, id=pk)
+        self.context['title'] = f'{account_name.name}'
+        return account_name
+    
+    def get(self, request, *args, **kwargs):
+        account_name = self.get_object()
+        context = self.context.copy()
+        amounts = account_name.amounts.order_by('-date').first()
+        if amounts:
+            amount = amounts.amount
+        else:
+            amount = 0
+        context['form'] = self.form_class(initial={'amount': amount})
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        account_name = self.get_object()
+        context = self.context.copy()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            data = {
+                'account_name': account_name,
+                'date': get_ist_datetime().date(),
+            }
+            account_name_amount = AccountNameAmount.objects.filter(**data).first()
+            if account_name_amount:
+                account_name_amount.amount = amount
+                account_name_amount.save()
+            else:
+                AccountNameAmount.objects.create(amount=amount, **data)
+            messages.success(request, "Account updated!")
+            return HttpResponseRedirect(reverse('account:networth_dashboard'))
+
+        context['form'] = form
         return render(request, self.template_name, context)
 
 
