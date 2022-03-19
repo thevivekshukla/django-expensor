@@ -30,11 +30,13 @@
                     </a>
                 </td>
                 <td>
-                    {% if asset.amount %}
-                        {{ asset.amount.amount|intcomma }}
-                    {% else %}
-                        0
-                    {% endif %}
+                    <span style="float:right;">
+                        {% if asset.amount %}
+                            {{ asset.amount.amount|intcomma }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </span>
                 </td>
                 <td>
                     <a href="{% url 'account:account-name-amount' pk=asset.account_name.id %}"><i class="fas fa-pencil-alt"></i></a>
@@ -55,11 +57,13 @@
                     </a>
                 </td>
                 <td>
-                    {% if liability.amount %}
-                        {{ liability.amount.amount|intcomma }}
-                    {% else %}
-                        0
-                    {% endif %}
+                    <span style="float:right;">
+                        {% if liability.amount %}
+                            {{ liability.amount.amount|intcomma }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </span>
                 </td>
                 <td>
                     <a href="{% url 'account:account-name-amount' pk=liability.account_name.id %}"><i class="fas fa-pencil-alt"></i></a>
@@ -71,7 +75,10 @@
 
 </div>
 
-<p><br><br><br></p>
+<p><br></p>
+<sub>as on {{ networth.date|date:"d M Y" }}</sub>
+
+<p><br></p>
 <a href="{% url 'account:account-name-list' %}" class="btn btn-primary">Manage Accounts</a>
 
 <p><br><br><br><br><br></p>

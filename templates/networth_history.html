@@ -22,7 +22,7 @@
             {% for object in objects %}
             <tr>
                 <td>{{ object.date|date:"d M, Y" }}</td>
-                <td>{{ object.amount|intcomma }}</td>
+                <td><span style="float:right;">{{ object.amount|intcomma }}</span></td>
             </tr>
             {% endfor %}
 
