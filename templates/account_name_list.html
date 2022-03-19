@@ -18,6 +18,8 @@
                 <td>{{ asset.name }}</td>
                 <td>
                     <a href="{% url 'account:account-name-update' pk=asset.id %}"><i class="fas fa-edit"></i></a>
+                </td>
+                <td>
                     <a href="{% url 'account:account-name-delete' pk=asset.id %}"><i class="fas fa-trash-alt red-text"></i></a>
                 </td>
             </tr>
@@ -35,6 +37,8 @@
                 <td>{{ liability.name }}</td>
                 <td>
                     <a href="{% url 'account:account-name-update' pk=liability.id %}"><i class="fas fa-edit"></i></a>
+                </td>
+                <td>
                     <a href="{% url 'account:account-name-delete' pk=liability.id %}"><i class="fas fa-trash-alt red-text"></i></a>
                 </td>
             </tr>
