@@ -39,7 +39,7 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{% url 'account:account-name-amount' pk=asset.account_name.id %}"><i class="fas fa-pencil-alt"></i></a>
+                    <a href="{% url 'account:account-name-amount' pk=asset.account_name.id %}"><i class="fas fa-plus-circle"></i></a>
                 </td>
             </tr>
             {% endfor %}
@@ -66,7 +66,7 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{% url 'account:account-name-amount' pk=liability.account_name.id %}"><i class="fas fa-pencil-alt"></i></a>
+                    <a href="{% url 'account:account-name-amount' pk=liability.account_name.id %}"><i class="fas fa-plus-circle"></i></a>
                 </td>
             </tr>
             {% endfor %}
