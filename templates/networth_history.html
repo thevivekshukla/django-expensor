@@ -7,6 +7,14 @@
 
 {% if objects %}
   
+  {% if history_cagr %}
+    <strong>
+      CAGR: 
+      <span {% if history_cagr > 0 %} class="green-text" {% elif history_cagr < 0 %} class="red-text" {% endif %}>{{ history_cagr }}%</span>
+    </strong>
+    <br><br>
+  {% endif %}
+
   <div class="row">
 
     <div class="col-md-6 offset-md-3">

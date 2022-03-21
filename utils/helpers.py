@@ -63,3 +63,18 @@ def search_expense_remark(queryset, q):
     queryset = queryset.filter(filter_Q).distinct()
     return queryset
 
+
+def calculate_cagr(final_amount, start_amount, years):
+    networth_cagr = 0
+    if years > 0:
+        if start_amount > 0 and final_amount > 0:
+            networth_cagr = (final_amount / start_amount) ** (1 / years) - 1
+        elif start_amount < 0 and final_amount < 0:
+            networth_cagr = -1 * ((abs(final_amount) / abs(start_amount)) ** (1 / years) - 1)
+        elif start_amount < 0 and final_amount > 0:
+            networth_cagr = ((final_amount + 2 * abs(start_amount)) / abs(start_amount))  ** (1 / years) - 1
+        elif start_amount > 0 and final_amount < 0:
+            networth_cagr = -1 * (((abs(final_amount) + 2 * start_amount) / start_amount) ** (1 / years) - 1)
+        networth_cagr = round(networth_cagr * 100, 2)
+    return networth_cagr
+

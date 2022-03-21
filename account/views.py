@@ -18,7 +18,10 @@ from .forms import (
     RegisterUserForm, LoginForm, ChangePasswordForm,
     AccountNameCreateForm, AccountNameAmountForm,
 )
-from utils.helpers import get_ist_datetime, get_paginator_object
+from utils.helpers import (
+    get_ist_datetime, get_paginator_object,
+    calculate_cagr,
+)
 
 # Create your views here.
 
@@ -114,7 +117,16 @@ class NetWorthDashboard(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        networth = user.net_worth.order_by('-date').first()
+        networths = user.net_worth.order_by('-date')
+        networth = networths.first()
+        
+        # calculating CAGR
+        networth_cagr = 0
+        if networths.exists():
+            final_networth = networths.first()
+            start_networth = networths.last()
+            networth_years = (final_networth.date - start_networth.date).days / 365
+            networth_cagr = calculate_cagr(final_networth.amount, start_networth.amount, networth_years)
         
         liabilities = []
         assets = []
@@ -137,6 +149,7 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         context = {
             'title': 'NetWorth',
             'networth': networth,
+            'networth_cagr': networth_cagr,
             'liabilities': liabilities,
             'liability_amount': liability_amount,
             'assets': assets,
@@ -150,11 +163,20 @@ class NetWorthHistoryView(LoginRequiredMixin, View):
     
     def get(self, request, *args, **kwargs):
         networth = NetWorth.objects.filter(user=request.user)
+        
+        history_cagr = 0
+        if networth.exists():
+            final = networth.first()
+            start = networth.last()
+            years = (final.date - start.date).days / 365
+            history_cagr = calculate_cagr(final.amount, start.amount, years)
+        
         objects = get_paginator_object(request, networth, 25)
         context = {
             'title': 'NetWorth',
             'objects': objects,
             'is_paginated': True,
+            'history_cagr': history_cagr,
         }
         return render(request, self.template_name, context)
 
@@ -293,11 +315,20 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
         pk = kwargs.get('pk')
         instance = AccountName.objects.get(id=pk)
         history = instance.amounts.all().order_by('-date')
+        
+        history_cagr = 0
+        if history.exists():
+            final = history.first()
+            start = history.last()
+            years = (final.date - start.date).days / 365
+            history_cagr = calculate_cagr(final.amount, start.amount, years)
+        
         objects = get_paginator_object(request, history, 25)
         context = {
             'title': f'{instance.name} ({instance.get_type_display()})',
             'objects': objects,
             'is_paginated': True,
+            'history_cagr': history_cagr,
         }
         return render(request, self.template_name, context)
 
