@@ -66,7 +66,7 @@ def search_expense_remark(queryset, q):
 
 def calculate_cagr(final_amount, start_amount, years):
     networth_cagr = 0
-    if years > 0:
+    if years:
         if start_amount > 0 and final_amount > 0:
             networth_cagr = (final_amount / start_amount) ** (1 / years) - 1
         elif start_amount < 0 and final_amount < 0:
