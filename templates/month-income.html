@@ -4,34 +4,36 @@
 
 {% block body %}
 
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-6 col-md-offset-3">
 
 {% include "total_alert_info.html" %}
 
 {% if data %}
-    <table class="table table-bordered table-hover">
+  <table class="table table-bordered table-hover">
 
-        <thead>
-            <tr>
-              <th class="active">Month</th>
-              <th class="active">Income</th>
-            </tr>
-        </thead>
+      <thead>
+          <tr>
+            <th class="active">Month</th>
+            <th class="active">
+              <span class="float-right">Income</span>
+            </th>
+          </tr>
+      </thead>
 
-        {% for object in data %}
-            <tr>
-                <td>
-                  <a href="{% url 'income:goto-income-list' year=object.0.year month=object.0.month %}">
-                    {{ object.0|date:"M Y" }}
-                  </a>
-                </td>
-                <td>
-                    {{ object.1|intcomma }}
-                </td>
-            </tr>
-        {% endfor %}
+      {% for object in data %}
+          <tr>
+              <td>
+                <a href="{% url 'income:goto-income-list' year=object.0.year month=object.0.month %}">
+                  {{ object.0|date:"M Y" }}
+                </a>
+              </td>
+              <td class="active">
+                  <span class="float-right">{{ object.1|intcomma }}</span>
+              </td>
+          </tr>
+      {% endfor %}
 
-    </table>
+  </table>
 
   {% include 'paginator.html' %}
   

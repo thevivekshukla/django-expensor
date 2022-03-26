@@ -29,3 +29,7 @@
 .panel-white-bg > .panel-heading {
   background-color: white!important;
 }
+
+.float-right {
+  float: right;
+}

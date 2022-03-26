@@ -257,13 +257,10 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             amount = aggregate_sum(month_expense)
             month_income = user.incomes.filter(timestamp__year=date.year, timestamp__month=date.month)
             month_income_sum = aggregate_sum(month_income)
-
             month_expense_to_income_ratio = helpers.calculate_ratio(amount, month_income_sum)
-            _, no_of_days = monthrange(date.year, date.month)
             data.append({
                 'date': date,
                 'amount': amount,
-                'daily_average': amount // no_of_days,
                 'month_eir': month_expense_to_income_ratio,
             })
 

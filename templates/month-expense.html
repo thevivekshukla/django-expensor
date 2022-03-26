@@ -4,45 +4,45 @@
 
 {% block body %}
 
+<div class="col-md-6 col-md-offset-3">
+
 {% include "total_alert_info.html" %}
 
 {% if data %}
-<table class="table table-bordered table-hover">
+  
+  <table class="table table-bordered table-hover">
 
-  <thead>
-    <tr>
-      <th class="active">Month</th>
-      <th class="active">Daily Average</th>
-      <th class="active">Total Expense</th>
-    </tr>
-  </thead>
-    
-  {% for object in data %}
-    <tr>
-
-      <td>
-        <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
-          {{ object.date|date:"M y" }}
-        </a>
-        (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
-          <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>)
-      </td>
-
-      <td>
-        {{ object.daily_average|intcomma }}
-      </td>
-
-      <td class="active">
-          <span data-toggle="tooltip" data-placement="top" title="Month's EIR: {{ object.month_eir }}%">
-            {{ object.amount|intcomma }}
-          </span>
-      </td>
+    <thead>
+      <tr>
+        <th class="active">Month</th>
+        <th class="active">
+          <span class="float-right">Total Expense</span>
+        </th>
+      </tr>
+    </thead>
       
-    </tr> 
-  {% endfor %}
-    
-</table>
+    {% for object in data %}
+      <tr>
 
+        <td>
+          <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
+            {{ object.date|date:"M y" }}
+          </a>
+          (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
+            <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>)
+        </td>
+
+        <td class="active">
+            <span class="float-right" data-toggle="tooltip" data-placement="top" title="Month's EIR: {{ object.month_eir }}%">
+              {{ object.amount|intcomma }}
+            </span>
+        </td>
+        
+      </tr> 
+    {% endfor %}
+      
+  </table>
+  
   {% include 'paginator.html' %}
   
   {% else %}
@@ -50,6 +50,8 @@
   <h2>No data to show.</h2>
 
   {% endif %}
+
+</div>
 
 {% endblock body %}
 
