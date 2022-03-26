@@ -4,6 +4,8 @@
 
 {% block body %}
 
+<div class="col-md-6 col-md-offset-3">
+
 {% include "total_alert_info.html" %}
 
 {% if data %}
@@ -12,7 +14,7 @@
     <thead>
       <tr>
         <th>Day</th>
-        <th>Amount</th>
+        <th><span class="float-right">Amount</span></th>
       </tr>
     </thead>
 
@@ -23,7 +25,7 @@
             {{ object.day|date:"d M, Y" }}
           </a>
         </td>
-        <td>{{ object.day_sum|intcomma }}</td>
+        <td><span class="float-right">{{ object.day_sum|intcomma }}</span></td>
       </tr>
     {% endfor %}
 
@@ -37,6 +39,6 @@
 
 {% endif %}
 
-
+</div>
 
 {% endblock body %}

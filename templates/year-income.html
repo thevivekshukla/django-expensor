@@ -12,8 +12,8 @@
         <thead>
             <tr>
                 <th class="active">Year</th>
-                <th class="active">Monthly Avg.</th>
-                <th class="active">Total Income</th>
+                <th class="active"><span class="float-right">Monthly Avg.</span></th>
+                <th class="active"><span class="float-right">Total Income</span></th>
             </tr>
         </thead>
 
@@ -25,10 +25,10 @@
                     </a>
                 </td>
                 <td>
-                    {{ object.2|intcomma }}
+                    <span class="float-right">{{ object.2|intcomma }}</span>
                 </td>
                 <td class="active">
-                    <span style="font-weight: 450;">{{ object.1|intcomma }}</span>
+                    <span class="float-right" style="font-weight: 450;">{{ object.1|intcomma }}</span>
                 </td>
             </tr>
         {% endfor %}

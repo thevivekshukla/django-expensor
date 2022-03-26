@@ -4,14 +4,16 @@
 
 {% block body %}
 
+<div class="col-md-8 col-md-offset-2">
+
 {% if data %}
 <table class="table table-bordered table-hover">
 
   <thead>
     <tr>
       <th class="active">Year</th>
-      <th class="active">Monthly Average</th>
-      <th class="active">Total Expense</th>
+      <th class="active"><span class="float-right">Monthly Average</span></th>
+      <th class="active"><span class="float-right">Total Expense</span></th>
     </tr>
   </thead>
 
@@ -27,11 +29,11 @@
       </td>
 
       <td>
-        {{ object.monthly_average|intcomma }}
+        <span class="float-right">{{ object.monthly_average|intcomma }}</span>
       </td>
 
       <td class="active">
-          <span data-toggle="tooltip" data-placement="top" title="Year's EIR: {{ object.year_eir }}%; All Time EIR: {{ object.eir }}%; Expense Ratio: {{ object.expense_ratio }}%">
+          <span class="float-right" data-toggle="tooltip" data-placement="top" title="Year's EIR: {{ object.year_eir }}%; All Time EIR: {{ object.eir }}%; Expense Ratio: {{ object.expense_ratio }}%">
             {{ object.amount|intcomma }}
           </span>
       </td>
@@ -48,6 +50,8 @@
   <h2>No data to show.</h2>
 
   {% endif %}
+
+</div>
 
 {% endblock body %}
 

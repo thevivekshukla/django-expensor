@@ -5,6 +5,7 @@
 
 {% block body %}
 
+<div class="col-md-8 col-md-offset-2">
 
 {% if total %}
   <div class="alert alert-info">
@@ -20,22 +21,22 @@
     <thead>
       <tr>
         <th>Date</th>
-        <th>Amount</th>
         <th>Source</th>
+        <th><span class="float-right">Amount</span></th>
         <th></th>
-        <th>Action</th>
+        <th></th>
       </tr>
     </thead>
 
     {% for object in objects %}
       <tr>
         <td>{{ object.timestamp|date:"d M, Y" }}</td>
-        <td>{{ object.amount|intcomma }}</td>
         <td>
           {% if object.source %}
             <a class="black-text" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
           {% endif %}
         </td>
+        <td><span class="float-right">{{ object.amount|intcomma }}</span></td>
         <td>
           {% if object|show_calculator %}
             <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator' style='color:green;'></i></a>
@@ -60,6 +61,7 @@
   <h1>Nothing found</h1><hr>
 {% endif %}
 
+</div>
 
 {% endblock body %}
 
