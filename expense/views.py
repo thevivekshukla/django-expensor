@@ -74,14 +74,25 @@ class GetBasicInfo(LoginRequiredMixin, View):
         data['today_expense'] = f"{today_expense:,}"
         data['this_month_expense'] = f"{this_month_expense:,}"
         
-        incomes = user.incomes.exclude(amount=0)
-        last_income_date = incomes.dates('timestamp', 'month', order='DESC').first()
-        if last_income_date:
-            last_income = incomes.filter(timestamp__year=last_income_date.year, timestamp__month=last_income_date.month)
-            last_income_sum = aggregate_sum(last_income) * BANK_AMOUNT_PCT
-            expense_sum = aggregate_sum(user.expenses.filter(timestamp__range=(last_income_date, today)))
-            data['this_month_eir'] = helpers.calculate_ratio(expense_sum, last_income_sum)
-            spending_power = max(0, last_income_sum - expense_sum)
+        try:
+            bank_balance = user.saving_calculation.amount_to_keep_in_bank
+            bank_balance_date = today.replace(day=1)
+        except:
+            bank_balance = 0
+            bank_balance_date = None
+        
+        if not bank_balance:
+            incomes = user.incomes.exclude(amount=0)
+            last_income_date = incomes.dates('timestamp', 'month', order='DESC').first()
+            if last_income_date:
+                last_income = incomes.filter(timestamp__year=last_income_date.year, timestamp__month=last_income_date.month)
+                bank_balance = aggregate_sum(last_income) * BANK_AMOUNT_PCT
+                bank_balance_date = last_income_date
+        
+        if bank_balance:
+            expense_sum = aggregate_sum(user.expenses.filter(timestamp__range=(bank_balance_date, today)))
+            data['this_month_eir'] = helpers.calculate_ratio(expense_sum, bank_balance)
+            spending_power = max(0, bank_balance - expense_sum)
             data['spending_power'] = f"{int(spending_power):,}"
 
         data = json.dumps(data)
