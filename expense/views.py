@@ -484,7 +484,8 @@ class GetRemark(LoginRequiredMixin, View):
         else:
             remarks = remarks.filter(name__icontains=term)
         
-        remarks = remarks.annotate(count=Count('expenses')).order_by('-count')
+        remarks = remarks.annotate(count=Count('expenses'))\
+                    .order_by('-count', 'name')
         results = [remark.name for remark in remarks[:10]]
         data = json.dumps(results)
 
