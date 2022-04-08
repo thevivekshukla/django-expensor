@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.db.models import Q
 from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib import messages
@@ -478,9 +478,14 @@ class GetRemark(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term', '').strip()
-        remarks = Remark.objects.filter(user=request.user).filter(name__icontains=term)\
-                    .values_list('name', flat=True)
-        results = [remark for remark in remarks]
+        remarks = request.user.remarks
+        if len(term) < 3:
+            remarks = remarks.filter(name__startswith=term)
+        else:
+            remarks = remarks.filter(name__icontains=term)
+        
+        remarks = remarks.annotate(count=Count('expenses')).order_by('-count')
+        results = [remark.name for remark in remarks[:10]]
         data = json.dumps(results)
 
         return HttpResponse(data, content_type='application/json')
