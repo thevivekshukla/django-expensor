@@ -477,7 +477,7 @@ class GetRemark(LoginRequiredMixin, View):
     """
 
     def get(self, request, *args, **kwargs):
-        term = request.GET.get('term', '').strip()
+        term = request.GET.get('term', '').strip().lower()
         remarks = request.user.remarks
         if len(term) < 3:
             remarks = remarks.filter(name__startswith=term)
