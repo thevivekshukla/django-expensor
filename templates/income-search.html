@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<div class="col-md-8 col-md-offset-2">
 
 {% include "total_alert_info.html" %}
 
@@ -23,7 +24,7 @@
 
     {% for object in objects %}
       <tr>
-        <td>{{ object.timestamp }}</td>
+        <td>{{ object.timestamp|date:"d M, Y" }}</td>
 
         <td>
           {% if object.source %}
@@ -61,7 +62,7 @@
 </div>
 
 
-
+</div>
 
 {% endblock body %}
 
