@@ -38,3 +38,10 @@ def simplify_amount(amount):
         return f"{amount}"
 
 
+@register.simple_tag(name='multiply')
+def multiply(v1, v2, round_to=2, *args, **kwargs):
+    res = round(v1 * v2, 2)
+    if round_to == 0:
+        res = int(res)
+    return f'{res:,}'
+

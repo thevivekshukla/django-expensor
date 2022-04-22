@@ -32,7 +32,11 @@
             <a class="black-text" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
           {% endif %}
         </td>
-        <td><span class="float-right">{{ object.amount|intcomma }}</span></td>
+        <td>
+          <span tabindex="0" class="float-right" data-toggle="popover" data-placement="top" title="{{ object.amount|intcomma }}" data-content="<strong>Need:</strong> {% multiply object.amount 0.5 0 %}<br><strong>Want:</strong> {% multiply object.amount 0.25 0 %}<br><strong>Save:</strong> {% multiply object.amount 0.25 0 %}">
+            {{ object.amount|intcomma }}
+          </span>
+        </td>
         <td>
           {% if object|show_calculator %}
             <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator' style='color:green;'></i></a>
@@ -60,4 +64,21 @@
 </div>
 
 {% endblock body %}
+
+
+
+{% block js %}
+
+<script>
+  $(document).ready(function(){
+    $(function () {
+      $('[data-toggle="popover"]').popover({
+        "html": true,
+        "trigger": "focus"
+      })
+    });
+  });
+</script>
+
+{% endblock js %}
 
