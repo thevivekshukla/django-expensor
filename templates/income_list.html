@@ -26,27 +26,37 @@
 
     {% for object in objects %}
       <tr>
+
         <td>{{ object.timestamp|date:"d M, Y" }}</td>
+
         <td>
           {% if object.source %}
             <a class="black-text" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
           {% endif %}
         </td>
+
         <td>
-          <span tabindex="0" class="float-right" data-toggle="popover" data-placement="top" title="{{ object.amount|intcomma }}" data-content="<strong>Need:</strong> {% multiply object.amount 0.5 0 %}<br><strong>Want:</strong> {% multiply object.amount 0.25 0 %}<br><strong>Save:</strong> {% multiply object.amount 0.25 0 %}">
+          {% if object|show_calculator %}
+            <span class="float-right" style="text-decoration: underline;" tabindex="0" data-toggle="popover" data-placement="top" data-content="<strong>Need:</strong> {% multiply object.amount 0.5 0 %}<br><strong>Want:</strong> {% multiply object.amount 0.25 0 %}<br><strong>Save:</strong> {% multiply object.amount 0.25 0 %}">
+          {% else %}
+            <span class="float-right">
+          {% endif %}
             {{ object.amount|intcomma }}
           </span>
         </td>
+
         <td>
           {% if object|show_calculator %}
             <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator' style='color:green;'></i></a>
           {% endif %}
         </td>
+
         <td>
           <a href="{% url 'income:update-income' pk=object.id %}">
             <i class="fas fa-edit" title="Edit"></i>
           </a>
         </td>
+
       </tr>
     {% endfor %}
 
