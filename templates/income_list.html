@@ -47,7 +47,9 @@
 
         <td>
           {% if object|show_calculator %}
-            <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}"><i class='fas fa-calculator' style='color:green;'></i></a>
+            <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}" data-toggle="tooltip" data-title="Savings Calculator">
+              <i class='fas fa-calculator' style='color:black;'></i>
+            </a>
           {% endif %}
         </td>
 
