@@ -16,7 +16,10 @@ function inWords (num) {
 
 $(document).ready(function(){
 
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip({
+    "placement": "top",
+    "html": true
+  });
   
   $("#id_expense_search").autocomplete({
     source: "/autocomplete/get_remark/",

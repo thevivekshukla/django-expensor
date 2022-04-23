@@ -37,7 +37,7 @@
 
         <td>
           {% if object|show_calculator %}
-            <span class="float-right" style="text-decoration: underline;" tabindex="0" data-toggle="popover" data-placement="top" data-title="50 : 25 : 25" data-content="<strong>Need:</strong> {% multiply object.amount 0.5 0 %}<br><strong>Want:</strong> {% multiply object.amount 0.25 0 %}<br><strong>Save:</strong> {% multiply object.amount 0.25 0 %}">
+            <span class="float-right" style="text-decoration: underline;" tabindex="0" data-toggle="popover" data-placement="top" data-title="<strong>50 : 25 : 25</strong>" data-content="<strong>Need:</strong> {% multiply object.amount 0.5 0 %}<br><strong>Want:</strong> {% multiply object.amount 0.25 0 %}<br><strong>Save:</strong> {% multiply object.amount 0.25 0 %}">
           {% else %}
             <span class="float-right">
           {% endif %}
@@ -83,8 +83,7 @@
   $(document).ready(function(){
     $(function () {
       $('[data-toggle="popover"]').popover({
-        "html": true,
-        "trigger": "focus"
+        "html": true
       })
     });
   });
