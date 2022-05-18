@@ -110,6 +110,25 @@
                 </div>
             {% endif %}
         </div>
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% if message %}
+                <div class="panel panel-primary panel-white-bg">
+                    <div class="panel-heading" role="tab" id="headingMessage">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
+                                <div class="black-text"><i class="far fa-envelope"></i> Message</div>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
+                        <div class="panel-body">
+                            <p>{{ message|safe|linebreaks }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
         
         {% if data or message or defaults_message %}<hr>{% endif %}
 
@@ -130,27 +149,7 @@
         </form>
         <br>
 
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            {% if message %}
-                <div class="panel panel-primary panel-white-bg">
-                    <div class="panel-heading" role="tab" id="headingMessage">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
-                                <div class="black-text"><i class="far fa-envelope"></i> Message</div>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
-                        <div class="panel-body">
-                            <p>{{ message|safe|linebreaks }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-
     </div>
-
 
 </div>
 
