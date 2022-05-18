@@ -13,10 +13,6 @@
     margin-top: 5px!important;
   }
 
-  .borderless td, .borderless th {
-    border:none!important;
-   }
-
    .table-condensed > tbody > tr > td {
     padding: 0px;
    }
@@ -63,14 +59,14 @@
             
             <div id="basicInfoContent">
               
-              <table class="table table-condensed borderless">
+              <table class="table table-condensed borderless-table">
                 <tr>
                   <td><h5><a class="black-text" href="{% url 'expense:day-wise-expense' %}">Today's Expense: <span id="today_expense"></span></a></h5></td>
                   <td><h5><a class="black-text" href="{% url 'expense:month-wise-expense' %}">Month's Expense: <span id="month_expense"></span></a></h5></td>
                 </tr>
               </table>
 
-              <table class="table table-condensed borderless">
+              <table class="table table-condensed borderless-table">
                 <tr>
                   <td>
                     <div class="progress" data-toggle="tooltip" data-placement="top" title="% of recent month's income spent">

@@ -548,6 +548,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         context['inv_form'] = self.inv_form_class(user=user)
         context['message'] = message
         context['defaults_message'] = defaults_message
+        context['income'] = income
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):

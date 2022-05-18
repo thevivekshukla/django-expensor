@@ -33,3 +33,7 @@
 .float-right {
   float: right;
 }
+
+.borderless-table td, .borderless-table th {
+  border:none!important;
+ }

@@ -36,24 +36,13 @@
         </td>
 
         <td>
-          {% if object|show_calculator and object.amount != 0 %}
-            <span class="float-right" style="text-decoration: underline;cursor: pointer;" tabindex="0" data-toggle="popover" data-placement="top"  
-              data-content="
-                <strong>Need (50):</strong>&nbsp;&nbsp;&nbsp; {% multiply object.amount 0.50 0 100 %}<br>
-                <strong>Want (30):</strong>&nbsp;&nbsp;&nbsp; {% multiply object.amount 0.30 0 100 %}<br>
-                <strong>Invest (20):</strong>&nbsp;&nbsp; {% multiply object.amount 0.20 0 100 %}
-            ">
-          {% else %}
-            <span class="float-right">
-          {% endif %}
-            {{ object.amount|intcomma }}
-          </span>
+          <span class="float-right">{{ object.amount|intcomma }}</span>
         </td>
 
         <td>
           {% if object|show_calculator %}
             <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}" data-toggle="tooltip" data-title="Savings Calculator">
-              <i class='fas fa-calculator' style='color:black;'></i>
+              <i class='fas fa-calculator' style='color:green;'></i>
             </a>
           {% endif %}
         </td>
@@ -85,16 +74,6 @@
 
 
 {% block js %}
-
-<script>
-  $(document).ready(function(){
-    $(function () {
-      $('[data-toggle="popover"]').popover({
-        "html": true
-      })
-    });
-  });
-</script>
 
 {% endblock js %}
 
