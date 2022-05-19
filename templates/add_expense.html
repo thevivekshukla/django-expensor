@@ -22,9 +22,9 @@
 {% block body %}
 
 <div class="row">
-  <div class="ui-widget col-sm-12 col-md-6 col-lg-6">
+  <div class="col-md-5 col-md-offset-1">
 
-    <form method="post" id="id_add_expense" action="">
+    <form method="post" class="ui-widget" id="id_add_expense" action="">
       {% csrf_token %}
       {{ form|crispy }}
       <button type="submit" class="btn btn-primary btn-block">
@@ -38,12 +38,10 @@
     <br>
 
   </div>
-</div>
 
 
-<div class="row">
-  <div class="col-sm-12 col-md-6 col-lg-6">
-
+  <div class="col-md-5 col-md-offset-1">
+    <br>
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <!-- Basic Stat Accordion -->
       <div class="panel panel-primary panel-white-bg">

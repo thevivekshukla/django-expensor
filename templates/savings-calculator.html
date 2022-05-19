@@ -32,7 +32,7 @@
 
 <div class="row">
 
-    <div class="col-md-4 col-lg-4 col-sm-12">
+    <div class="col-md-4">
         {% if data %}
             <div class="alert alert-info">
                 <table class="table borderless-table">
@@ -83,65 +83,65 @@
             </div>
         {% endif %}
 
-        <div class="panel-group" id="accordionRule" role="tablist" aria-multiselectable="true">
-            {% if income %}
-                <div class="panel panel-primary panel-white-bg">
-                    <div class="panel-heading" role="tab" id="headingRule">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionRule" href="#rule" aria-expanded="false">
-                                <div class="black-text"><i class="fas fa-coins"></i> &nbsp;50 / 30 / 20</div>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="rule" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRule">
-                        <div class="panel-body">
-                            <table class="table">
-                                <tr>
-                                    <td style="border:none;"><strong>Needs (50):</strong></td>
-                                    <td style="border:none;">{% multiply income 0.50 0 100 %}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Wants (30):</strong></td>
-                                    <td>{% multiply income 0.30 0 100 %}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Invest (20):</strong></td>
-                                    <td>{% multiply income 0.20 0 100 %}</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-        <div class="panel-group" id="accordionMessage" role="tablist" aria-multiselectable="true">
-            {% if message %}
-                <div class="panel panel-primary panel-white-bg">
-                    <div class="panel-heading" role="tab" id="headingMessage">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionMessage" href="#message" aria-expanded="false">
-                                <div class="black-text"><i class="far fa-envelope"></i> Message</div>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
-                        <div class="panel-body">
-                            <p>{{ message|safe|linebreaks }}</p>
-                        </div>
+            {% if income %}
+            <div class="panel panel-primary panel-white-bg">
+                <div class="panel-heading" role="tab" id="headingRule">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#rule" aria-expanded="false">
+                            <div class="black-text"><i class="fas fa-coins"></i> &nbsp;50 / 30 / 20</div>
+                        </a>
+                    </h4>
+                </div>
+                <div id="rule" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRule">
+                    <div class="panel-body">
+                        <table class="table">
+                            <tr>
+                                <td style="border:none;"><strong>Needs (50):</strong></td>
+                                <td style="border:none;">{% multiply income 0.50 0 100 %}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Wants (30):</strong></td>
+                                <td>{% multiply income 0.30 0 100 %}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Invest (20):</strong></td>
+                                <td>{% multiply income 0.20 0 100 %}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
+            </div>
             {% endif %}
+        
+            {% if message %}
+            <div class="panel panel-primary panel-white-bg">
+                <div class="panel-heading" role="tab" id="headingMessage">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
+                            <div class="black-text"><i class="far fa-envelope"></i> Message</div>
+                        </a>
+                    </h4>
+                </div>
+                <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
+                    <div class="panel-body">
+                        <p>{{ message|safe|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
         </div>
 
         {% if data or message or defaults_message %}<hr>{% endif %}
     </div>
 
-    <div class="col-md-4 col-lg-4 col-sm-12">
+    <div class="col-md-4">
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
