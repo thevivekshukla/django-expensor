@@ -171,17 +171,14 @@
 
     $(document).ready(function() {
 
-        $("#curr_income, #month_income").on("click", function() {
-            let curr_income = $(this).html();
-            let income = parseInt( curr_income.replace(/,/g, '') );
-            if (this.id == "curr_income") {
-                $("#id_bank_balance").val(income);
-            }
+        $("#month_income").on("click", function() {
+            let month_income = $(this).html();
+            let income = parseInt( month_income.replace(/,/g, '') );
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() );
             if ( !isNaN(bank_amount_pct) ) {
                 $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
-                $("#bank_amount").html(curr_income);
+                $("#bank_amount").html(month_income);
             }
         });
 
