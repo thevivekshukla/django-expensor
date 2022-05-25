@@ -28,7 +28,7 @@ class SelectDateRangeExpenseForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         today = get_ist_datetime()
-        self.fields['from_date'].initial = default_date_format(today - timedelta(days=365))
+        self.fields['from_date'].initial = default_date_format(today - timedelta(days=364))
         self.fields['to_date'].initial = default_date_format(today)
 
 
