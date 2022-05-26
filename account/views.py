@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView
@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.cache import cache
 
 from .models import (
     AccountName,
@@ -19,7 +20,9 @@ from .forms import (
     AccountNameCreateForm, AccountNameAmountForm,
 )
 from utils.helpers import (
-    get_ist_datetime, get_paginator_object,
+    get_ist_datetime,
+    get_client_ip,
+    get_paginator_object,
     calculate_cagr,
 )
 
@@ -48,6 +51,12 @@ def user_register(request):
 def user_login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("expense:add_expense"))
+    
+    # checking for invalid login count
+    ip_address = get_client_ip(request)
+    invalid_login_count = cache.get(ip_address, 0)
+    if invalid_login_count >= 5:
+        return HttpResponse(status=429)
 
     form = LoginForm(request.POST or None)
     if form.is_valid():
@@ -62,6 +71,9 @@ def user_login(request):
                 return redirect(next_)
             return HttpResponseRedirect(reverse("expense:add_expense"))
         else:
+            # updating invalid login count
+            invalid_login_count += 1
+            cache.set(ip_address, invalid_login_count, 60 * 10 * invalid_login_count)
             messages.warning(request, "Invalid username or password.")
 
     context = {
