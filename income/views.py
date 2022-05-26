@@ -1,46 +1,45 @@
-from datetime import timedelta, date
-import math
+from datetime import date
 import statistics
 import markdown
-from collections import Counter
+from contextlib import suppress
+import json
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import (
-    ListView, CreateView,
-    UpdateView, DeleteView,
+    ListView,
+    CreateView,
+    UpdateView,
+    DeleteView,
 )
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse, Http404
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.utils import timezone
 from django.db.models import Sum
 
-import json
-
 from .models import (
-    Income, Source,
+    Income,
+    Source,
     SavingCalculation,
     InvestmentEntity,
 )
 from .forms import (
-    IncomeForm, SelectDateRangeIncomeForm,
-    SavingCalculatorForm, SavingCalculationModelForm,
+    IncomeForm,
+    SelectDateRangeIncomeForm,
+    SavingCalculatorForm,
+    SavingCalculationModelForm,
     InvestmentEntityForm,
 )
 from utils import helpers
 from utils.helpers import aggregate_sum
 from utils.constants import (
-    BANK_AMOUNT_PCT, FIXED_SAVINGS_PCT, AVG_MONTH_DAYS,
+    BANK_AMOUNT_PCT,
+    FIXED_SAVINGS_PCT,
+    AVG_MONTH_DAYS,
 )
-
-from expense.models import Expense
 # Create your views here.
-
 
 
 class IncomeList(LoginRequiredMixin, ListView):
@@ -513,10 +512,11 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         message = ""
         defaults_message = []
         
-        income = request.GET.get('income')
-        if income:
-            income = int(income)
+        try:
+            income = int(request.GET.get('income'))
             defaults_message.append(f'Income: {income:,}')
+        except (ValueError, TypeError):
+            income = None
         
         today = helpers.get_ist_datetime().date()
         month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
@@ -599,6 +599,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
         context['form'] = form
         context['inv_form'] = inv_form
+        with suppress(ValueError):
+            context['income'] = int(request.GET.get('income'))
+        
         return render(request, self.template_name, context)
 
 
