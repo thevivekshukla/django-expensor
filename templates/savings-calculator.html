@@ -69,7 +69,7 @@
             <div class="panel panel-warning">
                 <div class="panel-heading">
                     <h3 class="panel-title black-text">
-                        <i class="far fa-bell"></i> Notifications
+                        <i class="far fa-bell gold-text"></i> Notifications
                     </h3>
                 </div>
 
@@ -90,7 +90,7 @@
                 <div class="panel-heading" role="tab" id="headingRule">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#rule" aria-expanded="false">
-                            <div class="black-text"><i class="fas fa-coins"></i> &nbsp;50 / 30 / 20</div>
+                            <div class="black-text"><i class="fas fa-coins gold-text"></i> &nbsp;50 / 30 / 20</div>
                         </a>
                     </h4>
                 </div>
@@ -98,15 +98,15 @@
                     <div class="panel-body">
                         <table class="table">
                             <tr>
-                                <td style="border:none;"><strong><i class="fas fa-home"></i> Needs (50):</strong></td>
+                                <td style="border:none;"><strong><i class="fas fa-home gold-text"></i> Needs</strong></td>
                                 <td style="border:none;">{% multiply income 0.50 0 100 %}</td>
                             </tr>
                             <tr>
-                                <td><strong><i class="fas fa-umbrella-beach"></i> Wants (30):</strong></td>
+                                <td><strong><i class="fas fa-umbrella-beach gold-text"></i> Wants</strong></td>
                                 <td>{% multiply income 0.30 0 100 %}</td>
                             </tr>
                             <tr>
-                                <td><strong><i class="fas fa-chart-line"></i> Invest (20):</strong></td>
+                                <td><strong><i class="fas fa-chart-line gold-text"></i> Invest</strong></td>
                                 <td>{% multiply income 0.20 0 100 %}</td>
                             </tr>
                             <tr>
@@ -118,13 +118,15 @@
                 </div>
             </div>
             {% endif %}
+
+            <br>
         
             {% if message %}
             <div class="panel panel-primary panel-white-bg">
                 <div class="panel-heading" role="tab" id="headingMessage">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
-                            <div class="black-text"><i class="far fa-envelope"></i> Message</div>
+                            <div class="black-text"><i class="far fa-envelope gold-text"></i> Message</div>
                         </a>
                     </h4>
                 </div>
