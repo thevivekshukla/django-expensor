@@ -42,6 +42,12 @@
     {% endfor %}
       
   </table>
+
+  {% if remark_url %}
+    <div style="float:right;">
+      <a class="btn btn-primary btn-xs" href="{{ remark_url }}">See by Remark</a>
+    </div>
+  {% endif %}
   
   {% include 'paginator.html' %}
   

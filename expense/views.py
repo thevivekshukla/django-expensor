@@ -1,26 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect, render_to_response
-from django.utils import timezone
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Sum, Count
-from django.db.models import Q
-from django.http import HttpResponse, Http404, JsonResponse
-from django.contrib import messages
-from django.core.cache import cache
-from django.views import View
-from django.views.generic import ListView
-from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-from datetime import date, timedelta
-from calendar import monthrange
+from datetime import date
 import json
+
+from django.shortcuts import render
+from django.db.models import Sum, Count
+from django.http import HttpResponse, Http404
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
 from utils import helpers
 from utils.helpers import aggregate_sum, default_date_format
 from utils.constants import BANK_AMOUNT_PCT, AVG_MONTH_DAYS
-
 # Create your views here.
 
 
@@ -258,6 +250,7 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             context['total'] = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
             context['monthly_average'] = context['total'] // 12
             date_str = f": {year}"
+            context['remark_url'] = reverse('expense:goto_year_expense', kwargs={'year': int(year)})
 
         dates = expenses.dates('timestamp', 'month', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 12)
@@ -380,13 +373,16 @@ class GoToExpense(LoginRequiredMixin, View):
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
             dt = date(year, month, day)
             date_str = f': {dt.strftime("%d %b %Y")}'
+            reverse_url_name = "goto_day_expense"
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
             dt = date(year, month, 1)
             date_str = f': {dt.strftime("%b %Y")}'
+            reverse_url_name = "remark_monthly_expense"
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
             date_str = f': {year}'
+            reverse_url_name = "goto_year_expense"
 
         total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
         objects = helpers.get_paginator_object(request, objects, 50)
@@ -395,6 +391,8 @@ class GoToExpense(LoginRequiredMixin, View):
             "title": f"Expenses{date_str}",
             "objects": objects,
             "total": total,
+            "remark_url": reverse(f'expense:{reverse_url_name}',
+                            kwargs={k:int(v) for k, v in kwargs.items()}),
         }
 
         return render(request, self.template_name, context)
