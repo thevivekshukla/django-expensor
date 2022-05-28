@@ -8,19 +8,21 @@
       <th>Remark</th>
       <th><span class="float-right">Amount</span></th>
       <th></th>
-      <!-- <th>Message</th> -->
     </tr>
   </thead>
 
   {% for object in objects %}
     <tr>
       <td>{{ object.timestamp|date:"d M, Y" }}</td>
+
       <td>
         {% if object.remark %}
           <a class="black-text" href="{% url 'expense:expense_list' %}?q=%22{{ object.remark }}%22">{{ object.remark }}</a>
         {% endif %}
       </td>
+
       <td><span class="float-right">{{ object.amount|intcomma }}</span></td>
+      
       <td>
         <a class="float-right" href="{% url "expense:update_expense" id=object.id %}">
           <i class="fas fa-edit" title="Edit"></i>

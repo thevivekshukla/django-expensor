@@ -245,12 +245,14 @@ class MonthWiseExpense(LoginRequiredMixin, View):
         user = request.user
         year = request.GET.get('year')
         expenses = Expense.objects.all(user=user)
+        
         if year:
             expenses = expenses.filter(timestamp__year=int(year))
             context['total'] = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
             context['monthly_average'] = context['total'] // 12
             date_str = f": {year}"
             context['remark_url'] = reverse('expense:goto_year_expense', kwargs={'year': int(year)})
+            context['daywise_url'] = reverse('expense:day-wise-expense') + f'?year={year}'
 
         dates = expenses.dates('timestamp', 'month', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 12)
@@ -368,21 +370,25 @@ class GoToExpense(LoginRequiredMixin, View):
         month = int(kwargs.get('month', 0))
         year = int(kwargs.get('year', 0))
         date_str = ""
+        daywise_url_reverse = reverse('expense:day-wise-expense')
         
         if day:
             objects = Expense.objects.this_day(user=request.user, year=year, month=month, day=day)
             dt = date(year, month, day)
             date_str = f': {dt.strftime("%d %b %Y")}'
-            reverse_url_name = "goto_day_expense"
+            remark_url_name = "goto_day_expense"
+            daywise_url = ""
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
             dt = date(year, month, 1)
             date_str = f': {dt.strftime("%b %Y")}'
-            reverse_url_name = "remark_monthly_expense"
+            remark_url_name = "remark_monthly_expense"
+            daywise_url = f'{daywise_url_reverse}?year={year}&month={month}'
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
             date_str = f': {year}'
-            reverse_url_name = "goto_year_expense"
+            remark_url_name = "goto_year_expense"
+            daywise_url = f'{daywise_url_reverse}?year={year}'
 
         total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
         objects = helpers.get_paginator_object(request, objects, 50)
@@ -391,8 +397,9 @@ class GoToExpense(LoginRequiredMixin, View):
             "title": f"Expenses{date_str}",
             "objects": objects,
             "total": total,
-            "remark_url": reverse(f'expense:{reverse_url_name}',
+            "remark_url": reverse(f'expense:{remark_url_name}',
                             kwargs={k:int(v) for k, v in kwargs.items()}),
+            "daywise_url": daywise_url,
         }
 
         return render(request, self.template_name, context)

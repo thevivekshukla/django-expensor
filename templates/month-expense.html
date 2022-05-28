@@ -9,6 +9,17 @@
 {% include "total_alert_info.html" %}
 
 {% if data %}
+
+  <div style="float:right;">
+    {% if daywise_url %}
+      <a class="btn btn-primary btn-xs" href="{{ daywise_url }}">List Day-wise</a>
+    {% endif %}
+
+    {% if remark_url %}
+      <a class="btn btn-primary btn-xs" href="{{ remark_url }}">See by Remark</a>
+    {% endif %}
+    <br><br>
+  </div>
   
   <table class="table table-bordered table-hover">
 
@@ -26,10 +37,10 @@
 
         <td>
           <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
-            {{ object.date|date:"M y" }}
+            {{ object.date|date:"M Y" }}
           </a>
-          (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
-            <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>)
+          {% comment %} (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
+            <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>) {% endcomment %}
         </td>
 
         <td class="active">
@@ -42,12 +53,6 @@
     {% endfor %}
       
   </table>
-
-  {% if remark_url %}
-    <div style="float:right;">
-      <a class="btn btn-primary btn-xs" href="{{ remark_url }}">See by Remark</a>
-    </div>
-  {% endif %}
   
   {% include 'paginator.html' %}
   

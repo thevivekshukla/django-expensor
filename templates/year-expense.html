@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-6 col-md-offset-3">
 
 {% if data %}
 <table class="table table-bordered table-hover">
@@ -24,8 +24,8 @@
         <a href="{% url 'expense:month-wise-expense' %}?year={{ object.year }}">
           {{ object.year }}
         </a>
-        (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.year }}">day</a> |
-          <a href="{% url 'expense:goto_year_expense' year=object.year %}">remark</a>)
+        {% comment %} (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.year }}">day</a> |
+          <a href="{% url 'expense:goto_year_expense' year=object.year %}">remark</a>) {% endcomment %}
       </td>
 
       <td>
