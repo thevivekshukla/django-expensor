@@ -67,7 +67,7 @@ class GetBasicInfo(LoginRequiredMixin, View):
         data['this_month_expense'] = f"{this_month_expense:,}"
         
         try:
-            bank_balance = user.saving_calculation.amount_to_keep_in_bank
+            bank_balance = user.saving_calculation.amount_to_keep_in_bank * BANK_AMOUNT_PCT
             bank_balance_date = today.replace(day=1)
         except:
             bank_balance = 0
