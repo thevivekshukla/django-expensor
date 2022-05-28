@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from .forms import ExpenseForm, SelectDateRangeExpenseForm
 from .models import Expense, Remark
+from income.models import SavingCalculation
 from utils import helpers
 from utils.helpers import aggregate_sum, default_date_format
 from utils.constants import BANK_AMOUNT_PCT, AVG_MONTH_DAYS
@@ -69,7 +70,7 @@ class GetBasicInfo(LoginRequiredMixin, View):
         try:
             bank_balance = user.saving_calculation.amount_to_keep_in_bank * BANK_AMOUNT_PCT
             bank_balance_date = today.replace(day=1)
-        except:
+        except SavingCalculation.DoesNotExist:
             bank_balance = 0
             bank_balance_date = None
         
