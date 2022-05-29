@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import json
 
 from django.shortcuts import render
@@ -254,19 +254,29 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             date_str = f": {year}"
             context['remark_url'] = reverse('expense:goto_year_expense', kwargs={'year': int(year)})
             context['daywise_url'] = reverse('expense:day-wise-expense') + f'?year={year}'
+            latest_date = date(int(year), 12, 1)
+        else:
+            latest_date = helpers.get_ist_datetime().date().replace(day=1)
+        
+        # doing this way to maintain continuity of months
+        first_date = expenses.dates('timestamp', 'month', order='ASC').first()
+        dates = [latest_date]
+        while latest_date > first_date:
+            latest_date -= timedelta(days=7)
+            latest_date = latest_date.replace(day=1)
+            dates.append(latest_date)
 
-        dates = expenses.dates('timestamp', 'month', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 12)
 
         data = []
-        for date in dates:
-            month_expense = Expense.objects.this_month(user=user, year=date.year, month=date.month)
+        for dt in dates:
+            month_expense = Expense.objects.this_month(user=user, year=dt.year, month=dt.month)
             amount = aggregate_sum(month_expense)
-            month_income = user.incomes.filter(timestamp__year=date.year, timestamp__month=date.month)
+            month_income = user.incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
             month_income_sum = aggregate_sum(month_income)
             month_expense_to_income_ratio = helpers.calculate_ratio(amount, month_income_sum)
             data.append({
-                'date': date,
+                'date': dt,
                 'amount': amount,
                 'month_eir': month_expense_to_income_ratio,
             })

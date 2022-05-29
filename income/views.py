@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import statistics
 import markdown
 from contextlib import suppress
@@ -261,17 +261,30 @@ class MonthWiseIncome(LoginRequiredMixin, View):
             context['title'] = f"{context['title']}: {year}"
             context['total'] = aggregate_sum(incomes)
             context['monthly_average'] = context['total'] // 12
-            
-        dates = incomes.dates('timestamp', 'month', order='DESC')
+            latest_date = date(int(year), 12, 1)
+        else:
+            latest_date = helpers.get_ist_datetime().date().replace(day=1)
+
+        # doing this way to maintain continuity of months
+        first_date = incomes.dates('timestamp', 'month', order='ASC').first()
+        dates = [latest_date]
+        while latest_date > first_date:
+            latest_date -= timedelta(days=7)
+            latest_date = latest_date.replace(day=1)
+            dates.append(latest_date)
+
         dates = helpers.get_paginator_object(request, dates, 12)
 
         data = []
-        for date in dates:
+        for dt in dates:
             amount = incomes.filter(
-                timestamp__year=date.year,
-                timestamp__month=date.month,
+                timestamp__year=dt.year,
+                timestamp__month=dt.month,
             ).aggregate(Sum('amount'))['amount__sum'] or 0
-            data.append((date, amount))
+            data.append({
+                'date': dt,
+                'amount': amount,
+            })
 
         context['data'] = data
         context['objects'] = dates
