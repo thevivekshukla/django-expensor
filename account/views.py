@@ -1,3 +1,6 @@
+from datetime import timedelta
+from contextlib import suppress
+
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -20,6 +23,7 @@ from .forms import (
     AccountNameCreateForm, AccountNameAmountForm,
 )
 from utils.helpers import (
+    aggregate_sum,
     get_ist_datetime,
     get_client_ip,
     get_paginator_object,
@@ -131,13 +135,16 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         networths = user.net_worth.order_by('-date')
         networth = networths.first()
         
-        # calculating CAGR
-        networth_cagr = 0
-        if networths.exists():
-            final_networth = networths.first()
-            start_networth = networths.last()
-            networth_years = (final_networth.date - start_networth.date).days / 365
-            networth_cagr = calculate_cagr(final_networth.amount, start_networth.amount, networth_years)
+        x = 0
+        avg_expense = 0
+        if networth and networth.amount > 0:
+            YEAR = 3
+            now = get_ist_datetime().date()
+            then = now - timedelta(days=365 * YEAR)
+            expenses = user.expenses.filter(timestamp__range=(then, now))
+            avg_expense = aggregate_sum(expenses) // YEAR
+            with suppress(ZeroDivisionError):
+                x = round(networth.amount / avg_expense, 1)
         
         liabilities = []
         assets = []
@@ -160,7 +167,8 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         context = {
             'title': 'NetWorth',
             'networth': networth,
-            'networth_cagr': networth_cagr,
+            'avg_expense': avg_expense,
+            'x': x,
             'liabilities': liabilities,
             'liability_amount': liability_amount,
             'assets': assets,

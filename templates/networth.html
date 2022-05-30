@@ -10,8 +10,14 @@
         <a href="{% url 'account:networth-history' %}" style="text-decoration:none;">
             <h1 {% if networth.amount > 0 %}class="green-text"{% else %}class="red-text"{% endif %}>
                 {{ networth.amount|intcomma }}
+                {% if x > 0 %}
+                    <sub style="font-size:.3em;">({{ x }}X)</sub>
+                {% endif %}
             </h1>
         </a>
+        {% if avg_expense %}
+            <sub style="float:right;">X = {{ avg_expense|intcomma }}</sub>
+        {% endif %}
     </center>
 {% endif %}
 
@@ -76,7 +82,8 @@
 </div>
 
 <p><br></p>
-<sub>as on {{ networth.date|date:"d M Y" }}</sub>
+<sub>As on {{ networth.date|date:"d M Y" }}</sub><br>
+<sub>X = annual expense (derived from 3 years data)</sub>
 
 <p><br></p>
 <a href="{% url 'account:account-name-list' %}" class="btn btn-primary">Manage Accounts</a>
