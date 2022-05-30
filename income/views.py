@@ -33,7 +33,7 @@ from .forms import (
     InvestmentEntityForm,
 )
 from utils import helpers
-from utils.helpers import aggregate_sum
+from utils.helpers import aggregate_sum, get_ist_datetime
 from utils.constants import (
     BANK_AMOUNT_PCT,
     FIXED_SAVINGS_PCT,
@@ -155,15 +155,17 @@ class YearWiseIncome(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        now = get_ist_datetime()
         incomes = Income.objects.filter(user=user)
         dates = incomes.dates('timestamp', 'year', order='DESC')
         dates = helpers.get_paginator_object(request, dates, 5)
 
         data = []
-        for date in dates:
-            amount = aggregate_sum(incomes.filter(timestamp__year=date.year))
-            avg_income = amount // 12
-            data.append((date, amount, avg_income))
+        for dt in dates:
+            total_months = now.month if dt.year == now.year else 12
+            amount = aggregate_sum(incomes.filter(timestamp__year=dt.year))
+            avg_income = amount // total_months
+            data.append((dt, amount, avg_income))
 
         self.context['data'] = data
         self.context['objects'] = dates
@@ -259,10 +261,11 @@ class MonthWiseIncome(LoginRequiredMixin, View):
         year = request.GET.get('year')
         if year:
             year = int(year)
+            total_months = now.month if year == now.year else 12
             incomes = incomes.filter(timestamp__year=year)
             context['title'] = f"{context['title']}: {year}"
             context['total'] = aggregate_sum(incomes)
-            context['monthly_average'] = context['total'] // 12
+            context['monthly_average'] = context['total'] // total_months
             if year == now.year:
                 latest_date = date(year, now.month, 1)
             else:

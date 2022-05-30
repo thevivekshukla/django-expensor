@@ -250,9 +250,10 @@ class MonthWiseExpense(LoginRequiredMixin, View):
         
         if year:
             year = int(year)
+            total_months = now.month if now.year == year else 12
             expenses = expenses.filter(timestamp__year=year)
             context['total'] = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-            context['monthly_average'] = context['total'] // 12
+            context['monthly_average'] = context['total'] // total_months
             date_str = f": {year}"
             context['remark_url'] = reverse('expense:goto_year_expense', kwargs={'year': int(year)})
             context['daywise_url'] = reverse('expense:day-wise-expense') + f'?year={year}'
@@ -303,6 +304,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        now = helpers.get_ist_datetime()
         dates = Expense.objects.all(user=user).dates('timestamp', 'year', order='DESC')
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
         income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -312,6 +314,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
         data = []
         for date in dates:
             year = date.year
+            total_months = now.month if now.year == year else 12
             amount = aggregate_sum(Expense.objects.this_year(user=user, year=year))
             year_income_sum = aggregate_sum(user.incomes.filter(timestamp__year=year))
             
@@ -322,7 +325,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
             data.append({
                 'year': year,
                 'amount': amount,
-                'monthly_average': amount // 12,
+                'monthly_average': amount // total_months,
                 'year_eir': year_expense_to_income_ratio,
                 'eir': expense_to_income_ratio,
                 'expense_ratio': expense_ratio,
