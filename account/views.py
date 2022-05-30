@@ -139,10 +139,14 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         avg_expense = 0
         if networth and networth.amount > 0:
             YEAR = 3
-            now = get_ist_datetime().date()
-            then = now - timedelta(days=365 * YEAR)
-            expenses = user.expenses.filter(timestamp__range=(then, now))
-            avg_expense = aggregate_sum(expenses) // YEAR
+            expense_months = user.expenses.dates('timestamp', 'month', order='DESC')
+            expense_sum = 0
+            months = min(expense_months.count(), YEAR * 12)
+            for dt in expense_months[:months]:
+                expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
+                expense_sum += aggregate_sum(expense)
+            
+            avg_expense = int(expense_sum / (months / 12))
             with suppress(ZeroDivisionError):
                 x = round(networth.amount / avg_expense, 1)
         
