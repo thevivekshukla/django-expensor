@@ -138,11 +138,11 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         x = 0
         avg_expense = 0
         if networth and networth.amount > 0:
-            YEAR = 3
+            YEARS = 5
             expense_months = user.expenses.exclude(amount=0)\
                                 .dates('timestamp', 'month', order='DESC')
             expense_sum = 0
-            months = min(expense_months.count(), YEAR * 12)
+            months = min(expense_months.count(), YEARS * 12)
             for dt in expense_months[:months]:
                 expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
                 expense_sum += aggregate_sum(expense)
@@ -173,6 +173,7 @@ class NetWorthDashboard(LoginRequiredMixin, View):
             'title': 'NetWorth',
             'networth': networth,
             'avg_expense': avg_expense,
+            'YEARS': YEARS,
             'x': x,
             'liabilities': liabilities,
             'liability_amount': liability_amount,
