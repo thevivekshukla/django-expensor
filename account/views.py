@@ -139,7 +139,8 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         avg_expense = 0
         if networth and networth.amount > 0:
             YEAR = 3
-            expense_months = user.expenses.dates('timestamp', 'month', order='DESC')
+            expense_months = user.expenses.exclude(amount=0)\
+                                .dates('timestamp', 'month', order='DESC')
             expense_sum = 0
             months = min(expense_months.count(), YEAR * 12)
             for dt in expense_months[:months]:
