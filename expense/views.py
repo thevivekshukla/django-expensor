@@ -245,18 +245,23 @@ class MonthWiseExpense(LoginRequiredMixin, View):
         date_str = ""
         user = request.user
         year = request.GET.get('year')
+        now = helpers.get_ist_datetime()
         expenses = Expense.objects.all(user=user)
         
         if year:
-            expenses = expenses.filter(timestamp__year=int(year))
+            year = int(year)
+            expenses = expenses.filter(timestamp__year=year)
             context['total'] = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
             context['monthly_average'] = context['total'] // 12
             date_str = f": {year}"
             context['remark_url'] = reverse('expense:goto_year_expense', kwargs={'year': int(year)})
             context['daywise_url'] = reverse('expense:day-wise-expense') + f'?year={year}'
-            latest_date = date(int(year), 12, 1)
+            if year == now.year:
+                latest_date = date(year, now.month, 1)
+            else:
+                latest_date = date(year, 12, 1)
         else:
-            latest_date = helpers.get_ist_datetime().date().replace(day=1)
+            latest_date = now.date().replace(day=1)
         
         # doing this way to maintain continuity of months
         first_date = expenses.dates('timestamp', 'month', order='ASC').first()

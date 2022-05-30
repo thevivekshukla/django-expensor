@@ -253,17 +253,22 @@ class MonthWiseIncome(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         context = self.context.copy()
+        now = helpers.get_ist_datetime()
         
         incomes = Income.objects.filter(user=user)
         year = request.GET.get('year')
         if year:
-            incomes = incomes.filter(timestamp__year=int(year))
+            year = int(year)
+            incomes = incomes.filter(timestamp__year=year)
             context['title'] = f"{context['title']}: {year}"
             context['total'] = aggregate_sum(incomes)
             context['monthly_average'] = context['total'] // 12
-            latest_date = date(int(year), 12, 1)
+            if year == now.year:
+                latest_date = date(year, now.month, 1)
+            else:
+                latest_date = date(year, 12, 1)
         else:
-            latest_date = helpers.get_ist_datetime().date().replace(day=1)
+            latest_date = now.date().replace(day=1)
 
         # doing this way to maintain continuity of months
         first_date = incomes.dates('timestamp', 'month', order='ASC').first()
