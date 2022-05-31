@@ -308,7 +308,7 @@ class YearWiseExpense(LoginRequiredMixin, View):
         latest_date = now.date().replace(month=1, day=1)
         first_date = user.expenses.dates('timestamp', 'year', order='ASC').first() or latest_date
         dates = helpers.get_dates_list(first_date, latest_date, month=1, day=1)
-        dates = helpers.get_paginator_object(request, dates, 10)
+        dates = helpers.get_paginator_object(request, dates, 5)
         
         data = []
         for date in dates:
