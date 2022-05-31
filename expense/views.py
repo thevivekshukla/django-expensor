@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 import json
 
 from django.shortcuts import render
@@ -257,21 +257,18 @@ class MonthWiseExpense(LoginRequiredMixin, View):
             date_str = f": {year}"
             context['remark_url'] = reverse('expense:goto_year_expense', kwargs={'year': int(year)})
             context['daywise_url'] = reverse('expense:day-wise-expense') + f'?year={year}'
+            alt_first_date = date(year, 1, 1)
             if year == now.year:
                 latest_date = date(year, now.month, 1)
             else:
                 latest_date = date(year, 12, 1)
         else:
+            alt_first_date = now.date().replace(month=1, day=1)
             latest_date = now.date().replace(day=1)
         
         # doing this way to maintain continuity of months
-        first_date = expenses.dates('timestamp', 'month', order='ASC').first()
-        dates = [latest_date]
-        while latest_date > first_date:
-            latest_date -= timedelta(days=7)
-            latest_date = latest_date.replace(day=1)
-            dates.append(latest_date)
-
+        first_date = expenses.dates('timestamp', 'month', order='ASC').first() or alt_first_date
+        dates = helpers.get_dates_list(first_date, latest_date, day=1)
         dates = helpers.get_paginator_object(request, dates, 12)
 
         data = []
@@ -305,12 +302,14 @@ class YearWiseExpense(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         now = helpers.get_ist_datetime()
-        dates = Expense.objects.all(user=user).dates('timestamp', 'year', order='DESC')
         expense_sum = user.expenses.aggregate(Sum('amount'))['amount__sum'] or 0
         income_sum = user.incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-
-        dates = helpers.get_paginator_object(request, dates, 5)
-
+        
+        latest_date = now.date().replace(month=1, day=1)
+        first_date = user.expenses.dates('timestamp', 'year', order='ASC').first() or latest_date
+        dates = helpers.get_dates_list(first_date, latest_date, month=1, day=1)
+        dates = helpers.get_paginator_object(request, dates, 10)
+        
         data = []
         for date in dates:
             year = date.year

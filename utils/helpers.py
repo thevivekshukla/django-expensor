@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pytz
 from django.utils import timezone
 from django.db.models import Sum, Q
@@ -71,6 +73,18 @@ def search_expense_remark(queryset, q):
     
     queryset = queryset.filter(filter_Q).distinct()
     return queryset
+
+
+def get_dates_list(first_date, latest_date, *, month=None, day=None):
+    dates = [latest_date]
+    while latest_date > first_date:
+        latest_date -= timedelta(days=1)
+        if day:
+            latest_date = latest_date.replace(day=day)
+        if month:
+            latest_date = latest_date.replace(month=month)
+        dates.append(latest_date)
+    return dates
 
 
 def calculate_cagr(final_amount, start_amount, years):

@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 import statistics
 import markdown
 from contextlib import suppress
@@ -157,8 +157,11 @@ class YearWiseIncome(LoginRequiredMixin, View):
         user = request.user
         now = get_ist_datetime()
         incomes = Income.objects.filter(user=user)
-        dates = incomes.dates('timestamp', 'year', order='DESC')
-        dates = helpers.get_paginator_object(request, dates, 5)
+        
+        latest_date = now.date().replace(month=1, day=1)
+        first_date = incomes.dates('timestamp', 'year', order='ASC').first() or latest_date
+        dates = helpers.get_dates_list(first_date, latest_date, month=1, day=1)    
+        dates = helpers.get_paginator_object(request, dates, 10)
 
         data = []
         for dt in dates:
@@ -266,23 +269,20 @@ class MonthWiseIncome(LoginRequiredMixin, View):
             context['title'] = f"{context['title']}: {year}"
             context['total'] = aggregate_sum(incomes)
             context['monthly_average'] = context['total'] // total_months
+            alt_first_date = date(year, 1, 1)
             if year == now.year:
                 latest_date = date(year, now.month, 1)
             else:
                 latest_date = date(year, 12, 1)
         else:
+            alt_first_date = now.date().replace(month=1, day=1)
             latest_date = now.date().replace(day=1)
 
         # doing this way to maintain continuity of months
-        first_date = incomes.dates('timestamp', 'month', order='ASC').first()
-        dates = [latest_date]
-        while latest_date > first_date:
-            latest_date -= timedelta(days=7)
-            latest_date = latest_date.replace(day=1)
-            dates.append(latest_date)
-
+        first_date = incomes.dates('timestamp', 'month', order='ASC').first() or alt_first_date
+        dates = helpers.get_dates_list(first_date, latest_date, day=1)
         dates = helpers.get_paginator_object(request, dates, 12)
-
+        
         data = []
         for dt in dates:
             amount = incomes.filter(
