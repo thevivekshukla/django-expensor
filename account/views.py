@@ -137,8 +137,8 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         
         x = 0
         avg_expense = 0
+        YEARS = 3
         if networth and networth.amount > 0:
-            YEARS = 3
             expense_months = user.expenses.exclude(amount=0)\
                                 .dates('timestamp', 'month', order='DESC')
             expense_sum = 0
