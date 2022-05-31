@@ -11,7 +11,7 @@
             <h1 {% if networth.amount > 0 %}class="green-text"{% else %}class="red-text"{% endif %}>
                 {{ networth.amount|intcomma }}
                 {% if x > 0 %}
-                    <sub style="font-size:.3em;">({{ x }}X)</sub>
+                    <span style="font-size:.35em;">({{ x }}X)</span>
                 {% endif %}
             </h1>
         </a>
