@@ -261,7 +261,7 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
         context = {
             'title': f'Report Card: {year}',
             'year': year,
-            'now': helpers.get_ist_datetime(),
+            'now': now,
             'eir': helpers.calculate_ratio(expenses_total, incomes_total),
             'data': data,
             'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
