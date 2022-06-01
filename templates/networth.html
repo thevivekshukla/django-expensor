@@ -15,9 +15,6 @@
                 {% endif %}
             </h1>
         </a>
-        {% if x > 0 %}
-            <sub style="float:right;">X = {{ avg_expense|intcomma }}</sub>
-        {% endif %}
     </center>
 {% endif %}
 
@@ -82,11 +79,11 @@
 </div>
 
 <p><br></p>
-<sub>As on {{ networth.date|date:"d M Y" }}</sub>
 {% if x > 0 %}
+<sub>X = {{ avg_expense|intcomma }} (annual expense, derived from {{ YEARS }} years of data)</sub>
 <br>
-<sub>X = annual expense (derived from {{ YEARS }} years' data)</sub>
 {% endif %}
+<sub>As on {{ networth.date|date:"d M Y" }}</sub>
 
 <p><br></p>
 <a href="{% url 'account:account-name-list' %}" class="btn btn-primary">Manage Accounts</a>
