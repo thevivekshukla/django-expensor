@@ -75,14 +75,18 @@ def search_expense_remark(queryset, q):
     return queryset
 
 
-def get_dates_list(first_date, latest_date, *, month=None, day=None):
+def get_dates_list(first_date, latest_date, *, month=None, day=None, daydelta=-1):
+    replace_kwargs = dict()
+    if month:
+        replace_kwargs['month'] = month
+    if day:
+        replace_kwargs['day'] = day
+    
+    latest_date = latest_date.replace(**replace_kwargs)
     dates = [latest_date]
     while latest_date > first_date:
-        latest_date -= timedelta(days=1)
-        if day:
-            latest_date = latest_date.replace(day=day)
-        if month:
-            latest_date = latest_date.replace(month=month)
+        latest_date += timedelta(days=daydelta)
+        latest_date = latest_date.replace(**replace_kwargs)
         dates.append(latest_date)
     return dates
 
