@@ -227,11 +227,12 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
         expenses = user.expenses.filter(timestamp__year=year)
         
         now = get_ist_datetime()
-        first_date = date(year, 1, 1)
         if year == now.year:
-            latest_date = date(year, now.month, 1)
+            last_month = now.month
         else:
-            latest_date = date(year, 12, 1)
+            last_month = 12
+        latest_date = date(year, last_month, 1)
+        first_date = date(year, 1, 1)
         dates = helpers.get_dates_list(first_date, latest_date, day=1)
 
         data = []
@@ -248,18 +249,20 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
                 'expense_ratio': expense_ratio,
             })
             
+        incomes_total = aggregate_sum(incomes)
+        expenses_total = aggregate_sum(expenses)
+        
         monthly_average = {
-            'income_sum': int(statistics.mean([x['income_sum'] for x in data])),
-            'expense_sum': int(statistics.mean([x['expense_sum'] for x in data])),
-            'saved': int(statistics.mean([x['saved'] for x in data])),
-            'expense_ratio': round(statistics.mean([x['expense_ratio'] for x in data]), 2),
+            'income_sum': int(incomes_total / last_month),
+            'expense_sum': int(expenses_total / last_month),
+            'saved': int((incomes_total - expenses_total) / last_month),
         }
 
         context = {
             'title': f'Report Card: {year}',
             'year': year,
             'now': helpers.get_ist_datetime(),
-            'eir': helpers.calculate_ratio(aggregate_sum(expenses), aggregate_sum(incomes)),
+            'eir': helpers.calculate_ratio(expenses_total, incomes_total),
             'data': data,
             'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
             'monthly_average': monthly_average,
