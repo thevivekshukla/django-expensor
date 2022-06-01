@@ -620,7 +620,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
         context['form'] = form
         context['inv_form'] = inv_form
-        with suppress(ValueError):
+        with suppress(ValueError, TypeError):
             context['income'] = int(request.GET.get('income'))
         
         return render(request, self.template_name, context)
