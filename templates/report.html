@@ -110,11 +110,45 @@
                     </tr>
                 {% endfor %}
 
+                {% if monthly_average %}
+                    <tr>
+                        <td class="active">
+                            <strong>Average</strong>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ monthly_average.income_sum|intcomma }}</strong>
+                            </span>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ monthly_average.expense_sum|intcomma }}</strong>
+                            </span>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ monthly_average.saved|intcomma }}</strong>
+                            </span>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ monthly_average.expense_ratio }}%</strong>
+                            </span>
+                        </td>
+                    </tr>
+                {% endif %}
+
             </table>
         </div>
 
         <sub style="float:right;">{{ now }}</sub>
         <sub>EIR = Expense to Income Ratio</sub><br>
+
+        {% include 'paginator.html' %}
         
     {% else %}
         <h2>No data to show.</h2>

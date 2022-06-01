@@ -183,9 +183,14 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
         incomes = user.incomes
         expenses = user.expenses
         
-        income_dates = incomes.dates('timestamp', 'year', order='DESC')
-        expense_dates = expenses.dates('timestamp', 'year', order='DESC')
-        dates = sorted(set([*income_dates, *expense_dates]), reverse=True)
+        now = helpers.get_ist_datetime()
+        latest_date = now.date().replace(month=1, day=1)
+        first_income_date = incomes.dates('timestamp', 'year', order='ASC').first() or latest_date
+        first_expense_date = expenses.dates('timestamp', 'year', order='ASC').first() or latest_date
+        first_date = min(first_income_date, first_expense_date)
+        dates = helpers.get_dates_list(first_date, latest_date, month=1, day=1)
+        
+        dates = helpers.get_paginator_object(request, dates, 5)
 
         data = []
         for date in dates:
@@ -207,6 +212,7 @@ class YearlyIncomeExpenseReport(LoginRequiredMixin, View):
             'eir': helpers.expense_to_income_ratio(user),
             'data': data,
             'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
+            'objects': dates,
         }
         return render(request, self.template_name, context)
 
@@ -216,27 +222,38 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        year = kwargs['year']
+        year = int(kwargs['year'])
         incomes = user.incomes.filter(timestamp__year=year)
         expenses = user.expenses.filter(timestamp__year=year)
         
-        income_dates = incomes.dates('timestamp', 'month', order='DESC')
-        expense_dates = expenses.dates('timestamp', 'month', order='DESC')
-        dates = sorted(set([*income_dates, *expense_dates]), reverse=True)
+        now = get_ist_datetime()
+        first_date = date(year, 1, 1)
+        if year == now.year:
+            latest_date = date(year, now.month, 1)
+        else:
+            latest_date = date(year, 12, 1)
+        dates = helpers.get_dates_list(first_date, latest_date, day=1)
 
         data = []
-        for date in dates:
-            income_sum = aggregate_sum(incomes.filter(timestamp__month=date.month))
-            expense_sum = aggregate_sum(expenses.filter(timestamp__month=date.month))
+        for dt in dates:
+            income_sum = aggregate_sum(incomes.filter(timestamp__month=dt.month))
+            expense_sum = aggregate_sum(expenses.filter(timestamp__month=dt.month))
             expense_ratio = helpers.calculate_ratio(expense_sum, income_sum)
 
             data.append({
-                'date': date,
+                'date': dt,
                 'income_sum': income_sum,
                 'expense_sum': expense_sum,
                 'saved': income_sum - expense_sum,
                 'expense_ratio': expense_ratio,
             })
+            
+        monthly_average = {
+            'income_sum': int(statistics.mean([x['income_sum'] for x in data])),
+            'expense_sum': int(statistics.mean([x['expense_sum'] for x in data])),
+            'saved': int(statistics.mean([x['saved'] for x in data])),
+            'expense_ratio': round(statistics.mean([x['expense_ratio'] for x in data]), 2),
+        }
 
         context = {
             'title': f'Report Card: {year}',
@@ -245,6 +262,7 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
             'eir': helpers.calculate_ratio(aggregate_sum(expenses), aggregate_sum(incomes)),
             'data': data,
             'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
+            'monthly_average': monthly_average,
         }
         return render(request, self.template_name, context)
 
