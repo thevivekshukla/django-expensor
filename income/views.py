@@ -251,11 +251,18 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
             
         incomes_total = aggregate_sum(incomes)
         expenses_total = aggregate_sum(expenses)
+        saved_total = incomes_total - expenses_total
+        
+        total = {
+            'income_sum': incomes_total,
+            'expense_sum': expenses_total,
+            'saved': saved_total,
+        }
         
         monthly_average = {
             'income_sum': int(incomes_total / last_month),
             'expense_sum': int(expenses_total / last_month),
-            'saved': int((incomes_total - expenses_total) / last_month),
+            'saved': int(saved_total / last_month),
         }
 
         context = {
@@ -265,6 +272,7 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
             'eir': helpers.calculate_ratio(expenses_total, incomes_total),
             'data': data,
             'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT * 100,
+            'total': total,
             'monthly_average': monthly_average,
         }
         return render(request, self.template_name, context)

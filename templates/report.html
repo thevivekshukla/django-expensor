@@ -148,6 +148,44 @@
                     </tr>
                 {% endif %}
 
+                {% if total %}
+                    <tr>
+                        <td class="active">
+                            <strong>Total</strong>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ total.income_sum|intcomma }}</strong>
+                            </span>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ total.expense_sum|intcomma }}</strong>
+                            </span>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>
+                                {% if total.saved < 0 %}
+                                    <span data-toggle="tooltip" data-placement="top" title="{{ total.saved|intcomma }}">0</span>
+                                {% else %}
+                                    {{ total.saved|intcomma }}
+                                {% endif %}
+                                </strong>
+                            </span>
+                        </td>
+
+                        <td class="active">
+                            <span class="float-right">
+                                <strong>{{ eir }}%</strong>
+                            </span>
+                        </td>
+                    </tr>
+                {% endif %}
+
             </table>
         </div>
 
