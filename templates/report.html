@@ -130,13 +130,19 @@
 
                         <td class="active">
                             <span class="float-right">
-                                <strong>{{ monthly_average.saved|intcomma }}</strong>
+                                <strong>
+                                {% if monthly_average.saved < 0 %}
+                                    <span data-toggle="tooltip" data-placement="top" title="{{ monthly_average.saved|intcomma }}">0</span>
+                                {% else %}
+                                    {{ monthly_average.saved|intcomma }}
+                                {% endif %}
+                                </strong>
                             </span>
                         </td>
 
                         <td class="active">
                             <span class="float-right">
-                                <strong>{{ monthly_average.expense_ratio }}%</strong>
+                                <strong>{{ eir }}%</strong>
                             </span>
                         </td>
                     </tr>
