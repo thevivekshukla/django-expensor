@@ -266,7 +266,6 @@ class MonthlyIncomeExpenseReport(LoginRequiredMixin, View):
             'expense_sum': int(expenses_total / last_month),
             'saved': int(saved_total / last_month),
             'expense_ratio': eir,
-            # 'expense_ratio': round(statistics.mean([x['expense_ratio'] for x in data]), 2),
         }
 
         context = {
