@@ -435,12 +435,10 @@ class SourceWiseIncome(LoginRequiredMixin, View):
 class IncomeDateSearch(LoginRequiredMixin, View):
     form_class = SelectDateRangeIncomeForm
     template_name = "income-search.html"
-    context = {
-        "title": "Income: Search"
-    }
 
     def get(self, request, *args, **kwargs):
-        context = self.context.copy()
+        context = dict()
+        date_str = ""
         form = self.form_class(request.GET or None)
 
         if form.is_valid():
@@ -451,9 +449,11 @@ class IncomeDateSearch(LoginRequiredMixin, View):
 
             if from_date and to_date:
                 objects = objects.filter(timestamp__range=(from_date, to_date))
+                date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
             elif from_date or to_date:
                 the_date = from_date or to_date
                 objects = objects.filter(timestamp=the_date)
+                date_str = f': {default_date_format(the_date)}'
 
             if source:
                 objects = objects.filter(source__name=source)
@@ -469,6 +469,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
             context['objects'] = objects
             context['total'] = total
 
+        context['title'] = f'Income Search{date_str}'
         context['form'] = form
         return render(request, self.template_name, context)
 
