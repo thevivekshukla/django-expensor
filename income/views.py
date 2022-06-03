@@ -342,23 +342,20 @@ class GoToIncome(LoginRequiredMixin, View):
     template_name = 'income_list.html'
 
     def get(self, request, *args, **kwargs):
-        month = int(kwargs.get('month', 0))
-        year = int(kwargs.get('year', 0))
-        date_str = ""
+        month = int(kwargs.get('month'))
+        year = int(kwargs.get('year'))
+        dt = date(year, month, 1)
+        date_str = dt.strftime("%B %Y")
         
-        incomes = request.user.incomes.all()
-        if year:
-            incomes = incomes.filter(timestamp__year=year)
-            date_str = f"{year}"
-        if year and month:
-            incomes = incomes.filter(timestamp__month=month)
-            dt = date(year, month, 1)
-            date_str = dt.strftime("%B %Y")
+        incomes = request.user.incomes
+        incomes = incomes.filter(timestamp__year=year, timestamp__month=month)
 
         context = {
             "title": f"Income: {date_str}",
             "objects": incomes,
             "total": aggregate_sum(incomes),
+            "year": year,
+            "month": month,
         }
         return render(request, self.template_name, context)
 
