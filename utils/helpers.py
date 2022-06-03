@@ -1,4 +1,5 @@
 from datetime import timedelta
+from functools import lru_cache
 
 import pytz
 from django.utils import timezone
@@ -75,6 +76,7 @@ def search_expense_remark(queryset, q):
     return queryset
 
 
+@lru_cache(maxsize=512)
 def get_dates_list(first_date, latest_date, *, month=None, day=None, daydelta=-1):
     replace_kwargs = dict()
     if month:
