@@ -455,11 +455,16 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
             incomes = incomes.filter(timestamp__year=year)
             date_str = f': {year}'
         elif date_form.is_valid():
+            remark = date_form.cleaned_data.get('remark')
             from_date = date_form.cleaned_data.get('from_date')
             to_date = date_form.cleaned_data.get('to_date')
-            objects = user.expenses.filter(timestamp__range=(from_date, to_date))
-            incomes = incomes.filter(timestamp__range=(from_date, to_date))
-            date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
+            objects = user.expenses
+            if from_date and to_date:
+                objects = objects.filter(timestamp__range=(from_date, to_date))
+                incomes = incomes.filter(timestamp__range=(from_date, to_date))
+                date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
+            if remark:
+                objects = helpers.search_expense_remark(objects, remark)
         else:
             objects = Expense.objects.all(user=user)
 

@@ -13,6 +13,7 @@ urlpatterns = [
     re_path(r'^list/month/(?P<year>\d+)/(?P<month>\d+)/$', views.GoToIncome.as_view(), name='goto-income-list'),
     re_path(r'^add/$', views.IncomeAdd.as_view(), name='add-income'),
     re_path(r'^autocomplete/source/$', views.SourceView.as_view(), name='get-source'),
+    re_path(r'^source-wise/$', views.SourceWiseIncome.as_view(), name='source-wise'),
     re_path(r'^update/(?P<pk>\d+)/$', views.IncomeUpdateView.as_view(), name='update-income'),
     re_path(r'^income-search/$', views.IncomeDateSearch.as_view(), name='search'),
     

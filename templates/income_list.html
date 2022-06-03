@@ -31,7 +31,7 @@
 
         <td>
           {% if object.source %}
-            <a class="black-text" href="{% url 'income:search' %}?source={{ object.source }}">{{ object.source }}</a>
+            <a class="black-text" href="{% url 'income:search' %}?source={{ object.source.name }}">{{ object.source.name }}</a>
           {% endif %}
         </td>
 
@@ -58,6 +58,9 @@
 
   </table>
   
+  <div style="float:right;">
+    <a class="btn btn-primary btn-xs" href="{% url 'income:source-wise' %}">See by Sources</a>
+  </div>
 
   {% if is_paginated %}
     {% include 'paginator.html' %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block body %}
+
+<br>
+
+{% if sources %}
+
+<div class="col-md-6 col-md-offset-3">
+
+{% include "total_alert_info.html" %}
+
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th><span class="float-right">Total Amount</span></th>
+    </tr>
+  </thead>
+
+  {% for row in sources %}
+    <tr>
+      <td>
+        {% if not row.source %}
+            Others<sup>*</sup>
+        {% else %}
+          <a class="black-text" href="{% url 'income:search' %}?source={{ row.source.name }}">{{ row.source.name }}</a>
+        {% endif %}
+      </td>
+
+      <td>
+          <span class="float-right">
+            {{ row.amount|intcomma }}
+          </span>
+      </td>
+    </tr> 
+  {% endfor %}
+
+  </table>
+  
+  {% else %}
+
+  <h2>No data to show.</h2>
+
+  {% endif %}
+
+</div>
+
+{% endblock body %}

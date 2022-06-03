@@ -33,7 +33,11 @@ from .forms import (
     InvestmentEntityForm,
 )
 from utils import helpers
-from utils.helpers import aggregate_sum, get_ist_datetime
+from utils.helpers import (
+    aggregate_sum,
+    get_ist_datetime,
+    default_date_format,
+)
 from utils.constants import (
     BANK_AMOUNT_PCT,
     FIXED_SAVINGS_PCT,
@@ -370,6 +374,65 @@ class SourceView(LoginRequiredMixin, View):
         data = json.dumps(result)
         
         return HttpResponse(data, content_type='application/json')
+
+
+class SourceWiseIncome(LoginRequiredMixin, View):
+    template_name = 'source-wise-income.html'
+    date_form_class = SelectDateRangeIncomeForm
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        month = int(request.GET.get('month', 0))
+        year = int(request.GET.get('year', 0))
+        date_str = ""
+        
+        date_form = self.date_form_class(request.GET or None)
+        incomes = user.incomes
+        
+        if month and year:
+            objects = incomes.filter(timestamp__year=year, timestamp__month=month)
+            _month = date(year, month, 1)
+            date_str = f': {_month.strftime("%b %Y")}'
+        elif year:
+            objects = incomes.filter(timestamp__year=year)
+            date_str = f': {year}'
+        elif date_form.is_valid():
+            source_name_search = date_form.cleaned_data.get('source')
+            from_date = date_form.cleaned_data.get('from_date')
+            to_date = date_form.cleaned_data.get('to_date')
+            objects = incomes
+            if from_date and to_date:
+                objects = objects.filter(timestamp__range=(from_date, to_date))
+                date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
+            if source_name_search:
+                objects = objects.filter(source__name=source_name_search)
+        else:
+            objects = incomes
+
+        objects = objects.select_related('source')
+        sources = set()
+        for instance in objects:
+            sources.add(instance.source)
+
+        income_sum = aggregate_sum(objects)
+
+        source_data = []
+        for source in sources:
+            amount = aggregate_sum(objects.filter(source=source))
+            source_data.append({
+                'source': source,
+                'amount': amount,
+            })
+
+        source_data = sorted(source_data, key=lambda x: x['amount'], reverse=True)
+
+        context = {
+            "title": f"Source-Wise Income{date_str}",
+            "sources": source_data,
+            "total": income_sum,
+        }
+
+        return render(request, self.template_name, context)
 
 
 class IncomeDateSearch(LoginRequiredMixin, View):

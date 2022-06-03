@@ -9,6 +9,12 @@
 {% include "total_alert_info.html" %}
 
 {% if data %}
+
+  {% if request.GET.year %}
+  <a class="btn btn-primary btn-xs" href="{% url 'income:source-wise' %}?year={{ request.GET.year }}">See by Sources</a>
+  <br><br>
+  {% endif %}
+
   <table class="table table-bordered table-hover">
 
       <thead>
