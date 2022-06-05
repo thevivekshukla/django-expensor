@@ -47,6 +47,8 @@
 
   </table>
 
+  {% include 'paginator.html' %}
+  <hr>
 {% elif request.GET.search == "1" %}
   <h1>Nothing found</h1><hr>
 {% endif %}

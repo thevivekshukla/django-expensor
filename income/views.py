@@ -466,7 +466,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
             except:
                 pass
 
-            context['objects'] = objects
+            context['objects'] = helpers.get_paginator_object(request, objects, 15)
             context['total'] = total
 
         context['title'] = f'Income Search{date_str}'

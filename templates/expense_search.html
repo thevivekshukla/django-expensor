@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<div class="col-md-8 col-md-offset-2">
 
 {% include "total_alert_info.html" %}
 
@@ -11,13 +12,15 @@
 {% if objects %}
   <a class="btn btn-primary btn-xs" href="{% url 'expense:all_remark_expenses' %}?remark={{ request.GET.remark }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}">See by Remark</a>
   {% include 'expense_table.html' %}
+  {% include 'paginator.html' %}
+  <hr>
 {% elif request.GET.search == "1" %}
   <h1>Nothing found.</h1>
   <hr>
 {% endif %}
 
 
-<div class="col-md-4 col-md-offset-1">
+<div class="col-md-5">
 
   <form action="" method="GET">
     {% csrf_token %}
@@ -28,6 +31,7 @@
 
 </div>
 
+</div>
 
 {% endblock body %}
 

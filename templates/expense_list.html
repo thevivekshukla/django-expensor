@@ -18,17 +18,6 @@
 
 <div class="col-md-8 col-md-offset-2">
 
-{% if request.GET.q %}
-  <div class="alert alert-info">
-    <h4>Total for search <i>{{ request.GET.q }}</i>: {{ object_total|intcomma }}</h4>
-  </div>
-{% elif object_total %}
-  <div class="alert alert-info">
-    <h4>Total: {{ object_total|intcomma }}</h4>
-  </div>
-{% endif %}
-
-
 
 {% if objects %}
   <p>
@@ -39,23 +28,18 @@
           <option value="amount">Amount</option>
           <option value="timestamp" selected>Date</option>
         </select>
+
         <select name="order">
           <option value="">ASC</option>
           <option value="-" selected>DESC</option>
         </select>
+
         <input type="submit" class="btn btn-xs btn-default" value="Submit">
-        {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
       </form>
     </div>
   </p>
 
   {% include 'expense_table.html' %}
-
-  {% if goto_total %}
-    <div class="jumbotron">
-      <h4 style="float:right">Total: {{ goto_total }}</h4>
-    </div>
-  {% endif %}
 
   {% include 'paginator.html' %}
 
@@ -63,17 +47,17 @@
     <a class="btn btn-primary btn-xs" href="{% url 'expense:all_remark_expenses' %}">See by Remark</a>
   </div>
 
+  <hr>
 {% else %}
-  <h1>Nothing found</h1><hr>
+  <h1>Nothing found</h1>
+  <hr>
 {% endif %}
-
-
 
 
 {% if total %}
   <div class="jumbotron">
     <div class="row">
-      <div class="col-md-6 col-lg-6 col-sm-12">
+      <div class="col-md-10 col-sm-12 col-md-offset-1">
         <h4><u>Expense Stats:</u></h4>
 
         <table class="table stats-table">

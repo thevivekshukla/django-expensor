@@ -173,12 +173,6 @@ class ExpenseList(LoginRequiredMixin, View):
         if objects_list:
             first_date = objects_list.last().timestamp or None
 
-        q = request.GET.get("q")
-        object_total = None
-        if q:
-            objects_list = helpers.search_expense_remark(objects_list, q)
-            object_total = objects_list.aggregate(Sum('amount'))['amount__sum'] or 0
-
         order_field = request.GET.get("field")
         if order_field:
             ordering = request.GET.get("order", "") + order_field
@@ -192,7 +186,6 @@ class ExpenseList(LoginRequiredMixin, View):
             "objects": objects,
             "total": total,
             "first_date": first_date,
-            "object_total": object_total,
             "expense_to_income_ratio": helpers.expense_to_income_ratio(request.user),
         }
 
@@ -372,7 +365,7 @@ class DateSearch(LoginRequiredMixin, View):
             except:
                 pass
 
-            context['objects'] = objects
+            context['objects'] = helpers.get_paginator_object(request, objects, 30)
             context['total'] = total
 
         context['title'] = f'Expense Search{date_str}'
@@ -441,6 +434,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         date_str = ""
         
         date_form = self.date_form_class(request.GET or None)
+        objects = user.expenses
         incomes = user.incomes
         
         if day:
@@ -468,8 +462,6 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
                 date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
             if remark:
                 objects = helpers.search_expense_remark(objects, remark)
-        else:
-            objects = Expense.objects.all(user=user)
 
         objects = objects.select_related('remark')
         remarks = set()
