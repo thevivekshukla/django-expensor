@@ -17,7 +17,7 @@
 
       <td>
         {% if object.remark %}
-          <a class="black-text" href="{% url 'expense:expense_list' %}?q=%22{{ object.remark }}%22">{{ object.remark }}</a>
+          <a class="black-text" href="{% url 'expense:search' %}?remark=%22{{ object.remark }}%22">{{ object.remark }}</a>
         {% endif %}
       </td>
 
