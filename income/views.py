@@ -478,7 +478,9 @@ class IncomeDateSearch(LoginRequiredMixin, View):
                 from_date_str = to_date_str = default_date_format(the_date)
                 date_str = f': {from_date_str}'
 
-            if source:
+            if source == '""':
+                objects = objects.filter(source__isnull=True)
+            elif source:
                 objects = objects.filter(source__name=source)
 
             total = aggregate_sum(objects)

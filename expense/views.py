@@ -359,7 +359,9 @@ class DateSearch(LoginRequiredMixin, View):
                 from_date_str = to_date_str = default_date_format(the_date)
                 date_str = f': {from_date_str}'
             
-            if remark:
+            if remark == '""':
+                objects = objects.filter(remark__isnull=True)
+            elif remark:
                 objects = helpers.search_expense_remark(objects, remark)
 
             total = aggregate_sum(objects)
