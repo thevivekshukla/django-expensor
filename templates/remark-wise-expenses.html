@@ -22,18 +22,16 @@
 
   {% for row in remarks %}
     <tr>
+
       <td>
-        {% if not row.remark %}
-          <a class="black-text" 
-            href="{% url 'expense:search' %}?remark=%22%22{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
-            Others<sup>*</sup>
-          </a>
-        {% else %}
-          <a class="black-text" 
-            href="{% url 'expense:search' %}?remark=%22{{ row.remark.name }}%22{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+        <a class="black-text" 
+          href="{% url 'expense:search' %}?remark={% if row.remark %}%22{{ row.remark.name }}%22{% else %}%22%22{% endif %}{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+          {% if row.remark %}
             {{ row.remark.name }}
-          </a>
-        {% endif %}
+          {% else %}
+            Others<sup>*</sup>
+          {% endif %}
+        </a>
       </td>
 
       <td>
@@ -41,6 +39,7 @@
             {{ row.amount|intcomma }}
           </span>
       </td>
+      
     </tr> 
   {% endfor %}
 

@@ -22,18 +22,16 @@
 
   {% for row in sources %}
     <tr>
+
       <td>
-        {% if not row.source %}
-          <a class="black-text" 
-            href="{% url 'income:search' %}?source=%22%22{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
-            Others<sup>*</sup>
-          </a>
-        {% else %}
-          <a class="black-text" 
-            href="{% url 'income:search' %}?source={{ row.source.name }}{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+        <a class="black-text" 
+          href="{% url 'income:search' %}?source={% if row.source %}{{ row.source.name }}{% else %}%22%22{% endif %}{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+          {% if row.source %}
             {{ row.source.name }}
-          </a>
-        {% endif %}
+          {% else %}
+            Others<sup>*</sup>
+          {% endif %}
+        </a>
       </td>
 
       <td>
@@ -41,6 +39,7 @@
             {{ row.amount|intcomma }}
           </span>
       </td>
+      
     </tr> 
   {% endfor %}
 
