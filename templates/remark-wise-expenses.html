@@ -26,7 +26,10 @@
         {% if not row.remark %}
             Others<sup>*</sup>
         {% else %}
-          <a class="black-text" href="{% url 'expense:search' %}?remark=%22{{ row.remark.name }}%22">{{ row.remark.name }}</a>
+          <a class="black-text" 
+            href="{% url 'expense:search' %}?remark=%22{{ row.remark.name }}%22{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+            {{ row.remark.name }}
+          </a>
         {% endif %}
       </td>
 

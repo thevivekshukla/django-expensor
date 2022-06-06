@@ -1,5 +1,6 @@
 from datetime import date
 import json
+import calendar
 
 from django.shortcuts import render
 from django.db.models import Sum, Count
@@ -338,6 +339,7 @@ class DateSearch(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = dict()
         date_str = ""
+        from_date_str = to_date_str = None
         form = self.form_class(request.GET or None)
 
         if form.is_valid():
@@ -348,11 +350,14 @@ class DateSearch(LoginRequiredMixin, View):
             
             if from_date and to_date:
                 objects = objects.filter(timestamp__range=(from_date, to_date))
-                date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
+                from_date_str = default_date_format(from_date)
+                to_date_str = default_date_format(to_date)
+                date_str = f': {from_date_str} to {to_date_str}'
             elif from_date or to_date:
                 the_date = from_date or to_date
                 objects = objects.filter(timestamp=the_date)
-                date_str = f': {default_date_format(the_date)}'
+                from_date_str = to_date_str = default_date_format(the_date)
+                date_str = f': {from_date_str}'
             
             if remark:
                 objects = helpers.search_expense_remark(objects, remark)
@@ -370,6 +375,8 @@ class DateSearch(LoginRequiredMixin, View):
 
         context['title'] = f'Expense Search{date_str}'
         context['form'] = form
+        context['from_date'] = from_date_str
+        context['to_date'] = to_date_str
         return render(request, self.template_name, context)
 
 
@@ -384,6 +391,7 @@ class GoToExpense(LoginRequiredMixin, View):
         month = int(kwargs.get('month', 0))
         year = int(kwargs.get('year', 0))
         date_str = ""
+        from_date = to_date = None
         daywise_url_reverse = reverse('expense:day-wise-expense')
         
         if day:
@@ -398,11 +406,17 @@ class GoToExpense(LoginRequiredMixin, View):
             date_str = f': {dt.strftime("%b %Y")}'
             remark_url_name = "remark_monthly_expense"
             daywise_url = f'{daywise_url_reverse}?year={year}&month={month}'
+            from_date = default_date_format(date(year, month, 1))
+            to_date = default_date_format(
+                date(year, month, calendar.monthrange(year, month)[1])
+            )
         elif year:
             objects = Expense.objects.this_year(user=request.user, year=year)
             date_str = f': {year}'
             remark_url_name = "goto_year_expense"
             daywise_url = f'{daywise_url_reverse}?year={year}'
+            from_date = default_date_format(date(year, 1, 1))
+            to_date = default_date_format(date(year, 12, 31))
 
         total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
         objects = helpers.get_paginator_object(request, objects, 50)
@@ -414,6 +428,8 @@ class GoToExpense(LoginRequiredMixin, View):
             "remark_url": reverse(f'expense:{remark_url_name}',
                             kwargs={k:int(v) for k, v in kwargs.items()}),
             "daywise_url": daywise_url,
+            "from_date": from_date,
+            "to_date": to_date,
         }
 
         return render(request, self.template_name, context)
@@ -434,6 +450,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
         date_str = ""
         
         date_form = self.date_form_class(request.GET or None)
+        from_date = to_date = None
         objects = user.expenses
         incomes = user.incomes
         
@@ -447,10 +464,16 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
             incomes = incomes.filter(timestamp__year=year, timestamp__month=month)
             _month = date(year, month, 1)
             date_str = f': {_month.strftime("%b %Y")}'
+            from_date = default_date_format(date(year, month, 1))
+            to_date = default_date_format(
+                date(year, month, calendar.monthrange(year, month)[1])
+            )
         elif year:
             objects = Expense.objects.this_year(user=user, year=year)
             incomes = incomes.filter(timestamp__year=year)
             date_str = f': {year}'
+            from_date = default_date_format(date(year, 1, 1))
+            to_date = default_date_format(date(year, 12, 31))
         elif date_form.is_valid():
             remark = date_form.cleaned_data.get('remark')
             from_date = date_form.cleaned_data.get('from_date')
@@ -489,6 +512,8 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
             "title": f"Remark-Wise Expenses{date_str}",
             "remarks": remark_data,
             "total": expense_sum,
+            "from_date": from_date,
+            "to_date": to_date,
         }
 
         return render(request, self.template_name, context)

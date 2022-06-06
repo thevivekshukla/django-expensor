@@ -17,7 +17,10 @@
 
       <td>
         {% if object.remark %}
-          <a class="black-text" href="{% url 'expense:search' %}?remark=%22{{ object.remark }}%22">{{ object.remark }}</a>
+          <a class="black-text" 
+            href="{% url 'expense:search' %}?remark=%22{{ object.remark }}%22{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+            {{ object.remark }}
+          </a>
         {% endif %}
       </td>
 
