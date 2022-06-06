@@ -400,6 +400,7 @@ class GoToExpense(LoginRequiredMixin, View):
             date_str = f': {dt.strftime("%d %b %Y")}'
             remark_url_name = "goto_day_expense"
             daywise_url = ""
+            from_date = to_date = default_date_format(dt)
         elif month:
             objects = Expense.objects.this_month(user=request.user, year=year, month=month)
             dt = date(year, month, 1)
