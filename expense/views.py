@@ -482,8 +482,8 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
             if _from_date and _to_date:
                 objects = objects.filter(timestamp__range=(_from_date, _to_date))
                 incomes = incomes.filter(timestamp__range=(_from_date, _to_date))
-                from_date = {default_date_format(_from_date)}
-                to_date = {default_date_format(_to_date)}
+                from_date = default_date_format(_from_date)
+                to_date = default_date_format(_to_date)
                 date_str = f': {from_date} to {to_date}'
             if remark:
                 objects = helpers.search_expense_remark(objects, remark)
