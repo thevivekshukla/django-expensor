@@ -3,6 +3,7 @@ import statistics
 import markdown
 from contextlib import suppress
 import json
+import calendar
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
@@ -342,10 +343,15 @@ class GoToIncome(LoginRequiredMixin, View):
     template_name = 'income_list.html'
 
     def get(self, request, *args, **kwargs):
-        month = int(kwargs.get('month'))
         year = int(kwargs.get('year'))
+        month = int(kwargs.get('month'))
         dt = date(year, month, 1)
         date_str = dt.strftime("%B %Y")
+        
+        from_date = default_date_format(dt)
+        to_date = default_date_format(
+            date(year, month, calendar.monthrange(year, month)[1])
+        )
         
         incomes = request.user.incomes
         incomes = incomes.filter(timestamp__year=year, timestamp__month=month)
@@ -356,6 +362,8 @@ class GoToIncome(LoginRequiredMixin, View):
             "total": aggregate_sum(incomes),
             "year": year,
             "month": month,
+            "from_date": from_date,
+            "to_date": to_date,
         }
         return render(request, self.template_name, context)
 
@@ -381,6 +389,7 @@ class SourceWiseIncome(LoginRequiredMixin, View):
         user = request.user
         month = int(request.GET.get('month', 0))
         year = int(request.GET.get('year', 0))
+        from_date = to_date = None
         date_str = ""
         
         date_form = self.date_form_class(request.GET or None)
@@ -390,17 +399,25 @@ class SourceWiseIncome(LoginRequiredMixin, View):
             objects = incomes.filter(timestamp__year=year, timestamp__month=month)
             _month = date(year, month, 1)
             date_str = f': {_month.strftime("%b %Y")}'
+            from_date = default_date_format(_month)
+            to_date = default_date_format(
+                date(year, month, calendar.monthrange(year, month)[1])
+            )
         elif year:
             objects = incomes.filter(timestamp__year=year)
             date_str = f': {year}'
+            from_date = default_date_format(date(year, 1, 1))
+            to_date = default_date_format(date(year, 12, 31))
         elif date_form.is_valid():
             source_name_search = date_form.cleaned_data.get('source')
-            from_date = date_form.cleaned_data.get('from_date')
-            to_date = date_form.cleaned_data.get('to_date')
+            _from_date = date_form.cleaned_data.get('from_date')
+            _to_date = date_form.cleaned_data.get('to_date')
             objects = incomes
-            if from_date and to_date:
-                objects = objects.filter(timestamp__range=(from_date, to_date))
-                date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
+            if _from_date and _to_date:
+                objects = objects.filter(timestamp__range=(_from_date, _to_date))
+                from_date = default_date_format(_from_date)
+                to_date = default_date_format(_to_date)
+                date_str = f': {from_date} to {to_date}'
             if source_name_search:
                 objects = objects.filter(source__name=source_name_search)
         else:
@@ -427,6 +444,8 @@ class SourceWiseIncome(LoginRequiredMixin, View):
             "title": f"Source-Wise Income{date_str}",
             "sources": source_data,
             "total": income_sum,
+            "from_date": from_date,
+            "to_date": to_date,
         }
 
         return render(request, self.template_name, context)
@@ -439,6 +458,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = dict()
         date_str = ""
+        from_date_str = to_date_str = None
         form = self.form_class(request.GET or None)
 
         if form.is_valid():
@@ -449,11 +469,14 @@ class IncomeDateSearch(LoginRequiredMixin, View):
 
             if from_date and to_date:
                 objects = objects.filter(timestamp__range=(from_date, to_date))
-                date_str = f': {default_date_format(from_date)} to {default_date_format(to_date)}'
+                from_date_str = default_date_format(from_date)
+                to_date_str = default_date_format(to_date)
+                date_str = f': {from_date_str} to {to_date_str}'
             elif from_date or to_date:
                 the_date = from_date or to_date
                 objects = objects.filter(timestamp=the_date)
-                date_str = f': {default_date_format(the_date)}'
+                from_date_str = to_date_str = default_date_format(the_date)
+                date_str = f': {from_date_str}'
 
             if source:
                 objects = objects.filter(source__name=source)
@@ -471,6 +494,8 @@ class IncomeDateSearch(LoginRequiredMixin, View):
 
         context['title'] = f'Income Search{date_str}'
         context['form'] = form
+        context['from_date'] = from_date_str
+        context['to_date'] = to_date_str
         return render(request, self.template_name, context)
 
 

@@ -26,7 +26,10 @@
         {% if not row.source %}
             Others<sup>*</sup>
         {% else %}
-          <a class="black-text" href="{% url 'income:search' %}?source={{ row.source.name }}">{{ row.source.name }}</a>
+          <a class="black-text" 
+            href="{% url 'income:search' %}?source={{ row.source.name }}{% if from_date and to_date %}&from_date={{from_date}}&to_date={{to_date}}{% endif %}">
+            {{ row.source.name }}
+          </a>
         {% endif %}
       </td>
 
