@@ -368,7 +368,8 @@ class DateSearch(LoginRequiredMixin, View):
             try:
                 days = (to_date - from_date).days
                 months = days / AVG_MONTH_DAYS
-                context['monthly_average'] = int(total/months)
+                if months > 1:
+                    context['monthly_average'] = int(total/months)
             except:
                 pass
 
