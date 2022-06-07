@@ -331,11 +331,13 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
         history = instance.amounts.all().order_by('-date')
         
         history_cagr = 0
-        if history.exists():
+        x = 0
+        if instance.type == 1 and history.exists():
             final = history.first()
             start = history.last()
             years = (final.date - start.date).days / 365
             history_cagr = calculate_cagr(final.amount, start.amount, years)
+            x , _ = fetch_networth_x(request.user, final.amount)
         
         objects = get_paginator_object(request, history, 25)
         context = {
@@ -343,6 +345,7 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
             'objects': objects,
             'is_paginated': True,
             'history_cagr': history_cagr,
+            'x': x,
         }
         return render(request, self.template_name, context)
 

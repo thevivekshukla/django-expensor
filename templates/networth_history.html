@@ -6,33 +6,41 @@
 
 
 {% if objects %}
-  
-  <strong>
-    CAGR: 
-    <span {% if history_cagr > 0 %} class="green-text" {% elif history_cagr < 0 %} class="red-text" {% endif %}>{{ history_cagr }}%</span>
-  </strong>
-  <br><br>
 
   <div class="row">
 
     <div class="col-md-6 offset-md-3">
-        <table class="table table-hover">
-            
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th><span class="float-right">Amount</span></th>
-                </tr>
-            </thead>
 
-            {% for object in objects %}
-            <tr>
-                <td>{{ object.date|date:"d M, Y" }}</td>
-                <td><span style="float:right;">{{ object.amount|intcomma }}</span></td>
-            </tr>
-            {% endfor %}
+      {% if history_cagr %}
+        <strong>
+          CAGR: 
+          <span {% if history_cagr > 0 %} class="green-text" {% elif history_cagr < 0 %} class="red-text" {% endif %}>{{ history_cagr }}%</span>
+        </strong>
+      {% endif %}
 
-        </table>
+      {% if x %}
+        <strong style="float:right;">X: {{ x }}</strong>
+        <hr>
+      {% endif %}
+
+      <table class="table table-hover">
+          
+          <thead>
+              <tr>
+                  <th>Date</th>
+                  <th><span class="float-right">Amount</span></th>
+              </tr>
+          </thead>
+
+          {% for object in objects %}
+          <tr>
+              <td>{{ object.date|date:"d M, Y" }}</td>
+              <td><span style="float:right;">{{ object.amount|intcomma }}</span></td>
+          </tr>
+          {% endfor %}
+
+      </table>
+
     </div>
     
   </div>
