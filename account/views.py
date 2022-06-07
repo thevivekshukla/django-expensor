@@ -28,6 +28,7 @@ from utils.helpers import (
     get_client_ip,
     get_paginator_object,
     calculate_cagr,
+    fetch_networth_x,
 )
 
 # Create your views here.
@@ -135,23 +136,10 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         networths = user.net_worth.order_by('-date')
         networth = networths.first()
         
-        x = 0
-        avg_expense = 0
-        YEARS = 3
         if networth and networth.amount > 0:
-            now = get_ist_datetime()
-            expense_months = user.expenses.exclude(amount=0)\
-                                .exclude(timestamp__year=now.year, timestamp__month=now.month)\
-                                .dates('timestamp', 'month', order='DESC')
-            expense_sum = 0
-            months = min(expense_months.count(), YEARS * 12)
-            for dt in expense_months[:months]:
-                expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
-                expense_sum += aggregate_sum(expense)
-            
-            avg_expense = int(expense_sum / (months / 12))
-            with suppress(ZeroDivisionError):
-                x = round(networth.amount / avg_expense, 1)
+            x, avg_expense = fetch_networth_x(user, networth.amount)
+        else:
+            x = avg_expense = 0
         
         liabilities = []
         assets = []
@@ -175,7 +163,6 @@ class NetWorthDashboard(LoginRequiredMixin, View):
             'title': 'NetWorth',
             'networth': networth,
             'avg_expense': avg_expense,
-            'YEARS': YEARS,
             'x': x,
             'liabilities': liabilities,
             'liability_amount': liability_amount,

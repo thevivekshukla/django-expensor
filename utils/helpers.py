@@ -1,10 +1,16 @@
 from datetime import timedelta
 from functools import lru_cache
+from contextlib import suppress
+from collections import namedtuple
 
 import pytz
 from django.utils import timezone
 from django.db.models import Sum, Q
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import (
+    Paginator,
+    PageNotAnInteger,
+    EmptyPage,
+)
 from django.conf import settings
 
 
@@ -106,4 +112,26 @@ def calculate_cagr(final_amount, start_amount, years):
             networth_cagr = -1 * (((abs(final_amount) + 2 * start_amount) / start_amount) ** (1 / years) - 1)
         networth_cagr = round(networth_cagr * 100, 2)
     return networth_cagr
+
+
+def fetch_networth_x(user, amount):
+    YEARS = 3
+    x = avg_expense = 0
+    now = get_ist_datetime()
+    expense_months = user.expenses.exclude(amount=0)\
+                        .exclude(timestamp__year__gte=now.year, timestamp__month__gte=now.month)\
+                        .dates('timestamp', 'month', order='DESC')
+    expense_sum = 0
+    months = min(expense_months.count(), YEARS * 12)
+    for dt in expense_months[:months]:
+        expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
+        expense_sum += aggregate_sum(expense)
+    
+    avg_expense = int(expense_sum / (months / 12))
+    with suppress(ZeroDivisionError):
+        x = round(amount / avg_expense, 1)
+    
+    Result = namedtuple("Result", "x avg_expense")
+    return Result(x, avg_expense)
+
 
