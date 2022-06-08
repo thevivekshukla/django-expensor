@@ -158,13 +158,17 @@
 
                         <td class="active">
                             <span class="float-right">
-                                <strong>{{ total.income_sum|intcomma }}</strong>
+                                <a class="black-text" href="{% url 'income:month-income-list' %}?year={{ year }}">
+                                    <strong>{{ total.income_sum|intcomma }}</strong>
+                                </a>
                             </span>
                         </td>
 
                         <td class="active">
                             <span class="float-right">
-                                <strong>{{ total.expense_sum|intcomma }}</strong>
+                                <a class="black-text" href="{% url 'expense:month-wise-expense' %}?year={{ year }}">
+                                    <strong>{{ total.expense_sum|intcomma }}</strong>
+                                </a>
                             </span>
                         </td>
 
