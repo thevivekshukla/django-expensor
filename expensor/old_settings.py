@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'storages',
     'income',
     'account',
+    'utils',
 ]
 
 MIDDLEWARE = [
