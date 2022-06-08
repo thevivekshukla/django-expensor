@@ -169,10 +169,6 @@ class ExpenseList(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         objects_list = Expense.objects.all(user=request.user)
-        first_date = None
-
-        if objects_list:
-            first_date = objects_list.last().timestamp or None
 
         order_field = request.GET.get("field")
         if order_field:
@@ -180,14 +176,19 @@ class ExpenseList(LoginRequiredMixin, View):
             objects_list = objects_list.order_by(ordering)
 
         objects = helpers.get_paginator_object(request, objects_list, 30)
-        total = Expense.objects.amount_sum(user=request.user)
+        
+        # total = Expense.objects.amount_sum(user=request.user)
+        # if objects_list:
+        #     first_date = objects_list.last().timestamp
+        # else:
+        #     first_date = None
 
         context = {
             "title": "Expenses",
             "objects": objects,
-            "total": total,
-            "first_date": first_date,
-            "expense_to_income_ratio": helpers.expense_to_income_ratio(request.user),
+            # "total": total,
+            # "first_date": first_date,
+            # "expense_to_income_ratio": helpers.expense_to_income_ratio(request.user),
         }
 
         return render(request, self.template_name, context)
