@@ -30,7 +30,7 @@
         <tr>
           <td>
             <a href="{% url 'income:goto-income-list' year=object.date.year month=object.date.month %}">
-              {{ object.date|date:"M Y" }}
+              {{ object.date|date:"F, Y" }}
             </a>
           </td>
           
