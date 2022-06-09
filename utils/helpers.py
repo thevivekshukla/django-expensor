@@ -81,7 +81,7 @@ def search_expense_remark(queryset, q):
     return queryset
 
 
-@lru_cache(maxsize=512)
+@lru_cache(maxsize=128)
 def get_dates_list(first_date, latest_date, *, month=None, day=None, daydelta=-1):
     replace_kwargs = dict()
     if month:
@@ -140,7 +140,7 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
     else:
         raise ValueError("Invalid value provided for 'method' kwarg")
 
-    return  int(method_func(expenses) * 12)
+    return int(method_func(expenses) * 12)
 
 
 def cal_networth_x(amount, yearly_expense):
