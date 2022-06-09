@@ -1,7 +1,5 @@
 from datetime import timedelta
 from functools import lru_cache
-from contextlib import suppress
-from collections import namedtuple
 
 import pytz
 from django.utils import timezone
