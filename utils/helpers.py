@@ -1,5 +1,6 @@
 from datetime import timedelta
 from functools import lru_cache
+import statistics
 
 import pytz
 from django.utils import timezone
@@ -112,23 +113,34 @@ def calculate_cagr(final_amount, start_amount, years):
     return networth_cagr
 
 
-def cal_avg_expense(user, *, YEARS=3):
+def cal_avg_expense(user, *, method="mean", YEARS=3):
     """
     Returns yearly average expense
     """
-    avg_expense = 0
     now = get_ist_datetime()
     expense_months = user.expenses.exclude(amount=0)\
                         .exclude(timestamp__year__gte=now.year, timestamp__month__gte=now.month)\
                         .dates('timestamp', 'month', order='DESC')
-    expense_sum = 0
-    months = min(expense_months.count(), YEARS * 12)
-    for dt in expense_months[:months]:
+    expenses = []
+    for dt in expense_months[:YEARS * 12]:
         expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
-        expense_sum += aggregate_sum(expense)
+        expenses.append(aggregate_sum(expense))
+
+    if not expenses:
+        return 0
     
-    avg_expense = int(expense_sum / (months / 12))
-    return avg_expense
+    if method == "mean":
+        method_func = statistics.mean
+    elif method == "median":
+        method_func = statistics.median
+    elif method == "max":
+        method_func = max
+    elif method == "min":
+        method_func = min
+    else:
+        raise ValueError("Invalid value provided for 'method' kwarg")
+
+    return  int(method_func(expenses) * 12)
 
 
 def cal_networth_x(amount, yearly_expense):
