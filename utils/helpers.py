@@ -114,9 +114,11 @@ def calculate_cagr(final_amount, start_amount, years):
     return networth_cagr
 
 
-def fetch_networth_x(user, amount):
-    YEARS = 3
-    x = avg_expense = 0
+def cal_avg_expense(user, *, YEARS=3):
+    """
+    Returns yearly average expense
+    """
+    avg_expense = 0
     now = get_ist_datetime()
     expense_months = user.expenses.exclude(amount=0)\
                         .exclude(timestamp__year__gte=now.year, timestamp__month__gte=now.month)\
@@ -128,10 +130,16 @@ def fetch_networth_x(user, amount):
         expense_sum += aggregate_sum(expense)
     
     avg_expense = int(expense_sum / (months / 12))
-    with suppress(ZeroDivisionError):
-        x = round(amount / avg_expense, 1)
-    
-    Result = namedtuple("Result", "x avg_expense")
-    return Result(x, avg_expense)
+    return avg_expense
+
+
+def cal_networth_x(amount, yearly_expense):
+    if amount > 0:
+        try:
+            return round(amount / yearly_expense, 1)
+        except ZeroDivisionError:
+            pass
+    return 0
+
 
 

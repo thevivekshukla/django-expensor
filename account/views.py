@@ -28,7 +28,8 @@ from utils.helpers import (
     get_client_ip,
     get_paginator_object,
     calculate_cagr,
-    fetch_networth_x,
+    cal_avg_expense,
+    cal_networth_x,
 )
 
 # Create your views here.
@@ -136,8 +137,9 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         networths = user.net_worth.order_by('-date')
         networth = networths.first()
         
-        if networth and networth.amount > 0:
-            x, avg_expense = fetch_networth_x(user, networth.amount)
+        if networth:
+            avg_expense = cal_avg_expense(user)
+            x = cal_networth_x(networth.amount, avg_expense)
         else:
             x = avg_expense = 0
         
@@ -335,7 +337,7 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
             start = history.last()
             years = (final.date - start.date).days / 365
             history_cagr = calculate_cagr(final.amount, start.amount, years)
-            x , _ = fetch_networth_x(request.user, final.amount)
+            x = cal_networth_x(final.amount, cal_avg_expense(request.user))
         else:
             history_cagr = x = 0
         
