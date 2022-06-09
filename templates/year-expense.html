@@ -32,8 +32,9 @@
         <span class="float-right">{{ object.monthly_average|intcomma }}</span>
       </td>
 
-      <td class="active">
-          <span class="float-right" data-toggle="tooltip" title="Year's EIR: {{ object.year_eir }}%<br> All Time EIR: {{ object.eir }}%<br> Expense Ratio: {{ object.expense_ratio }}%">
+      <td>
+          <span class="float-right" style="font-weight: 450;" data-toggle="tooltip"
+            title="Year's EIR: {{ object.year_eir }}%<br> All Time EIR: {{ object.eir }}%<br> Expense Ratio: {{ object.expense_ratio }}%">
             {{ object.amount|intcomma }}
           </span>
       </td>

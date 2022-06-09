@@ -11,7 +11,12 @@
 
 {% if objects %}
 
-  <a class="btn btn-primary btn-xs" href="{% url 'income:source-wise' %}?source={{ request.GET.source }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}">See by Sources</a>
+  <div style="float:right;">
+    <a class="btn btn-primary btn-xs"
+      href="{% url 'income:source-wise' %}?source={{ request.GET.source }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}"
+    >See by Sources</a>
+    <br><br>
+  </div>
 
   <table class="table table-striped">
     
