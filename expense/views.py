@@ -341,13 +341,18 @@ class DateSearch(LoginRequiredMixin, View):
         context = dict()
         date_str = ""
         from_date_str = to_date_str = None
-        form = self.form_class(request.GET or None)
+        objects = Expense.objects.all(user=request.user)
+        
+        initial = dict()
+        first_expense = objects.exclude(amount=0).order_by('timestamp', 'created_at').first()
+        if first_expense:
+            initial['from_date'] = default_date_format(first_expense.timestamp)
+        form = self.form_class(request.GET or None, initial=initial)
 
         if form.is_valid():
             remark = form.cleaned_data.get('remark', '').strip()
             from_date = form.cleaned_data.get('from_date')
             to_date = form.cleaned_data.get('to_date')
-            objects = Expense.objects.all(user=request.user)
             
             if from_date and to_date:
                 objects = objects.filter(timestamp__range=(from_date, to_date))

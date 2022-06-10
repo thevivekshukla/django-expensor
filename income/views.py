@@ -459,13 +459,18 @@ class IncomeDateSearch(LoginRequiredMixin, View):
         context = dict()
         date_str = ""
         from_date_str = to_date_str = None
-        form = self.form_class(request.GET or None)
+        objects = Income.objects.filter(user=request.user)
+        
+        initial = dict()
+        first_income = objects.exclude(amount=0).order_by('timestamp', 'created_at').first()
+        if first_income:
+            initial['from_date'] = default_date_format(first_income.timestamp)
+        form = self.form_class(request.GET or None, initial=initial)
 
         if form.is_valid():
             source = form.cleaned_data.get('source').strip()
             from_date = form.cleaned_data.get('from_date')
             to_date = form.cleaned_data.get('to_date')
-            objects = Income.objects.filter(user=request.user)
 
             if from_date and to_date:
                 objects = objects.filter(timestamp__range=(from_date, to_date))
