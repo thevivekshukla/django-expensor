@@ -15,6 +15,7 @@
 
   <thead>
     <tr>
+      <th>S. No.</th>
       <th>Source</th>
       <th><span class="float-right">Total Amount</span></th>
     </tr>
@@ -22,6 +23,8 @@
 
   {% for row in sources %}
     <tr>
+
+      <td>{{ forloop.counter }}.</td>
 
       <td>
         <a class="black-text" 
