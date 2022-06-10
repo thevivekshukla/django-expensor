@@ -37,7 +37,7 @@
 
         <td>
           <a href="{% url 'expense:goto_expense' year=object.date.year month=object.date.month %}">
-            {{ object.date|date:"F, Y" }}
+            {{ object.date|date:"M, Y" }}
           </a>
           {% comment %} (<a href="{% url 'expense:day-wise-expense' %}?year={{ object.date.year }}&month={{ object.date.month }}">day</a> |
             <a href="{% url 'expense:remark_monthly_expense' year=object.date.year month=object.date.month %}">remark</a>) {% endcomment %}
