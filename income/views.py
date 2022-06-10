@@ -648,17 +648,21 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             return max(statistics.mean(amounts), *amounts[:2])
         return 0
 
+    def get_income(self):
+        try:
+            return int(self.request.GET['income'].replace(',', ''))
+        except (ValueError, KeyError):
+            return None
+
     def get(self, request, *args, **kwargs):
         user = request.user
         initial_data = {}
         message = ""
         defaults_message = []
         
-        try:
-            income = int(request.GET.get('income'))
+        income = self.get_income()
+        if income:
             defaults_message.append(f'Income: {income:,}')
-        except (ValueError, TypeError):
-            income = None
         
         today = helpers.get_ist_datetime().date()
         month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
@@ -741,8 +745,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
         context['form'] = form
         context['inv_form'] = inv_form
-        with suppress(ValueError, TypeError):
-            context['income'] = int(request.GET.get('income'))
+        context['income'] = self.get_income()
         
         return render(request, self.template_name, context)
 
