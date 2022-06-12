@@ -432,9 +432,11 @@ class SourceWiseIncome(LoginRequiredMixin, View):
 
         source_data = []
         for source in sources:
-            amount = aggregate_sum(objects.filter(source=source))
+            source_filter = objects.filter(source=source)
+            amount = aggregate_sum(source_filter)
             source_data.append({
                 'source': source,
+                'source_count': source_filter.count(),
                 'amount': amount,
             })
 

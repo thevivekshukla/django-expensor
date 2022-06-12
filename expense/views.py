@@ -508,11 +508,13 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
 
         remark_data = []
         for remark in remarks:
-            amount = aggregate_sum(objects.filter(remark=remark))
+            remark_filter = objects.filter(remark=remark)
+            amount = aggregate_sum(remark_filter)
             expense_ratio = helpers.calculate_ratio(amount, expense_sum)
             expense_to_income_ratio = helpers.calculate_ratio(amount, income_sum)
             remark_data.append({
                 'remark': remark,
+                'remark_count': remark_filter.count(),
                 'amount': amount,
                 'eir': expense_to_income_ratio,
                 'expense_ratio': expense_ratio,
