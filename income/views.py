@@ -360,6 +360,7 @@ class GoToIncome(LoginRequiredMixin, View):
             "title": f"Income: {date_str}",
             "objects": incomes,
             "total": aggregate_sum(incomes),
+            "count": incomes.count(),
             "year": year,
             "month": month,
             "from_date": from_date,
@@ -446,6 +447,7 @@ class SourceWiseIncome(LoginRequiredMixin, View):
             "title": f"Source-Wise Income{date_str}",
             "sources": source_data,
             "total": income_sum,
+            "count": len(source_data),
             "from_date": from_date,
             "to_date": to_date,
         }
@@ -491,6 +493,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
                 objects = objects.filter(source__name=source)
 
             total = aggregate_sum(objects)
+            count = objects.count()
             try:
                 days = (to_date - from_date).days
                 months = days / AVG_MONTH_DAYS
@@ -501,6 +504,7 @@ class IncomeDateSearch(LoginRequiredMixin, View):
 
             context['objects'] = helpers.get_paginator_object(request, objects, 15)
             context['total'] = total
+            context['count'] = count
 
         context['title'] = f'Income Search{date_str}'
         context['form'] = form

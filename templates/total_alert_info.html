@@ -7,5 +7,10 @@
     {% if monthly_average %}
       <h4>Monthly Average: {{ monthly_average|intcomma }}</h4>
     {% endif %}
+    
+    {% if count %}
+      <h6 style="float:right;">Count: {{ count|intcomma }}</h6>
+      <br>
+    {% endif %}
   </div>
 {% endif %}

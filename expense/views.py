@@ -371,6 +371,7 @@ class DateSearch(LoginRequiredMixin, View):
                 objects = helpers.search_expense_remark(objects, remark)
 
             total = aggregate_sum(objects)
+            count = objects.count()
             try:
                 days = (to_date - from_date).days
                 months = days / AVG_MONTH_DAYS
@@ -381,6 +382,7 @@ class DateSearch(LoginRequiredMixin, View):
 
             context['objects'] = helpers.get_paginator_object(request, objects, 30)
             context['total'] = total
+            context['count'] = count
 
         context['title'] = f'Expense Search{date_str}'
         context['form'] = form
@@ -429,12 +431,14 @@ class GoToExpense(LoginRequiredMixin, View):
             to_date = default_date_format(date(year, 12, 31))
 
         total = objects.aggregate(Sum('amount'))['amount__sum'] or 0
+        count = objects.count()
         objects = helpers.get_paginator_object(request, objects, 50)
 
         context = {
             "title": f"Expenses{date_str}",
             "objects": objects,
             "total": total,
+            "count": count,
             "remark_url": reverse(f'expense:{remark_url_name}',
                             kwargs={k:int(v) for k, v in kwargs.items()}),
             "daywise_url": daywise_url,
@@ -526,6 +530,7 @@ class GoToRemarkWiseExpense(LoginRequiredMixin, View):
             "title": f"Remark-Wise Expenses{date_str}",
             "remarks": remark_data,
             "total": expense_sum,
+            "count": len(remark_data),
             "from_date": from_date,
             "to_date": to_date,
         }
