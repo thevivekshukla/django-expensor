@@ -121,8 +121,16 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
     
     latest_month = today.replace(day=1) - timedelta(days=1)
     latest_month = latest_month.replace(day=1)
-    first_month = user.expenses.dates('timestamp', 'month', order='ASC').first() or latest_month
+    first_month = latest_month.replace(year=latest_month.year - YEARS, day=28)
+    first_month = (first_month + timedelta(days=7)).replace(day=1)
     
+    first_expense = user.expenses.dates('timestamp', 'month', order='ASC').first()
+    if first_expense:
+        if first_expense > first_month:
+            first_month = first_expense
+    else:
+        first_month = latest_month
+
     months = get_dates_list(first_month, latest_month, day=1)
     year, _ = divmod(min(len(months), YEARS * 12), 12)
     year_expenses = []
