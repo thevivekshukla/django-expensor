@@ -121,12 +121,17 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
     expense_months = user.expenses.exclude(amount=0)\
                         .exclude(timestamp__year__gte=now.year, timestamp__month__gte=now.month)\
                         .dates('timestamp', 'month', order='DESC')
-    expenses = []
-    for dt in expense_months[:YEARS * 12]:
-        expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
-        expenses.append(aggregate_sum(expense))
+    year, _ = divmod(min(expense_months.count(), YEARS*12), 12)
 
-    if not expenses:
+    year_expenses = []
+    for i in range(0, year):
+        expenses = 0
+        for dt in expense_months[i*12:(i+1)*12]:
+            expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
+            expenses += aggregate_sum(expense)
+        year_expenses.append(expenses)
+
+    if not year_expenses:
         return 0
     
     if method == "mean":
@@ -140,7 +145,7 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
     else:
         raise ValueError("Invalid value provided for 'method' kwarg")
 
-    return int(method_func(expenses) * 12)
+    return int(method_func(year_expenses))
 
 
 def cal_networth_x(amount, yearly_expense):
