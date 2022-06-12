@@ -117,12 +117,9 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
     """
     Returns yearly average expense
     """
-    today = get_ist_datetime().date()
-    
-    latest_month = today.replace(day=1) - timedelta(days=1)
-    latest_month = latest_month.replace(day=1)
-    first_month = latest_month.replace(year=latest_month.year - YEARS, day=28)
-    first_month = (first_month + timedelta(days=7)).replace(day=1)
+    this_month = get_ist_datetime().date().replace(day=1)
+    first_month = this_month.replace(year=this_month.year - YEARS)
+    latest_month = (this_month - timedelta(days=1)).replace(day=1)
     
     first_expense = user.expenses.dates('timestamp', 'month', order='ASC').first()
     if first_expense:
