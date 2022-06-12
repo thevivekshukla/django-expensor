@@ -13,7 +13,9 @@
             <h1>
                 {{ networth.amount|intcomma }}
                 {% if x > 0 %}
+                <a href="{% url 'account:networth-x' %}">
                     <span style="font-size:.35em;">({{ x }}X)</span>
+                </a>
                 {% endif %}
             </h1>
         </a>

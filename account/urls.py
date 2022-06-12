@@ -14,6 +14,7 @@ urlpatterns = [
         re_path(r'^change-password/$', views.ChangePassword.as_view(), name='change-password'),
         
         re_path(r'^net-worth/$', views.NetWorthDashboard.as_view(), name='networth-dashboard'),
+        re_path(r'^net-worth/x/$', views.NetworthXView.as_view(), name='networth-x'),
         re_path(r'^net-worth/history/$', views.NetWorthHistoryView.as_view(), name='networth-history'),
         re_path(r'^net-worth/accounts/$', views.AccountNameListView.as_view(), name='account-name-list'),
         re_path(r'^net-worth/accounts/create/$', views.AccountNameCreateView.as_view(), name='account-name-create'),

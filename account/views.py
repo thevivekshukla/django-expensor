@@ -174,6 +174,29 @@ class NetWorthDashboard(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+class NetworthXView(LoginRequiredMixin, View):
+    template_name = "networth_x.html"
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        networths = user.net_worth.order_by('-date')
+        networth = networths.first()
+        data = []
+        for method in ["mean", "median", "max", "min"]:
+            avg_expense = cal_avg_expense(user, method=method)
+            data.append({
+                'method': method,
+                'avg_expense': avg_expense,
+                'x': cal_networth_x(networth.amount, avg_expense),
+            })
+            
+        context = {
+            'title': 'Networth X',
+            'data': data,
+        }
+        return render(request, self.template_name, context)
+
+
 class NetWorthHistoryView(LoginRequiredMixin, View):
     template_name = "networth_history.html"
     
