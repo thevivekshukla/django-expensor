@@ -162,7 +162,8 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
 def cal_networth_x(amount, yearly_expense):
     if amount > 0:
         try:
-            return round(amount / yearly_expense, 2)
+            x = amount / yearly_expense
+            return round(x, 1) if x >= 1 else round(x, 2)
         except ZeroDivisionError:
             pass
     return 0
