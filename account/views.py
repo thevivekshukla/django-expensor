@@ -179,20 +179,26 @@ class NetworthXView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        networths = user.net_worth.order_by('-date')
-        networth = networths.first()
+        try:
+            networth_amount = int(request.GET['amount'].replace(',', ''))
+        except (ValueError, KeyError):
+            networths = user.net_worth.order_by('-date')
+            networth = networths.first()
+            networth_amount = networth.amount
+        
         data = []
         for method in ["mean", "median", "max", "min"]:
             avg_expense = cal_avg_expense(user, method=method)
             data.append({
                 'method': method,
                 'avg_expense': avg_expense,
-                'x': cal_networth_x(networth.amount, avg_expense),
+                'x': cal_networth_x(networth_amount, avg_expense),
             })
             
         context = {
             'title': 'Networth X',
             'data': data,
+            'networth_amount': networth_amount,
         }
         return render(request, self.template_name, context)
 
@@ -354,13 +360,15 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
         pk = kwargs.get('pk')
         instance = AccountName.objects.get(id=pk)
         history = instance.amounts.all().order_by('-date')
+        latest_amount = None
         
         if instance.type == 1 and history.exists():
-            final = history.first()
+            latest = history.first()
             start = history.last()
-            years = (final.date - start.date).days / 365
-            history_cagr = calculate_cagr(final.amount, start.amount, years)
-            x = cal_networth_x(final.amount, cal_avg_expense(request.user))
+            years = (latest.date - start.date).days / 365
+            latest_amount = latest.amount
+            history_cagr = calculate_cagr(latest_amount, start.amount, years)
+            x = cal_networth_x(latest_amount, cal_avg_expense(request.user))
         else:
             history_cagr = x = 0
         
@@ -369,6 +377,7 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
             'title': f'{instance.name} ({instance.get_type_display()})',
             'objects': objects,
             'is_paginated': True,
+            'latest_amount': latest_amount,
             'history_cagr': history_cagr,
             'x': x,
         }

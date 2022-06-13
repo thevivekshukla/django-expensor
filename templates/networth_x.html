@@ -8,6 +8,13 @@
 <div class="col-md-6 col-md-offset-3">
 
 {% if data %}
+
+  <center>
+    <h2 {% if networth_amount > 0 %}class="green-text"{% else %}class="red-text"{% endif %}>
+      {{ networth_amount|intcomma }}
+    </h2>
+  </center>
+  <hr>
   
   <table class="table table-bordered table-hover">
 
@@ -15,10 +22,10 @@
       <tr>
         <th class="active">Method</th>
         <th class="active">
-          <span class="float-right">Yearly Avg Expense</span>
+          <span class="float-right">Yearly Expense</span>
         </th>
         <th class="active">
-          <span class="float-right">Monthly Avg Expense</span>
+          <span class="float-right">Monthly Expense</span>
         </th>
         <th class="active">
           <span class="float-right">X</span>

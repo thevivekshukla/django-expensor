@@ -24,7 +24,9 @@
 
           <td>
             {% if x %}
+            <a class="black-text" href="{% if latest_amount %}{% url 'account:networth-x' %}?amount={{ latest_amount }}{% endif %}">
               <strong style="float:right;"><span class="green-text">{{ x }}</span>X</strong>
+            </a>
             {% endif %}
           </td>
         </tr>
