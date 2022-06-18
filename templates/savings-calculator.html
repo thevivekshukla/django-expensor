@@ -19,7 +19,7 @@
         margin-left: -15px;
     }
     
-    #bank_amount, #month_income {
+    .amount, #bank_amount {
         border-bottom: 1px dotted #000;
         text-decoration: none;
         cursor: pointer;
@@ -168,14 +168,14 @@
 
     $(document).ready(function() {
 
-        $("#month_income").on("click", function() {
-            let month_income = $(this).html();
-            let income = parseInt( month_income.replace(/,/g, '') );
+        $(".amount").on("click", function() {
+            let amount = $(this).html();
+            let income = parseInt( amount.replace(/,/g, '') );
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() );
             if ( !isNaN(bank_amount_pct) ) {
                 $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
-                $("#bank_amount").html(month_income);
+                $("#bank_amount").html(amount);
             }
         });
 
