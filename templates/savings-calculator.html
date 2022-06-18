@@ -151,8 +151,8 @@
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
 
-            <a class="btn btn-primary" href="?{% for k, v in request.GET.items %}&{{ k }}={{ v }}{% endfor %}"><i class="fas fa-redo"></i></a>
-            <a style="float:right;" class="btn btn-primary" href="{% url 'income:savings-calculation-detail' %}"><i class="fas fa-cog"></i></a>
+            <a class="btn btn-primary btn-sm" href="?{% for k, v in request.GET.items %}&{{ k }}={{ v }}{% endfor %}"><i class="fas fa-redo"></i> Refresh</a>
+            <a style="float:right;" class="btn btn-primary btn-sm" href="{% url 'income:savings-calculation-detail' %}"><i class="fas fa-cog"></i> Settings</a>
         </form>
     </div>
 
