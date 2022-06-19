@@ -6,6 +6,10 @@
   text-transform: lowercase;
 }
 
+.darker-text {
+  font-weight: 450;
+}
+
 .black-text {
   color: black;
 }
