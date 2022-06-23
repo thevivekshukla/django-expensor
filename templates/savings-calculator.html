@@ -73,7 +73,7 @@
                     </h3>
                 </div>
 
-                <div class="panel-body">
+                <div class="panel-body" style="padding-bottom:0px;">
                     <ul class="defaults_message">
                         {% for dm in defaults_message %}
                             <li style="padding: 2px 0px;">{{ dm|safe }}</li>
@@ -94,7 +94,7 @@
                         </a>
                     </h4>
                 </div>
-                <div id="rule" class="panel-collapse collapse {% if not data %}in{% endif %}" role="tabpanel" aria-labelledby="headingRule">
+                <div id="rule" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRule">
                     <div class="panel-body" style="padding-bottom:0px;">
                         <table class="table">
                             <tr>
