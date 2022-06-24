@@ -45,13 +45,13 @@
     {% endfor %}
 
   </table>
-  <br>
+  <br><br>
   
-  <a style="float:left;" href="{% url 'income:investment-entity-create' %}" class="btn btn-primary">Add New</a>
+  <a style="float:left;" href="{% url 'income:investment-entity-create' %}" class="btn btn-primary btn-sm">Add New</a>
 
   <div style="float:right;">
-    <a class="btn btn-primary" href="{% url 'income:savings-calculation-detail' %}"><i class="fas fa-cog"></i> Settings</a>
-    <a class="btn btn-primary" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Calculator</a>
+    <a class="btn btn-primary btn-sm" href="{% url 'income:savings-calculation-detail' %}"><i class="fas fa-cog"></i> Settings</a>
+    <a class="btn btn-primary btn-sm" href="{% url 'income:savings-calculator' %}"><i class='fas fa-calculator'></i> Calculator</a>
   </div>
 
 <div class="col-md-1 col-lg-1"></div>
