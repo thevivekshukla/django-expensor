@@ -84,6 +84,24 @@
         {% endif %}
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        
+            {% if message %}
+            <div class="panel panel-primary panel-white-bg">
+                <div class="panel-heading" role="tab" id="headingMessage">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
+                            <div class="black-text"><i class="far fa-envelope"></i> Message</div>
+                        </a>
+                    </h4>
+                </div>
+                <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
+                    <div class="panel-body">
+                        <p>{{ message|safe|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            {% endif %}
 
             {% if income %}
             <div class="panel panel-primary panel-white-bg">
@@ -110,24 +128,6 @@
                                 <td class="darker-text"><i class="fas fa-chart-line gold-text"></i> {% multiply income 0.20 0 100 %}</td>
                             </tr>
                         </table>
-                    </div>
-                </div>
-            </div>
-            <br>
-            {% endif %}
-        
-            {% if message %}
-            <div class="panel panel-primary panel-white-bg">
-                <div class="panel-heading" role="tab" id="headingMessage">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
-                            <div class="black-text"><i class="far fa-envelope"></i> Message</div>
-                        </a>
-                    </h4>
-                </div>
-                <div id="message" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMessage">
-                    <div class="panel-body">
-                        <p>{{ message|safe|linebreaks }}</p>
                     </div>
                 </div>
             </div>
