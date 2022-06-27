@@ -27,7 +27,6 @@
 
     .nwi_rule {
         cursor: pointer;
-        color: green;
     }
 </style>
 {% endblock head %}
@@ -191,10 +190,13 @@
             $("#bank_amount_pct").html(100);
         });
 
+        function appendTick(event) {
+            event.target.append(" ✅");
+            event.target.classList.remove('nwi_rule');
+            event.target.removeEventListener('click', appendTick);
+        }
         Array.from(document.getElementsByClassName("nwi_rule")).forEach(function(element) {
-            element.addEventListener('click', function onClick(event) {
-                event.target.style.color = 'black';
-            });
+            element.addEventListener('click', appendTick);
         });
 
     });
