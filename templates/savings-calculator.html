@@ -24,6 +24,11 @@
         text-decoration: none;
         cursor: pointer;
     }
+
+    .nwi_rule {
+        cursor: pointer;
+        color: green;
+    }
 </style>
 {% endblock head %}
 
@@ -117,15 +122,15 @@
                         <table class="table">
                             <tr>
                                 <td style="border:none;"><strong>Needs</strong></td>
-                                <td class="darker-text" style="border:none;"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
+                                <td class="darker-text nwi_rule" style="border:none;"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
                             </tr>
                             <tr>
                                 <td><strong>Wants</strong></td>
-                                <td class="darker-text"><i class="fas fa-umbrella-beach gold-text"></i> {% multiply income 0.30 0 100 %}</td>
+                                <td class="darker-text nwi_rule"><i class="fas fa-umbrella-beach gold-text"></i> {% multiply income 0.30 0 100 %}</td>
                             </tr>
                             <tr>
                                 <td><strong>Invest</strong></td>
-                                <td class="darker-text"><i class="fas fa-chart-line gold-text"></i> {% multiply income 0.20 0 100 %}</td>
+                                <td class="darker-text nwi_rule"><i class="fas fa-chart-line gold-text"></i> {% multiply income 0.20 0 100 %}</td>
                             </tr>
                         </table>
                     </div>
@@ -184,6 +189,12 @@
             let amount = parseInt( bank_amount.replace(/,/g, '') );
             $("#id_amount_to_keep_in_bank").val(amount);
             $("#bank_amount_pct").html(100);
+        });
+
+        Array.from(document.getElementsByClassName("nwi_rule")).forEach(function(element) {
+            element.addEventListener('click', function onClick(event) {
+                event.target.style.color = 'black';
+            });
         });
 
     });
