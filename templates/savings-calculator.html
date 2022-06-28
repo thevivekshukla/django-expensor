@@ -25,7 +25,7 @@
         cursor: pointer;
     }
 
-    .nwi_rule {
+    .checked_amount {
         cursor: pointer;
     }
 </style>
@@ -42,7 +42,7 @@
                 <table class="table borderless-table">
                     <tr>
                         <td><strong><i class="fas fa-piggy-bank"></i> Savings</strong></td>
-                        <td><strong>{{ data.savings|intcomma }}</strong></td>
+                        <td class="checked_amount"><strong>{{ data.savings|intcomma }}</strong></td>
                     </tr>
 
                     {% if data.investment.items  %}
@@ -55,7 +55,7 @@
                     {% for inv_name, inv_amount in data.investment.items %}
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{ inv_name }}</td>
-                            <td>{{ inv_amount|intcomma }}</td>
+                            <td class="checked_amount">{{ inv_amount|intcomma }}</td>
                         </tr>
                     {% endfor %}
 
@@ -121,15 +121,15 @@
                         <table class="table">
                             <tr>
                                 <td style="border:none;"><strong>Needs</strong></td>
-                                <td class="darker-text nwi_rule" style="border:none;"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
+                                <td class="darker-text checked_amount" style="border:none;"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
                             </tr>
                             <tr>
                                 <td><strong>Wants</strong></td>
-                                <td class="darker-text nwi_rule"><i class="fas fa-umbrella-beach gold-text"></i> {% multiply income 0.30 0 100 %}</td>
+                                <td class="darker-text checked_amount"><i class="fas fa-umbrella-beach gold-text"></i> {% multiply income 0.30 0 100 %}</td>
                             </tr>
                             <tr>
                                 <td><strong>Invest</strong></td>
-                                <td class="darker-text nwi_rule"><i class="fas fa-chart-line gold-text"></i> {% multiply income 0.20 0 100 %}</td>
+                                <td class="darker-text checked_amount"><i class="fas fa-chart-line gold-text"></i> {% multiply income 0.20 0 100 %}</td>
                             </tr>
                         </table>
                     </div>
@@ -192,10 +192,10 @@
 
         function appendTick(event) {
             event.target.append(" ✅");
-            event.target.classList.remove('nwi_rule');
+            event.target.classList.remove('checked_amount');
             event.target.removeEventListener('click', appendTick);
         }
-        Array.from(document.getElementsByClassName("nwi_rule")).forEach(function(element) {
+        Array.from(document.getElementsByClassName("checked_amount")).forEach(function(element) {
             element.addEventListener('click', appendTick);
         });
 
