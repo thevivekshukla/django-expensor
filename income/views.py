@@ -634,6 +634,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         'title': 'Savings Calculator',
     }
 
+    def dispatch(self, request, *args, **kwargs):
+        self.defaults_message = []
+        return super().dispatch(request, *args, **kwargs)
+
     def return_in_multiples(self, amount):
         user = self.request.user
         try:
@@ -648,6 +652,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
     def gen_bank_amount(self):
         avg_expense = helpers.cal_avg_expense(self.request.user, method='mean')
         if avg_expense:
+            self.defaults_message.append("Amount to keep in bank is equivalent of 3 months expenses.")
             return int(avg_expense / 4)
         else:
             MONTHS = 3
@@ -660,7 +665,13 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 amounts.append(aggregate_sum(month_income))
                 
             if amounts:
-                return max(statistics.mean(amounts), *amounts[:2])
+                bank_amount = max(statistics.mean(amounts), *amounts[:2])
+                self.defaults_message.append(
+                    f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>%'
+                    f' of <span id="bank_amount">{bank_amount:,}</span>'
+                )
+                return bank_amount * BANK_AMOUNT_PCT
+            
             return 0
 
     def get_income(self):
@@ -673,16 +684,15 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         user = request.user
         initial_data = {}
         message = ""
-        defaults_message = []
         
         income = self.get_income()
         if income:
-            defaults_message.append(f'Income: <span class="amount">{income:,}</span>')
+            self.defaults_message.append(f'Income: <span class="amount">{income:,}</span>')
         
         today = helpers.get_ist_datetime().date()
         month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
         month_income_sum = aggregate_sum(month_income)
-        defaults_message.append(f'This month\'s total income: <span class="amount">{month_income_sum:,}</span>')
+        self.defaults_message.append(f'This month\'s total income: <span class="amount">{month_income_sum:,}</span>')
 
         try:
             savings = user.saving_calculation
@@ -695,12 +705,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT)
-                # initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * BANK_AMOUNT_PCT)
-                # defaults_message.append(f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>% of <span id="bank_amount">{BANK_AMOUNT:,}</span>')
 
             if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount and income:
                 initial_data['savings_fixed_amount'] = self.return_in_multiples(income * FIXED_SAVINGS_PCT)
-                defaults_message.append(f"Savings fixed amount is {int(FIXED_SAVINGS_PCT*100)}% of {income:,}")
+                self.defaults_message.append(f"Savings fixed amount is {int(FIXED_SAVINGS_PCT*100)}% of {income:,}")
 
         except SavingCalculation.DoesNotExist:
             pass
@@ -709,7 +717,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         context['form'] = self.form_class(initial=initial_data)
         context['inv_form'] = self.inv_form_class(user=user)
         context['message'] = message
-        context['defaults_message'] = defaults_message
+        context['defaults_message'] = self.defaults_message
         context['income'] = income
         return render(request, self.template_name, context)
     
