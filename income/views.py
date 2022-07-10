@@ -646,18 +646,22 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        MONTHS = 3
-        amounts = []
-        incomes = self.request.user.incomes.exclude(amount=0)
-        income_dates = incomes.dates('timestamp', 'month', order='DESC')
-        
-        for dt in income_dates[:MONTHS]:
-            month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
-            amounts.append(aggregate_sum(month_income))
+        avg_expense = helpers.cal_avg_expense(self.request.user, method='mean')
+        if avg_expense:
+            return int(avg_expense / 4)
+        else:
+            MONTHS = 3
+            amounts = []
+            incomes = self.request.user.incomes.exclude(amount=0)
+            income_dates = incomes.dates('timestamp', 'month', order='DESC')
             
-        if amounts:
-            return max(statistics.mean(amounts), *amounts[:2])
-        return 0
+            for dt in income_dates[:MONTHS]:
+                month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
+                amounts.append(aggregate_sum(month_income))
+                
+            if amounts:
+                return max(statistics.mean(amounts), *amounts[:2])
+            return 0
 
     def get_income(self):
         try:
@@ -691,7 +695,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
             if not savings.amount_to_keep_in_bank and savings.auto_fill_amount_to_keep_in_bank:
                 initial_data['amount_to_keep_in_bank'] = self.return_in_multiples(BANK_AMOUNT * BANK_AMOUNT_PCT)
-                defaults_message.append(f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>% of <span id="bank_amount">{BANK_AMOUNT:,}</span>')
+                # defaults_message.append(f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>% of <span id="bank_amount">{BANK_AMOUNT:,}</span>')
 
             if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount and income:
                 initial_data['savings_fixed_amount'] = self.return_in_multiples(income * FIXED_SAVINGS_PCT)
