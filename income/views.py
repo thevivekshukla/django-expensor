@@ -650,7 +650,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        avg_expense = helpers.cal_avg_expense(self.request.user, method='mean')
+        avg_expense = helpers.cal_avg_expense(self.request.user, method='median')
         if avg_expense:
             self.defaults_message.append("Amount to keep in bank is equivalent of 3 months expense.")
             return int(avg_expense / 4)
