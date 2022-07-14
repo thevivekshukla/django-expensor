@@ -69,32 +69,36 @@
             </div>
         {% endif %}
 
-        {% if defaults_message %}
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    <h3 class="panel-title black-text">
-                        <i class="far fa-bell"></i> Notifications
-                    </h3>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+            {% if defaults_message %}
+            <div class="panel panel-primary panel-white-bg">
+                <div class="panel-heading" role="tab" id="headingNotifications">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#notifications" aria-expanded="false">
+                            <div class="black-text"><i class="far fa-bell gold-text"></i> &nbsp;Notifications</div>
+                        </a>
+                    </h4>
                 </div>
 
-                <div class="panel-body" style="padding-bottom:0px;">
-                    <ul class="defaults_message">
-                        {% for dm in defaults_message %}
-                            <li style="padding: 2px 0px;">{{ dm|safe }}</li>
-                        {% endfor %}
-                    </ul>
+                <div id="notifications" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNotifications">
+                    <div class="panel-body" style="padding-bottom:0px;">
+                        <ul class="defaults_message">
+                            {% for dm in defaults_message %}
+                                <li style="padding: 2px 0px;">{{ dm|safe }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        {% endif %}
-
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% endif %}
         
             {% if message %}
             <div class="panel panel-primary panel-white-bg">
                 <div class="panel-heading" role="tab" id="headingMessage">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#message" aria-expanded="false">
-                            <div class="black-text"><i class="far fa-envelope"></i> &nbsp;Message</div>
+                            <div class="black-text"><i class="far fa-envelope gold-text"></i> &nbsp;Message</div>
                         </a>
                     </h4>
                 </div>
