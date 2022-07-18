@@ -650,29 +650,24 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         return final_amount
 
     def gen_bank_amount(self):
-        avg_expense = helpers.cal_avg_expense(self.request.user, method='median')
-        if avg_expense:
-            self.defaults_message.append("Amount to keep in bank is equivalent of 3 months expense.")
-            return int(avg_expense / 4)
-        else:
-            MONTHS = 3
-            amounts = []
-            incomes = self.request.user.incomes.exclude(amount=0)
-            income_dates = incomes.dates('timestamp', 'month', order='DESC')
+        MONTHS = 3
+        amounts = []
+        incomes = self.request.user.incomes.exclude(amount=0)
+        income_dates = incomes.dates('timestamp', 'month', order='DESC')
+        
+        for dt in income_dates[:MONTHS]:
+            month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
+            amounts.append(aggregate_sum(month_income))
             
-            for dt in income_dates[:MONTHS]:
-                month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
-                amounts.append(aggregate_sum(month_income))
-                
-            if amounts:
-                bank_amount = max(statistics.mean(amounts), *amounts[:2])
-                self.defaults_message.append(
-                    f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>%'
-                    f' of <span id="bank_amount">{bank_amount:,}</span>'
-                )
-                return bank_amount * BANK_AMOUNT_PCT
-            
-            return 0
+        if amounts:
+            bank_amount = max(statistics.mean(amounts), *amounts[:2])
+            self.defaults_message.append(
+                f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>%'
+                f' of <span id="bank_amount">{bank_amount:,}</span>'
+            )
+            return bank_amount * BANK_AMOUNT_PCT
+        
+        return 0
 
     def get_income(self):
         try:
