@@ -660,7 +660,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             amounts.append(aggregate_sum(month_income))
             
         if amounts:
-            bank_amount = max(statistics.mean(amounts), *amounts[:2])
+            bank_amount = int(max(statistics.mean(amounts), *amounts[:2]))
             self.defaults_message.append(
                 f'Amount to keep in bank is <span id="bank_amount_pct">{int(BANK_AMOUNT_PCT*100)}</span>%'
                 f' of <span id="bank_amount">{bank_amount:,}</span>'
