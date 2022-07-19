@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import statistics
 import markdown
 from contextlib import suppress
@@ -43,6 +43,7 @@ from utils.constants import (
     BANK_AMOUNT_PCT,
     FIXED_SAVINGS_PCT,
     AVG_MONTH_DAYS,
+    SHOW_INCOME_CALCULATOR_HOUR,
 )
 # Create your views here.
 
@@ -677,6 +678,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        now = helpers.get_ist_datetime()
         initial_data = {}
         message = ""
         
@@ -684,8 +686,12 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         if income:
             self.defaults_message.append(f'Income: <span class="amount">{income:,}</span>')
         
-        today = helpers.get_ist_datetime().date()
-        month_income = user.incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
+        calculator_timedelta = now - timedelta(hours=SHOW_INCOME_CALCULATOR_HOUR)
+        recent_incomes = Income.objects.filter(created_at__gte=calculator_timedelta).exclude(amount=0)
+        if recent_incomes.count() > 1:
+            self.defaults_message.append(f'Recent Income: <span class="amount">{aggregate_sum(recent_incomes):,}</span>')
+        
+        month_income = user.incomes.filter(timestamp__year=now.year, timestamp__month=now.month)
         month_income_sum = aggregate_sum(month_income)
         self.defaults_message.append(f'This month\'s total income: <span class="amount">{month_income_sum:,}</span>')
 

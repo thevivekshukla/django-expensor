@@ -3,14 +3,18 @@ from datetime import timedelta
 from django import template
 
 from utils import helpers
+from utils.constants import SHOW_INCOME_CALCULATOR_HOUR
 
 register = template.Library()
 
 
 @register.filter(name='show_calculator')
 def show_calculator(income_object):
+    if income_object.amount == 0:
+        return False
     now = helpers.get_ist_datetime()
-    later_created_time = income_object.created_at + timedelta(hours=36)
+    later_created_time = income_object.created_at \
+                            + timedelta(hours=SHOW_INCOME_CALCULATOR_HOUR)
     if now < later_created_time:
         return True
     return False
