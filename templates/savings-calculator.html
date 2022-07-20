@@ -122,9 +122,13 @@
                 <div id="rule" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRule">
                     <div class="panel-body" style="padding-bottom:0px;">
                         <table class="table">
+                            <tr class="alert alert-info">
+                                <td><strong>Income</strong></td>
+                                <td class="darker-text"><i style="visibility:hidden;" class="fas fa-coins"></i> {{ income|intcomma }}</td>
+                            </tr>
                             <tr>
-                                <td style="border:none;"><strong>50 / Needs</strong></td>
-                                <td style="border:none;" class="darker-text checked_amount"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
+                                <td><strong>50 / Needs</strong></td>
+                                <td class="darker-text checked_amount"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
                             </tr>
                             <tr>
                                 <td><strong>30 / Wants</strong></td>
@@ -173,10 +177,15 @@
 {% block js %}
 <script type="text/javascript">
 
+    function copyText(text) {
+        navigator.clipboard.writeText(text);
+    }
+
     $(document).ready(function() {
 
         $(".amount").on("click", function() {
             let amount = $(this).html();
+            copyText(amount);
             let income = parseInt( amount.replace(/,/g, '') );
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() ) || 100;
@@ -188,6 +197,7 @@
 
         $("#bank_amount").on("click", function() {
             let bank_amount = $(this).html();
+            copyText(bank_amount);
             let amount = parseInt( bank_amount.replace(/,/g, '') );
             $("#id_amount_to_keep_in_bank").val(amount);
             $("#bank_amount_pct").html(100);
