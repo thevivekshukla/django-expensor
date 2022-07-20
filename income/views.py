@@ -688,7 +688,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         
         calculator_timedelta = now - timedelta(hours=SHOW_INCOME_CALCULATOR_HOUR)
         recent_incomes = Income.objects.filter(created_at__gte=calculator_timedelta).exclude(amount=0)
-        if recent_incomes.count() > 1:
+        if recent_incomes.count() > 1 or (not income and recent_incomes.exists()):
             self.defaults_message.append(f'Recent Income: <span class="amount">{aggregate_sum(recent_incomes):,}</span>')
         
         month_income = user.incomes.filter(timestamp__year=now.year, timestamp__month=now.month)
