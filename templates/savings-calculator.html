@@ -128,15 +128,15 @@
                             </tr>
                             <tr>
                                 <td><strong>50 / Needs</strong></td>
-                                <td class="darker-text checked_amount"><i class="fas fa-home gold-text"></i> {% multiply income 0.50 0 100 %}</td>
+                                <td class="darker-text"><i class="fas fa-home gold-text"></i> <span class="checked_amount">{% multiply income 0.50 0 100 %}</span></td>
                             </tr>
                             <tr>
                                 <td><strong>30 / Wants</strong></td>
-                                <td class="darker-text checked_amount"><i class="fas fa-umbrella-beach gold-text"></i> {% multiply income 0.30 0 100 %}</td>
+                                <td class="darker-text"><i class="fas fa-umbrella-beach gold-text"></i> <span class="checked_amount">{% multiply income 0.30 0 100 %}</span></td>
                             </tr>
                             <tr>
                                 <td><strong>20 / Invest</strong></td>
-                                <td class="darker-text checked_amount"><i class="fas fa-chart-line gold-text"></i> {% multiply income 0.20 0 100 %}</td>
+                                <td class="darker-text"><i class="fas fa-chart-line gold-text"></i> <span class="checked_amount">{% multiply income 0.20 0 100 %}</span></td>
                             </tr>
                         </table>
                     </div>
@@ -204,6 +204,7 @@
         });
 
         function appendTick(event) {
+            copyText(event.target.innerText);
             event.target.append(" ✅");
             event.target.classList.remove('checked_amount');
             event.target.removeEventListener('click', appendTick);
