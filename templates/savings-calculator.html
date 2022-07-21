@@ -33,6 +33,7 @@
 
 
 {% block body %}
+<div id="snackbar"></div>
 
 <div class="row">
 
@@ -179,6 +180,7 @@
 
     function copyText(text) {
         navigator.clipboard.writeText(text);
+        showSnackbar("Copied!", 1000);
     }
 
     $(document).ready(function() {

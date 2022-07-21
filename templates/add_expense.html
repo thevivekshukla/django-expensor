@@ -21,6 +21,8 @@
 
 {% block body %}
 
+<div id="snackbar"></div>
+
 <div class="row">
   <div class="col-md-5 col-md-offset-1">
 
@@ -210,11 +212,15 @@
           form[0].reset();
 
           $("#id_error").hide();
-          $("#id_success").show();
+          // $("#id_success").show();
 
+          /*
           setTimeout(function() {
             $("#id_success").hide();
           }, 5000);
+          */
+
+          showSnackbar("Expense added successfully.", 3000);
 
           // updating accordion if new expense is added and accordion is open
           if ( $("#basicInfoCollapsible.in").length == 1 ) {
