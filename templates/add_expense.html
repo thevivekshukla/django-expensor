@@ -35,7 +35,6 @@
     </form>
 
     <br>
-    <div id="id_success" class="alert alert-success" role="alert" style="display:none;">Expense added successfully.</div>
     <div id="id_error" class="alert alert-danger" role="alert" style="display:none;">Some error has occured. Failed to save.</div>
     <br>
 
@@ -212,14 +211,6 @@
           form[0].reset();
 
           $("#id_error").hide();
-          // $("#id_success").show();
-
-          /*
-          setTimeout(function() {
-            $("#id_success").hide();
-          }, 5000);
-          */
-
           showSnackbar("Expense added successfully.", 3000);
 
           // updating accordion if new expense is added and accordion is open
@@ -232,7 +223,6 @@
 
         },
         error: function(data) {
-          $("#id_success").hide();
           $("#id_error").show();
         }
       });
