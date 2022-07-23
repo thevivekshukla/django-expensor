@@ -183,6 +183,10 @@
 
     $(document).ready(function() {
 
+        $("#id_bank_balance").keyup(function() {
+            $("#hint_id_bank_balance").html( number_to_english($('#id_bank_balance').val()) )
+        });
+
         $(".amount").on("click", function() {
             let amount = $(this).html();
             let income = getNumber(amount);

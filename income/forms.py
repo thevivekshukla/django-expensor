@@ -91,7 +91,7 @@ class InvestmentEntityForm(forms.Form):
 class SavingCalculatorForm(forms.Form):
     common_amt_widget = forms.NumberInput(attrs={'placeholder': 'amount'})
 
-    bank_balance = forms.IntegerField(min_value=0, widget=common_amt_widget)
+    bank_balance = forms.IntegerField(min_value=0, widget=common_amt_widget, help_text=" ")
     amount_to_keep_in_bank = forms.IntegerField(min_value=0, widget=common_amt_widget)
     savings_fixed_amount = forms.IntegerField(initial=0, min_value=0, widget=common_amt_widget)
     savings_percentage = forms.IntegerField(initial=100, min_value=0, max_value=100,
