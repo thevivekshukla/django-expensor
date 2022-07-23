@@ -10,13 +10,13 @@
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
     
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-49676907-6"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ gtag }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'UA-49676907-6');
+      gtag('config', '{{ gtag }}');
     </script>
 
     <title>{{ title }}</title>
