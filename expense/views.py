@@ -14,7 +14,10 @@ from .models import Expense, Remark
 from income.models import SavingCalculation
 from utils import helpers
 from utils.helpers import aggregate_sum, default_date_format
-from utils.constants import BANK_AMOUNT_PCT, AVG_MONTH_DAYS
+from utils.constants import (
+    BANK_AMOUNT_PCT,
+    AVG_MONTH_DAYS,
+)
 # Create your views here.
 
 
@@ -69,7 +72,7 @@ class GetBasicInfo(LoginRequiredMixin, View):
         data['this_month_expense'] = f"{this_month_expense:,}"
         
         try:
-            bank_balance = user.saving_calculation.amount_to_keep_in_bank * BANK_AMOUNT_PCT
+            bank_balance = user.saving_calculation.amount_to_keep_in_bank * (BANK_AMOUNT_PCT/100)
             bank_balance_date = today.replace(day=1)
         except SavingCalculation.DoesNotExist:
             bank_balance = 0
@@ -80,7 +83,7 @@ class GetBasicInfo(LoginRequiredMixin, View):
             last_income_date = incomes.dates('timestamp', 'month', order='DESC').first()
             if last_income_date:
                 last_income = incomes.filter(timestamp__year=last_income_date.year, timestamp__month=last_income_date.month)
-                bank_balance = aggregate_sum(last_income) * BANK_AMOUNT_PCT
+                bank_balance = aggregate_sum(last_income) * (BANK_AMOUNT_PCT/100)
                 bank_balance_date = last_income_date
         
         if bank_balance:

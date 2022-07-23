@@ -12,7 +12,7 @@
         <span
             {% if eir > 100 %}
                 class="red-text"
-            {% elif eir > BANK_AMOUNT_PCT %}
+            {% elif eir > constants.BANK_AMOUNT_PCT %}
                 class="warning-text"
             {% elif eir > 0 %}
                 class="green-text"
@@ -97,7 +97,7 @@
                         <td 
                             {% if row.expense_ratio > 100 %}
                                 class="red-text"
-                            {% elif row.expense_ratio > BANK_AMOUNT_PCT %}
+                            {% elif row.expense_ratio > constants.BANK_AMOUNT_PCT %}
                                 class="warning-text"
                             {% elif row.expense_ratio > 0 %}
                                 class="green-text"
