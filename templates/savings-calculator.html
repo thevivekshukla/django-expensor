@@ -180,15 +180,19 @@
 
     function copyText(text) {
         navigator.clipboard.writeText(text);
-        showSnackbar("Copied!", 1000);
+        showSnackbar("Copied!", 1250);
+    }
+
+    function getNumber(value) {
+        return parseInt( value.replace(/,/g, '') );
     }
 
     $(document).ready(function() {
 
         $(".amount").on("click", function() {
             let amount = $(this).html();
-            copyText(amount);
-            let income = parseInt( amount.replace(/,/g, '') );
+            let income = getNumber(amount);
+            copyText(income);
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() ) || 100;
             if ( !isNaN(bank_amount_pct) ) {
@@ -199,14 +203,15 @@
 
         $("#bank_amount").on("click", function() {
             let bank_amount = $(this).html();
-            copyText(bank_amount);
-            let amount = parseInt( bank_amount.replace(/,/g, '') );
+            let amount = getNumber(bank_amount);
+            copyText(amount);
+
             $("#id_amount_to_keep_in_bank").val(amount);
             $("#bank_amount_pct").html(100);
         });
 
         function appendTick(event) {
-            copyText(event.target.innerText);
+            copyText(getNumber(event.target.innerText));
             event.target.append(" ✅");
             event.target.classList.remove('checked_amount');
             event.target.removeEventListener('click', appendTick);
