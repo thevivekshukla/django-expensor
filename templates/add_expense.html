@@ -183,7 +183,7 @@
     $("#id_timestamp").datepicker();
 
     $("#id_amount").keyup(function() {
-      $("#hint_id_amount").html( inWords($('#id_amount').val()) )
+      $("#hint_id_amount").html( number_to_english($('#id_amount').val()) )
     });
 
     $('#basicInfoCollapsible').on('show.bs.collapse', function () {
