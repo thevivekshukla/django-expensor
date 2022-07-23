@@ -1,4 +1,9 @@
 
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+  showSnackbar("Copied!", 1250);
+}
+
 $(document).ready(function(){
 
   $('[data-toggle="tooltip"]').tooltip({

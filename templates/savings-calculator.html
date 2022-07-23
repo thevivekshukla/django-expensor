@@ -178,11 +178,6 @@
 {% block js %}
 <script type="text/javascript">
 
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-        showSnackbar("Copied!", 1250);
-    }
-
     function getNumber(value) {
         return parseInt( value.replace(/,/g, '') );
     }
