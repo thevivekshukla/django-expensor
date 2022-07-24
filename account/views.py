@@ -78,7 +78,7 @@ def user_login(request):
             return HttpResponseRedirect(reverse("expense:add_expense"))
         else:
             # updating invalid login count
-            cache.set(ip_address, invalid_login_count + 1, 3600)
+            cache.set(ip_address, invalid_login_count + 1, 3600*6)
             messages.warning(request, "Invalid username or password.")
 
     context = {
