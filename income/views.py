@@ -661,8 +661,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
     def get_income(self):
         try:
-            return int(self.request.GET['income'].replace(',', ''))
-        except (ValueError, KeyError):
+            income = self.kwargs.get('income') or self.request.GET.get('income')
+            return int(income.replace(',', ''))
+        except (ValueError, AttributeError):
             return None
 
     def get(self, request, *args, **kwargs):

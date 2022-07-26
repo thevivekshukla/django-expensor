@@ -50,7 +50,7 @@
 
         <td>
           {% if object|show_calculator %}
-            <a href="{% url 'income:savings-calculator' %}?income={{ object.amount }}">
+            <a href="{% url 'income:savings-calculator-income' income=object.amount %}">
               <i class='fas fa-calculator' style='color:green;'></i>
             </a>
           {% endif %}

@@ -28,5 +28,6 @@ urlpatterns = [
     re_path(r'^investment/(?P<pk>\d+)/delete/$', views.InvestmentEntityDeleteView.as_view(), name='investment-entity-delete'),
     
     re_path(r'^savings-calculator/$', views.SavingsCalculatorView.as_view(), name='savings-calculator'),
+    re_path(r'^savings-calculator/(?P<income>[\w,]+)[/]?$', views.SavingsCalculatorView.as_view(), name='savings-calculator-income'),
 ]
 
