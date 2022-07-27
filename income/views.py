@@ -635,11 +635,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
     }
 
     def return_in_multiples(self, amount):
-        user = self.request.user
-        try:
-            multiples_of = user.saving_calculation.amount_in_multiples_of
-        except:
-            multiples_of = DEFAULT_AMOUNT_IN_MULTIPLES_OF
+        multiples_of = DEFAULT_AMOUNT_IN_MULTIPLES_OF
+        with suppress(SavingCalculation.DoesNotExist):
+            multiples_of = self.request.user.saving_calculation.amount_in_multiples_of
             
         amount = int(round(amount, 0))
         final_amount = (amount // multiples_of) * multiples_of

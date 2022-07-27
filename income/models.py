@@ -42,7 +42,7 @@ class SavingCalculation(BaseModel):
     amount_to_keep_in_bank = models.PositiveIntegerField(help_text='Should be less than monthly salary. i.e. <=90% of monthly salary')
     auto_fill_amount_to_keep_in_bank = models.BooleanField(default=False, blank=True)
     message = models.TextField(null=True, blank=True, help_text="briefly explain your thought process on choosing this method")
-    amount_in_multiples_of = models.PositiveIntegerField(default=100, blank=True, null=False, help_text='i.e. 100, 1000, etc')
+    amount_in_multiples_of = models.PositiveIntegerField(default=100, blank=False, null=False, help_text='i.e. 100, 1000, etc')
 
     def __str__(self):
         return f'{self.user}'

@@ -56,6 +56,12 @@ class SavingCalculationModelForm(forms.ModelForm):
         self.fields['auto_fill_amount_to_keep_in_bank'].help_text = "only works if Amount to keep in bank is 0"
         self.fields['auto_fill_savings_fixed_amount'].help_text = "only works if Savings fixed amount is 0"
 
+    def clean_amount_in_multiples_of(self):
+        value = self.cleaned_data['amount_in_multiples_of']
+        if value < 1:
+            raise forms.ValidationError("This must be greater than 0")
+        return value
+
 
 class InvestmentEntityForm(forms.Form):
 
