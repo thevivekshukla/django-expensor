@@ -44,6 +44,7 @@ from utils.constants import (
     FIXED_SAVINGS_PCT,
     AVG_MONTH_DAYS,
     SHOW_INCOME_CALCULATOR_HOUR,
+    DEFAULT_AMOUNT_IN_MULTIPLES_OF,
 )
 # Create your views here.
 
@@ -638,7 +639,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         try:
             multiples_of = user.saving_calculation.amount_in_multiples_of
         except:
-            multiples_of = 100
+            multiples_of = DEFAULT_AMOUNT_IN_MULTIPLES_OF
             
         amount = int(round(amount, 0))
         final_amount = (amount // multiples_of) * multiples_of

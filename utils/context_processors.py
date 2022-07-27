@@ -1,9 +1,5 @@
 from decouple import config
-from .constants import (
-    BANK_AMOUNT_PCT,
-    FIXED_SAVINGS_PCT,
-    SHOW_INCOME_CALCULATOR_HOUR
-)
+from .constants import *
 
 def gtag(request):
     return {'gtag': config('GTAG_ID', '')}
@@ -11,10 +7,6 @@ def gtag(request):
 
 def constants(request):
     return {
-        'constants': {
-            'BANK_AMOUNT_PCT': BANK_AMOUNT_PCT,
-            'FIXED_SAVINGS_PCT': FIXED_SAVINGS_PCT,
-            'SHOW_INCOME_CALCULATOR_HOUR': SHOW_INCOME_CALCULATOR_HOUR,
-        }
+        'constants': {k:v for k, v in globals().items() if k.isupper()}
     }
 
