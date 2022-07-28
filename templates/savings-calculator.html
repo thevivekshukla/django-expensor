@@ -53,7 +53,7 @@
                     {% endif %}
 
                     {% for inv_name, inv_amount in data.investment.items %}
-                        <tr>
+                        <tr style="font-style: italic;">
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{ inv_name }}</td>
                             <td class="checked_amount">{{ inv_amount|intcomma }}</td>
                         </tr>
