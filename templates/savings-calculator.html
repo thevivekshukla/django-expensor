@@ -162,7 +162,7 @@
             <input type="submit" class="btn btn-success btn-lg btn-block" value="Calculate">
             <br>
 
-            <a class="btn btn-primary btn-sm" href="?{% for k, v in request.GET.items %}&{{ k }}={{ v }}{% endfor %}"><i class="fas fa-redo"></i> Refresh</a>
+            <a class="btn btn-primary btn-sm" href="{% if request.GET.items %}?{% for k, v in request.GET.items %}&{{ k }}={{ v }}{% endfor %}{% endif %}"><i class="fas fa-redo"></i> Refresh</a>
             <a style="float:right;" class="btn btn-primary btn-sm" href="{% url 'income:savings-calculation-detail' %}"><i class="fas fa-cog"></i> Settings</a>
         </form>
     </div>
