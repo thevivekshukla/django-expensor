@@ -188,11 +188,14 @@ class NetworthXView(LoginRequiredMixin, View):
         
         data = []
         for method in ["mean", "median", "max", "min"]:
-            avg_expense = cal_avg_expense(user, method=method)
+            year_avg_expense = cal_avg_expense(user, method=method)
+            month_avg_expense = year_avg_expense // 12
             data.append({
                 'method': method,
-                'avg_expense': avg_expense,
-                'x': cal_networth_x(networth_amount, avg_expense),
+                'year_avg_expense': year_avg_expense,
+                'month_avg_expense': month_avg_expense,
+                'year_x': cal_networth_x(networth_amount, year_avg_expense),
+                'month_x': cal_networth_x(networth_amount, month_avg_expense),
             })
             
         context = {

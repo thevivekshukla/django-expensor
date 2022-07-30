@@ -22,10 +22,13 @@
       <tr>
         <th class="active">Method</th>
         <th class="active">
-          <span class="float-right">Yearly Expense</span>
+          <span class="float-right">Monthly Expense</span>
         </th>
         <th class="active">
-          <span class="float-right">Monthly Expense</span>
+          <span class="float-right">x</span>
+        </th>
+        <th class="active">
+          <span class="float-right">Yearly Expense</span>
         </th>
         <th class="active">
           <span class="float-right">X</span>
@@ -41,21 +44,27 @@
         </td>
 
         <td>
-            <span class="float-right">
-              {{ object.avg_expense|intcomma }}
-            </span>
+          <span class="float-right">
+              {{ object.month_avg_expense|intcomma }}
+          </span>
         </td>
 
         <td>
-            <span class="float-right">
-                {% divide object.avg_expense 12 0 %}
-            </span>
+          <span class="float-right">
+            <span style="color:green;">{{ object.month_x }}</span>x
+          </span>
         </td>
 
         <td>
-            <span class="float-right">
-              <span style="color:green;">{{ object.x }}</span>X
-            </span>
+          <span class="float-right">
+            {{ object.year_avg_expense|intcomma }}
+          </span>
+        </td>
+
+        <td>
+          <span class="float-right">
+            <span style="color:green;">{{ object.year_x }}</span>X
+          </span>
         </td>
         
       </tr> 
