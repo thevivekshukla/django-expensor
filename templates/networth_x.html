@@ -16,61 +16,67 @@
   </center>
   <hr>
   
-  <table class="table table-bordered table-hover">
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
 
-    <thead>
-      <tr>
-        <th class="active">Method</th>
-        <th class="active">
-          <span class="float-right">Monthly Expense</span>
-        </th>
-        <th class="active">
-          <span class="float-right">x</span>
-        </th>
-        <th class="active">
-          <span class="float-right">Yearly Expense</span>
-        </th>
-        <th class="active">
-          <span class="float-right">X</span>
-        </th>
-      </tr>
-    </thead>
-      
-    {% for object in data %}
-      <tr>
+      <thead>
+        <tr>
+          <th class="active">Method</th>
 
-        <td>
-          {{ object.method }}
-        </td>
+          <th class="active">
+            <span class="float-right">Monthly Expense</span>
+          </th>
 
-        <td>
-          <span class="float-right">
-              {{ object.month_avg_expense|intcomma }}
-          </span>
-        </td>
+          <th class="active">
+            <span class="float-right">x</span>
+          </th>
 
-        <td>
-          <span class="float-right">
-            <span style="color:green;">{{ object.month_x }}</span>x
-          </span>
-        </td>
-
-        <td>
-          <span class="float-right">
-            {{ object.year_avg_expense|intcomma }}
-          </span>
-        </td>
-
-        <td>
-          <span class="float-right">
-            <span style="color:green;">{{ object.year_x }}</span>X
-          </span>
-        </td>
+          <th class="active">
+            <span class="float-right">Yearly Expense</span>
+          </th>
+          
+          <th class="active">
+            <span class="float-right">X</span>
+          </th>
+        </tr>
+      </thead>
         
-      </tr> 
-    {% endfor %}
-      
-  </table>
+      {% for object in data %}
+        <tr>
+
+          <td>
+            {{ object.method }}
+          </td>
+
+          <td>
+            <span class="float-right">
+                {{ object.month_avg_expense|intcomma }}
+            </span>
+          </td>
+
+          <td>
+            <span class="float-right">
+              <span style="color:green;">{{ object.month_x }}</span>x
+            </span>
+          </td>
+
+          <td>
+            <span class="float-right">
+              {{ object.year_avg_expense|intcomma }}
+            </span>
+          </td>
+
+          <td>
+            <span class="float-right">
+              <span style="color:green;">{{ object.year_x }}</span>X
+            </span>
+          </td>
+          
+        </tr> 
+      {% endfor %}
+        
+    </table>
+  </div>
   
   {% else %}
 
