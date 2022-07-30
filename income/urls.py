@@ -21,8 +21,7 @@ urlpatterns = [
     re_path(r'^report/(?P<year>\d+)/$', views.MonthlyIncomeExpenseReport.as_view(), name='yearly-report'),
     
     re_path(r'^savings-calculator/settings/$', views.SavingCalculationDetailView.as_view(), name='savings-calculation-detail'),
-    re_path(r'^savings-calculator/$', views.SavingsCalculatorView.as_view(), name='savings-calculator'),
-    re_path(r'^savings-calculator/(?P<income>[\w,]+)[/]?$', views.SavingsCalculatorView.as_view(), name='savings-calculator-income'),
+    re_path(r'^savings-calculator/(?P<income>[\w,]+)?[/]?$', views.SavingsCalculatorView.as_view(), name='savings-calculator'),
 
     re_path(r'^investment/create/$', views.InvestmentEntityCreateView.as_view(), name='investment-entity-create'),
     re_path(r'^investment/list/$', views.InvestmentEntityListView.as_view(), name='investment-entity-list'),
