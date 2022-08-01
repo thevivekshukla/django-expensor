@@ -194,6 +194,9 @@
 
             let bank_amount_pct = parseInt( $("#bank_amount_pct").html() );
             if ( !isNaN(bank_amount_pct) ) {
+                if (bank_amount_pct == 100) {
+                    bank_amount_pct = {{ constants.BANK_AMOUNT_PCT }};
+                }
                 $("#id_amount_to_keep_in_bank").val( parseInt(income * (bank_amount_pct/100)) );
                 $("#bank_amount_pct").html(bank_amount_pct);
                 $("#bank_amount").html(amount);
