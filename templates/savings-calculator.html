@@ -39,30 +39,30 @@
     <div class="col-md-4">
         {% if data %}
             <div class="alert alert-info">
-                <table class="table borderless-table">
+                <table class="table table-bordered">
                     <tr>
                         <td><strong><i class="fas fa-piggy-bank"></i> Savings</strong></td>
-                        <td class="checked_amount"><strong>{{ data.savings|intcomma }}</strong></td>
+                        <td><strong class="checked_amount">{{ data.savings|intcomma }}</strong></td>
                     </tr>
 
                     {% if data.investment.items  %}
-                        <tr>
-                            <td><strong><i class="fas fa-chart-line"></i> Investments</strong></td>
-                            <td><strong>{{ investment_total|intcomma }}</strong></td>
+                        <tr class="darker-text">
+                            <td><i class="fas fa-chart-line"></i> Investments</td>
+                            <td>{{ investment_total|intcomma }}</td>
                         </tr>
                     {% endif %}
 
                     {% for inv_name, inv_amount in data.investment.items %}
-                        <tr class="darker-text">
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;{{ inv_name }}</td>
-                            <td class="checked_amount">{{ inv_amount|intcomma }}</td>
+                        <tr class="borderless-table">
+                            <td><strong style="float:right;">{{ inv_name }}</strong></td>
+                            <td><strong class="checked_amount">{{ inv_amount|intcomma }}</strong></td>
                         </tr>
                     {% endfor %}
 
-                    <tr><td></td><td></td></tr>
+                    <tr class="borderless-table"><td></td><td></td></tr>
                     
                     <tr class="alert alert-success">
-                        <td><strong>Grand Total:</strong></td>
+                        <td><strong>Grand Total</strong></td>
                         <td><strong>{{ total|intcomma }}</strong></td>
                     </tr>
                 </table>
