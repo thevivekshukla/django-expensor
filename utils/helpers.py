@@ -83,6 +83,7 @@ def search_expense_remark(queryset, q):
 
 @lru_cache(maxsize=128)
 def get_dates_list(first_date, latest_date, *, month=None, day=None, daydelta=-1):
+    """result is in DESC order"""
     replace_kwargs = dict()
     if month:
         replace_kwargs['month'] = month

@@ -646,17 +646,21 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
     def gen_bank_amount(self):
         MONTHS = 3
         amounts = []
-        incomes = self.request.user.incomes.exclude(amount=0)
-        income_dates = incomes.dates('timestamp', 'month', order='DESC')
+        incomes = self.request.user.incomes
+
+        days_offset = 31 * MONTHS
+        today = helpers.get_ist_datetime().date()
+        past = today - timedelta(days=days_offset)
+        months_list = helpers.get_dates_list(past, today, day=1)
         
-        for dt in income_dates[:MONTHS]:
+        for dt in months_list[:MONTHS]:
             month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
             amounts.append(aggregate_sum(month_income))
             
         if amounts:
             return int(max(statistics.mean(amounts), *amounts[:2]))
-        
-        return 0
+        else:
+            return 0
 
     def get_income(self):
         try:
