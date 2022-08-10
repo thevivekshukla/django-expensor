@@ -716,7 +716,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount:
                     initial_data['savings_fixed_amount'] = savings_fixed_amount
                     defaults_message.append(f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income:,}")
-                elif not savings.auto_fill_amount_to_keep_in_bank:
+                elif not savings.auto_fill_amount_to_keep_in_bank or savings.amount_to_keep_in_bank:
                     defaults_message.append(
                         f'[Hint] Savings fixed amount: <span class="amount">{savings_fixed_amount:,}</span>'
                     )
