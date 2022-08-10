@@ -708,12 +708,18 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     )
                 else:
                     defaults_message.append(
-                        f'[Auto] Amount to keep in bank: <span class="amount">{amount_to_keep_in_bank:,}</span>'
+                        f'[Hint] Amount to keep in bank: <span class="amount">{amount_to_keep_in_bank:,}</span>'
                     )
 
-            if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount and income:
-                initial_data['savings_fixed_amount'] = self.return_in_multiples(income * (FIXED_SAVINGS_PCT/100))
-                defaults_message.append(f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income:,}")
+            if income:
+                savings_fixed_amount = self.return_in_multiples(income * (FIXED_SAVINGS_PCT/100))
+                if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount:
+                    initial_data['savings_fixed_amount'] = savings_fixed_amount
+                    defaults_message.append(f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income:,}")
+                elif not savings.auto_fill_amount_to_keep_in_bank:
+                    defaults_message.append(
+                        f'[Hint] Savings fixed amount: <span class="amount">{savings_fixed_amount:,}</span>'
+                    )
 
         except SavingCalculation.DoesNotExist:
             pass
