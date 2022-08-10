@@ -19,7 +19,10 @@
         margin-left: -15px;
     }
     
-    .amount, #bank_amount {
+    .amount,
+    #bank_amount,
+    #auto_amount_to_keep_in_bank,
+    #auto_savings_fixed_amount {
         border-bottom: 1px dotted #000;
         text-decoration: none;
         cursor: pointer;
@@ -210,6 +213,20 @@
 
             $("#id_amount_to_keep_in_bank").val(amount);
             $("#bank_amount_pct").html(100);
+        });
+
+        $("#auto_amount_to_keep_in_bank").on("click", function() {
+            let amount = $(this).html();
+            amount = getNumber(amount);
+            copyText(amount);
+            $("#id_amount_to_keep_in_bank").val(amount);
+        });
+
+        $("#auto_savings_fixed_amount").on("click", function() {
+            let amount = $(this).html();
+            amount = getNumber(amount);
+            copyText(amount);
+            $("#id_savings_fixed_amount").val(amount);
         });
 
         function appendTick(event) {
