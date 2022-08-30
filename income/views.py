@@ -161,6 +161,7 @@ class YearWiseIncome(LoginRequiredMixin, View):
     }
 
     def get(self, request, *args, **kwargs):
+        page_size = int(request.GET.get('page_size', 5))
         user = request.user
         now = get_ist_datetime()
         incomes = Income.objects.filter(user=user)
@@ -168,7 +169,7 @@ class YearWiseIncome(LoginRequiredMixin, View):
         latest_date = now.date().replace(month=1, day=1)
         first_date = incomes.dates('timestamp', 'year', order='ASC').first() or latest_date
         dates = helpers.get_dates_list(first_date, latest_date, month=1, day=1)    
-        dates = helpers.get_paginator_object(request, dates, 5)
+        dates = helpers.get_paginator_object(request, dates, page_size)
 
         data = []
         monthly_averages = []
@@ -184,6 +185,9 @@ class YearWiseIncome(LoginRequiredMixin, View):
             j = i + 1
             rate = ((monthly_averages[i] - monthly_averages[j]) / monthly_averages[j]) * 100
             growth_rates.append(rate)
+        # for final, past in zip(monthly_averages[:-1], monthly_averages[::-1][:-1][::-1]):
+        #     rate = ((final - past) / past) * 100
+        #     growth_rates.append(rate)
 
         if growth_rates:
             avg_growth_rate = round(statistics.mean(growth_rates), 2)
