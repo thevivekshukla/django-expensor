@@ -171,14 +171,28 @@ class YearWiseIncome(LoginRequiredMixin, View):
         dates = helpers.get_paginator_object(request, dates, 5)
 
         data = []
+        monthly_averages = []
         for dt in dates:
             total_months = now.month if dt.year == now.year else 12
             amount = aggregate_sum(incomes.filter(timestamp__year=dt.year))
             avg_income = amount // total_months
             data.append((dt, amount, avg_income))
+            monthly_averages.append(avg_income)
 
+        growth_rates = []
+        for i in range(len(monthly_averages) - 1):
+            j = i + 1
+            rate = ((monthly_averages[i] - monthly_averages[j]) / monthly_averages[j]) * 100
+            growth_rates.append(rate)
+
+        if growth_rates:
+            avg_growth_rate = round(statistics.mean(growth_rates), 2)
+        else:
+            avg_growth_rate = None
+        
         self.context['data'] = data
         self.context['objects'] = dates
+        self.context['average_growth_rate'] = avg_growth_rate
         return render(request, self.template_name, self.context)
 
 
