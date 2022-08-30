@@ -707,6 +707,11 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         month_income_sum = aggregate_sum(month_income)
         defaults_message.append(f'This month\'s total income: <span class="amount">{month_income_sum:,}</span>')
 
+        avg_expense = helpers.cal_avg_expense(user)
+        if avg_expense:
+            quarterly_expense = self.return_in_multiples(avg_expense/4)
+            defaults_message.append(f'Average Quarterly Expense: <span class="amount">{quarterly_expense:,}</span>')
+
         try:
             savings = user.saving_calculation
             message = markdown.markdown(savings.message if savings.message else "")
