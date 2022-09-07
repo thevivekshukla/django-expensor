@@ -88,10 +88,14 @@ class GetBasicInfo(LoginRequiredMixin, View):
         
         if bank_balance:
             expense_sum = aggregate_sum(user.expenses.filter(timestamp__range=(bank_balance_date, today)))
-            data['this_month_eir'] = helpers.calculate_ratio(expense_sum, bank_balance)
+            this_month_eir = helpers.calculate_ratio(expense_sum, bank_balance)
             spending_power = max(0, bank_balance - expense_sum)
-            data['spending_power'] = f"{int(spending_power):,}"
-
+        else:
+            this_month_eir = 0
+            spending_power = 0
+        
+        data['this_month_eir'] = this_month_eir
+        data['spending_power'] = f"{int(spending_power):,}"
         data = json.dumps(data)
         return HttpResponse(data, content_type='application/json')
 
