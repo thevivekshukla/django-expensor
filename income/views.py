@@ -179,24 +179,9 @@ class YearWiseIncome(LoginRequiredMixin, View):
             avg_income = amount // total_months
             data.append((dt, amount, avg_income))
             monthly_averages.append(avg_income)
-
-        growth_rates = []
-        for i in range(len(monthly_averages) - 1):
-            j = i + 1
-            rate = ((monthly_averages[i] - monthly_averages[j]) / monthly_averages[j]) * 100
-            growth_rates.append(rate)
-        # for final, past in zip(monthly_averages[:-1], monthly_averages[::-1][:-1][::-1]):
-        #     rate = ((final - past) / past) * 100
-        #     growth_rates.append(rate)
-
-        if growth_rates:
-            avg_growth_rate = round(statistics.mean(growth_rates), 2)
-        else:
-            avg_growth_rate = None
         
         self.context['data'] = data
         self.context['objects'] = dates
-        self.context['average_growth_rate'] = avg_growth_rate
         return render(request, self.template_name, self.context)
 
 

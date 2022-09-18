@@ -6,14 +6,6 @@
 
 <div class="col-md-6 col-md-offset-3">
 
-{% if average_growth_rate %}
-    <strong>
-        Average Growth Rate: 
-        <span {% if average_growth_rate > 0 %} class="green-text" {% elif average_growth_rate < 0 %} class="red-text" {% endif %}>{{ average_growth_rate }}%</span>
-    </strong>
-    <br><br>
-{% endif %}
-
 {% if data %}
     <table class="table table-bordered table-hover">
 
