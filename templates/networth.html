@@ -86,7 +86,12 @@
 
 {% if avg_expense > 0 %}
 <sub>X = {{ avg_expense|intcomma }} (annual expense. monthly = {% divide avg_expense 12 0 %})</sub>
-<br><br>
+<br>
+{% endif %}
+
+{% if total_saved_amount > 0 %}
+<sub>Total Saved Amount (Income - Expense): {{ total_saved_amount|intcomma }}</sub>
+<br>
 {% endif %}
 
 <sub>As on {{ networth.date|date:"d M Y" }}</sub>

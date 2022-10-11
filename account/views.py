@@ -160,7 +160,9 @@ class NetWorthDashboard(LoginRequiredMixin, View):
             else:
                 assets.append(data)
                 asset_amount += amount.amount if amount else 0
-        
+
+        total_saved_amount = aggregate_sum(user.incomes) - aggregate_sum(user.expenses)
+
         context = {
             'title': 'NetWorth',
             'networth': networth,
@@ -170,6 +172,7 @@ class NetWorthDashboard(LoginRequiredMixin, View):
             'liability_amount': liability_amount,
             'assets': assets,
             'asset_amount': asset_amount,
+            'total_saved_amount': total_saved_amount,
         }
         return render(request, self.template_name, context)
 
