@@ -11,7 +11,7 @@
     <form method="post" id="id_add_income" action="">
       {% csrf_token %}
       {{ income_form|crispy }}
-      <button type="submit" class="btn btn-success btn-block">
+      <button type="submit" id="submit_btn" class="btn btn-success btn-block">
         <i class="fas fa-plus-circle"></i> {{ title }}
       </button>
     </form>
@@ -46,6 +46,9 @@
     var form = $("#id_add_income");
 
     form.submit(function(){
+      let submit_btn_id = "submit_btn"
+      document.getElementById(submit_btn_id).disabled = true;
+
       $.ajax({
         type: form.attr('method'),
         url: form.attr('action'),
@@ -60,6 +63,7 @@
           window.location = "{% url 'income:income-list' %}";
         },
         error: function(data) {
+          document.getElementById(submit_btn_id).disabled = false;
           $("#id_success").hide();
           $("#id_error").show();
         }

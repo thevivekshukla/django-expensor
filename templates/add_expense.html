@@ -27,7 +27,7 @@
     <form method="post" class="ui-widget" id="id_add_expense" action="">
       {% csrf_token %}
       {{ form|crispy }}
-      <button type="submit" class="btn btn-primary btn-block">
+      <button type="submit" id="submit_btn" class="btn btn-primary btn-block">
         <i class="fas fa-cloud-upload-alt"></i> {{ title }}
       </button>
     </form>
@@ -200,11 +200,16 @@
     var form = $("#id_add_expense");
 
     form.submit(function(){
+      let submit_btn_id = "submit_btn"
+      document.getElementById(submit_btn_id).disabled = true;
+
       $.ajax({
         type: form.attr('method'),
         url: form.attr('action'),
         data: form.serialize(),
         success: function(data) {
+          document.getElementById(submit_btn_id).disabled = false;
+          
           $("#hint_id_amount").html("");
           form[0].reset();
 
@@ -221,6 +226,7 @@
 
         },
         error: function(data) {
+          document.getElementById(submit_btn_id).disabled = false;
           $("#id_error").show();
         }
       });
