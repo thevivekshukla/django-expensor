@@ -208,10 +208,9 @@
         url: form.attr('action'),
         data: form.serialize(),
         success: function(data) {
-          document.getElementById(submit_btn_id).disabled = false;
-          
           $("#hint_id_amount").html("");
           form[0].reset();
+          document.getElementById(submit_btn_id).disabled = false;
 
           $("#id_error").hide();
           showSnackbar("Expense added successfully.", 3000);
@@ -226,8 +225,8 @@
 
         },
         error: function(data) {
-          document.getElementById(submit_btn_id).disabled = false;
           $("#id_error").show();
+          document.getElementById(submit_btn_id).disabled = false;
         }
       });
       return false;

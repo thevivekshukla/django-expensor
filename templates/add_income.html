@@ -63,9 +63,9 @@
           window.location = "{% url 'income:income-list' %}";
         },
         error: function(data) {
-          document.getElementById(submit_btn_id).disabled = false;
           $("#id_success").hide();
           $("#id_error").show();
+          document.getElementById(submit_btn_id).disabled = false;
         }
       });
       return false;
