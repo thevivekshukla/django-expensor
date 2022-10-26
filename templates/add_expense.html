@@ -47,7 +47,7 @@
         <div class="panel-heading" role="tab" id="headingOne">
           <h4 class="panel-title">
             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#basicInfoCollapsible" aria-expanded="false" aria-controls="basicInfoCollapsible">
-              <div class="black-text"><i class="fas fa-info-circle gold-text"></i> Stats</div>
+              <div class="black-text"><i class="fas fa-info-circle gold-text"></i> Expense Stat</div>
             </a>
           </h4>
         </div>
@@ -58,8 +58,8 @@
               
               <table class="table table-condensed borderless-table">
                 <tr>
-                  <td><h5><a class="black-text" href="{% url 'expense:day-wise-expense' %}">Today's Expense: <span id="today_expense"></span></a></h5></td>
-                  <td><h5><a class="black-text" href="{% url 'expense:month-wise-expense' %}">Month's Expense: <span id="month_expense"></span></a></h5></td>
+                  <td><h5><a class="black-text" href="{% url 'expense:day-wise-expense' %}">Today: <span id="today_expense"></span></a></h5></td>
+                  <td><h5><a class="black-text" href="{% url 'expense:month-wise-expense' %}">Month: <span id="month_expense"></span></a></h5></td>
                 </tr>
               </table>
 
