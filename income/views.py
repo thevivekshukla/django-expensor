@@ -646,7 +646,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         final_amount = (amount // multiples_of) * multiples_of
         return final_amount
 
-    def gen_bank_amount(self):
+    def get_auto_income(self):
         MONTHS = 3
         amounts = []
         incomes = self.request.user.incomes
@@ -692,11 +692,6 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         month_income_sum = aggregate_sum(month_income)
         defaults_message.append(f'This month\'s total income: <span class="amount">{month_income_sum:,}</span>')
 
-        avg_expense = helpers.cal_avg_expense(user)
-        if avg_expense:
-            quarterly_expense = self.return_in_multiples(avg_expense/4)
-            defaults_message.append(f'Average Quarterly Expense: <span class="amount">{quarterly_expense:,}</span>')
-
         try:
             savings = user.saving_calculation
             message = markdown.markdown(savings.message if savings.message else "")
@@ -704,15 +699,42 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
-            BANK_AMOUNT = self.gen_bank_amount()
+            auto_fill_amount_to_keep_in_bank = savings.auto_fill_amount_to_keep_in_bank
 
-            if BANK_AMOUNT and not savings.amount_to_keep_in_bank:
-                amount_to_keep_in_bank = self.return_in_multiples(BANK_AMOUNT * BANK_AMOUNT_PCT/100)
-                if savings.auto_fill_amount_to_keep_in_bank:
+            if auto_fill_amount_to_keep_in_bank == 1:
+                auto_income = self.get_auto_income()
+                if auto_income:
+                    amount_to_keep_in_bank = self.return_in_multiples(auto_income * BANK_AMOUNT_PCT/100)
+                    if not savings.amount_to_keep_in_bank:
+                        initial_data['amount_to_keep_in_bank'] = amount_to_keep_in_bank
+                        defaults_message.append(
+                            f'Amount to keep in bank is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>%'
+                            f' of <span id="bank_amount">{auto_income:,}</span>'
+                        )
+                    else:
+                        defaults_message.append(
+                            f'[Auto] Amount to keep in bank:'
+                            f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
+                        )
+            elif auto_fill_amount_to_keep_in_bank in range(2, 6):
+                avg_expense = helpers.cal_avg_expense(user)
+                if auto_fill_amount_to_keep_in_bank == 2: # 1 month expense
+                    amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 12)
+                    month_msg = "1 month"
+                elif auto_fill_amount_to_keep_in_bank == 3: # 3 months expense
+                    amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 4)
+                    month_msg = "3 months"
+                elif auto_fill_amount_to_keep_in_bank == 4: # 6 months expense
+                    amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 2)
+                    month_msg = "6 months"
+                elif auto_fill_amount_to_keep_in_bank == 5: # 12 months expense
+                    amount_to_keep_in_bank = self.return_in_multiples(avg_expense)
+                    month_msg = "12 months"
+                
+                if not savings.amount_to_keep_in_bank:
                     initial_data['amount_to_keep_in_bank'] = amount_to_keep_in_bank
                     defaults_message.append(
-                        f'Amount to keep in bank is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>%'
-                        f' of <span id="bank_amount">{BANK_AMOUNT:,}</span>'
+                        f"Amount to keep in bank is {month_msg} of expenses."
                     )
                 else:
                     defaults_message.append(

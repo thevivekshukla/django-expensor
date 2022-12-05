@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 from django.db.models.fields import related
 
 from utils.base_model import BaseModel
+from utils.constants import (
+    AUTO_FILL_AMOUNT_CHOICES,
+)
 
 User = get_user_model()
 
@@ -40,7 +43,7 @@ class SavingCalculation(BaseModel):
     auto_fill_savings_fixed_amount = models.BooleanField(default=False, blank=True)
     savings_percentage = models.PositiveIntegerField(help_text='in percentage') # of the total amount
     amount_to_keep_in_bank = models.PositiveIntegerField(help_text='Should be less than monthly salary. i.e. <=90% of monthly salary')
-    auto_fill_amount_to_keep_in_bank = models.BooleanField(default=False, blank=True)
+    auto_fill_amount_to_keep_in_bank = models.PositiveIntegerField(default=0, choices=AUTO_FILL_AMOUNT_CHOICES)
     message = models.TextField(null=True, blank=True, help_text="briefly explain your thought process on choosing this method")
     amount_in_multiples_of = models.PositiveIntegerField(default=100, blank=False, null=False, help_text='i.e. 100, 1000, etc')
 
