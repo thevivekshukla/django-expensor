@@ -735,7 +735,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 if not savings.amount_to_keep_in_bank:
                     initial_data['amount_to_keep_in_bank'] = amount_to_keep_in_bank
                     defaults_message.append(
-                        f"Amount to keep in bank is {month_msg} of expenses."
+                        f"Amount to keep in bank is {month_msg} of expense."
                     )
                 else:
                     defaults_message.append(
