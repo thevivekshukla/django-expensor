@@ -699,6 +699,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['savings_percentage'] = savings.savings_percentage
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
+            avg_expense = self.return_in_multiples(helpers.cal_avg_expense(user))
             auto_fill_amount_to_keep_in_bank = savings.auto_fill_amount_to_keep_in_bank
 
             if auto_fill_amount_to_keep_in_bank == 1:
@@ -717,7 +718,6 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                             f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
                         )
             elif auto_fill_amount_to_keep_in_bank in range(2, 6):
-                avg_expense = helpers.cal_avg_expense(user)
                 if auto_fill_amount_to_keep_in_bank == 2: # 1 month expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 12)
                     month_msg = "1 month"
@@ -730,6 +730,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 elif auto_fill_amount_to_keep_in_bank == 5: # 12 months expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense)
                     month_msg = "12 months"
+                    avg_expense = 0
                 
                 if not savings.amount_to_keep_in_bank:
                     initial_data['amount_to_keep_in_bank'] = amount_to_keep_in_bank
@@ -752,6 +753,11 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                         f'[Auto] Savings fixed amount:'
                         f' <span id="auto_savings_fixed_amount">{savings_fixed_amount:,}</span>'
                     )
+                    
+            if avg_expense:
+                defaults_message.append(
+                    f'Average Annual Expense: <span class="amount">{avg_expense}</span>'
+                )
 
         except SavingCalculation.DoesNotExist:
             pass
