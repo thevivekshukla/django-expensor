@@ -743,9 +743,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                         f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
                     )
 
-            if income:
+            if income and savings.auto_fill_savings_fixed_amount:
                 savings_fixed_amount = self.return_in_multiples(income * (FIXED_SAVINGS_PCT/100))
-                if not savings.savings_fixed_amount and savings.auto_fill_savings_fixed_amount:
+                if not savings.savings_fixed_amount:
                     initial_data['savings_fixed_amount'] = savings_fixed_amount
                     defaults_message.append(f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income:,}")
                 else:
@@ -756,7 +756,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     
             if avg_expense:
                 defaults_message.append(
-                    f'Average Annual Expense: <span class="amount">{avg_expense}</span>'
+                    f'Average Annual Expense: <span class="amount">{avg_expense:,}</span>'
                 )
 
         except SavingCalculation.DoesNotExist:
