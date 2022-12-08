@@ -25,7 +25,8 @@ $(document).ready(function(){
     showAnim: "blind",
     showOptions: { direction: "up" },
     showOtherMonths: false,
-    selectOtherMonths: true
+    selectOtherMonths: true,
+    showButtonPanel: true
   });
 
 });
