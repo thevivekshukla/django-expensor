@@ -717,7 +717,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                             f'[Auto] Amount to keep in bank:'
                             f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
                         )
-            elif auto_fill_amount_to_keep_in_bank in range(2, 6):
+            elif auto_fill_amount_to_keep_in_bank in range(2, 7):
                 if auto_fill_amount_to_keep_in_bank == 2: # 1 month expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 12)
                     month_msg = "1 month"
@@ -731,7 +731,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense)
                     month_msg = "12 months"
                     avg_expense = 0
-                
+                elif auto_fill_amount_to_keep_in_bank == 6: # last 12 months expense
+                    amount_to_keep_in_bank = self.return_in_multiples(helpers.cal_avg_expense(user, YEARS=1))
+                    month_msg = "last 12 months"
+
                 if not savings.amount_to_keep_in_bank:
                     initial_data['amount_to_keep_in_bank'] = amount_to_keep_in_bank
                     defaults_message.append(
