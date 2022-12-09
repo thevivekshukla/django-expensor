@@ -700,6 +700,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             initial_data['amount_to_keep_in_bank'] = savings.amount_to_keep_in_bank
 
             avg_expense = self.return_in_multiples(helpers.cal_avg_expense(user))
+            last_12m_expense = self.return_in_multiples(helpers.cal_avg_expense(user, YEARS=1))
             auto_fill_amount_to_keep_in_bank = savings.auto_fill_amount_to_keep_in_bank
 
             if auto_fill_amount_to_keep_in_bank == 1:
@@ -732,7 +733,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     month_msg = "12 months"
                     avg_expense = 0
                 elif auto_fill_amount_to_keep_in_bank == 6: # last 12 months expense
-                    amount_to_keep_in_bank = self.return_in_multiples(helpers.cal_avg_expense(user, YEARS=1))
+                    amount_to_keep_in_bank = last_12m_expense
                     month_msg = "last 12 months"
 
                 if not savings.amount_to_keep_in_bank:
@@ -760,6 +761,10 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
             if avg_expense:
                 defaults_message.append(
                     f'Average Annual Expense: <span class="amount">{avg_expense:,}</span>'
+                )
+            elif last_12m_expense:
+                defaults_message.append(
+                    f'Last 12 Months\' Expense: <span class="amount">{last_12m_expense:,}</span>'
                 )
 
         except SavingCalculation.DoesNotExist:
