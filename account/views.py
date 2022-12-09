@@ -200,15 +200,13 @@ class NetworthXView(LoginRequiredMixin, View):
             networth = networths.first()
             networth_amount = networth.amount
         
+        data = []
         last_12m_expense = cal_avg_expense(user, YEARS=1)
-        last_12m_data = self.fetch_networth_x(
-            'Last 12 months',
-            networth_amount,
-            last_12m_expense,
-        )
-        data = [last_12m_data,]
+
         for method in ["mean", "median", "max", "min"]:
             year_expense = cal_avg_expense(user, method=method)
+            if year_expense == last_12m_expense:
+                method += " (last 12 months')"
             nw_data = self.fetch_networth_x(
                 method,
                 networth_amount,
