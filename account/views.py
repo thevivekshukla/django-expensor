@@ -179,6 +179,17 @@ class NetWorthDashboard(LoginRequiredMixin, View):
 
 class NetworthXView(LoginRequiredMixin, View):
     template_name = "networth_x.html"
+    
+    def fetch_networth_x(self, method, networth_amount, year_expense):
+        month_expense = year_expense // 12
+        data = {
+            'method': method,
+            'year_expense': year_expense,
+            'month_expense': month_expense,
+            'year_x': cal_networth_x(networth_amount, year_expense),
+            'month_x': cal_networth_x(networth_amount, month_expense),
+        }
+        return data
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -189,17 +200,21 @@ class NetworthXView(LoginRequiredMixin, View):
             networth = networths.first()
             networth_amount = networth.amount
         
-        data = []
+        last_12m_expense = cal_avg_expense(user, YEARS=1)
+        last_12m_data = self.fetch_networth_x(
+            'Last 12 months',
+            networth_amount,
+            last_12m_expense,
+        )
+        data = [last_12m_data,]
         for method in ["mean", "median", "max", "min"]:
-            year_avg_expense = cal_avg_expense(user, method=method)
-            month_avg_expense = year_avg_expense // 12
-            data.append({
-                'method': method,
-                'year_avg_expense': year_avg_expense,
-                'month_avg_expense': month_avg_expense,
-                'year_x': cal_networth_x(networth_amount, year_avg_expense),
-                'month_x': cal_networth_x(networth_amount, month_avg_expense),
-            })
+            year_expense = cal_avg_expense(user, method=method)
+            nw_data = self.fetch_networth_x(
+                method,
+                networth_amount,
+                year_expense,
+            )
+            data.append(nw_data)
             
         context = {
             'title': 'Networth X',
