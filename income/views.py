@@ -764,7 +764,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 )
             elif last_12m_expense:
                 defaults_message.append(
-                    f'Last 12 Months\' Expense: <span class="amount">{last_12m_expense:,}</span>'
+                    f'Last 12 months\' expense: <span class="amount">{last_12m_expense:,}</span>'
                 )
 
         except SavingCalculation.DoesNotExist:
