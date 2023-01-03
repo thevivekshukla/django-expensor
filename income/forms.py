@@ -85,7 +85,7 @@ class InvestmentEntityForm(forms.Form):
     def clean(self):
         inv_keys = self.fields.keys()
         total = sum(
-            int(pct)
+            int(float(pct))
             for name, pct in self.original_data.items()
             if name in inv_keys
         )
