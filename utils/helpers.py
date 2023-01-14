@@ -170,4 +170,8 @@ def cal_networth_x(amount, yearly_expense):
     return 0
 
 
+def timedelta_now_str(days):
+    dt = get_ist_datetime() - timedelta(days=days)
+    return default_date_format(dt)
+
 

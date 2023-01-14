@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load humanize %}
+{% load pre_rendered_html %}
 
 {% block body %}
 
@@ -70,6 +71,8 @@
     <input type="text" name="search" value="1" hidden>
     <input type="submit" class="btn btn-info btn-block" name="" value="Search Income">
   </form>
+
+  {% past_days_search %}
 
 </div>
 
