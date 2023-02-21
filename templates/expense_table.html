@@ -13,7 +13,9 @@
 
   {% for object in objects %}
     <tr>
-      <td>{{ object.timestamp|date:"d M, Y" }}</td>
+      <td>
+        <span data-toggle="tooltip" title="Added on: {{ object.created_at }}">{{ object.timestamp|date:"d M, Y" }}<span>
+      </td>
 
       <td>
         {% if object.remark %}
