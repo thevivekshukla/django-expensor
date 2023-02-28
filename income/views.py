@@ -651,13 +651,13 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         amounts = []
         incomes = self.request.user.incomes.exclude(amount=0)
 
-        last_income_dates = incomes.dates('timestamp', 'month', order='DESC')
+        months_list = incomes.dates('timestamp', 'month', order='DESC')
         # last_income_date = incomes.exclude(amount=0).dates('timestamp', 'month', order='DESC').first()
         # till_date = last_income_date or helpers.get_ist_datetime().date()
         # from_date = till_date - timedelta(days=31 * MONTHS)
         # months_list = helpers.get_dates_list(from_date, till_date, day=1)
         
-        for dt in last_income_dates[:MONTHS]:
+        for dt in months_list[:MONTHS]:
             month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
             amounts.append(aggregate_sum(month_income))
             
