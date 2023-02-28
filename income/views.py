@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-import statistics
+import statistics as st
 import markdown
 from contextlib import suppress
 import json
@@ -650,19 +650,14 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
         MONTHS = 3
         amounts = []
         incomes = self.request.user.incomes.exclude(amount=0)
-
         months_list = incomes.dates('timestamp', 'month', order='DESC')
-        # last_income_date = incomes.exclude(amount=0).dates('timestamp', 'month', order='DESC').first()
-        # till_date = last_income_date or helpers.get_ist_datetime().date()
-        # from_date = till_date - timedelta(days=31 * MONTHS)
-        # months_list = helpers.get_dates_list(from_date, till_date, day=1)
         
         for dt in months_list[:MONTHS]:
             month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
             amounts.append(aggregate_sum(month_income))
             
         if amounts:
-            return int(max(statistics.mean(amounts), *amounts[:2]))
+            return int(max(amounts[0], st.mean(amounts[:2]), st.mean(amounts)))
         else:
             return 0
 
