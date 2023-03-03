@@ -6,7 +6,8 @@ from utils.helpers import get_ist_datetime, default_date_format
 
 
 class ExpenseForm(forms.Form):
-    amount = forms.IntegerField(help_text=" ")
+    amount = forms.IntegerField(help_text=" ",
+                widget=forms.NumberInput(attrs={'autofocus': True}))
     remark = forms.CharField(required=False,
                 widget=forms.TextInput(attrs={'class': 'lowercase_field'}))
     timestamp = forms.DateField(label='Date', input_formats=settings.DATE_INPUT_FORMATS)
