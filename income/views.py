@@ -714,21 +714,24 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                             f'[Auto] Amount to keep in bank:'
                             f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
                         )
-            elif auto_fill_amount_to_keep_in_bank in range(2, 7):
+            elif auto_fill_amount_to_keep_in_bank in range(2, 8):
                 if auto_fill_amount_to_keep_in_bank == 2: # 1 month expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 12)
                     month_msg = "1 month"
-                elif auto_fill_amount_to_keep_in_bank == 3: # 3 months expense
+                elif auto_fill_amount_to_keep_in_bank == 3: # 2 months expense
+                    amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 6)
+                    month_msg = "2 months"
+                elif auto_fill_amount_to_keep_in_bank == 4: # 3 months expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 4)
                     month_msg = "3 months"
-                elif auto_fill_amount_to_keep_in_bank == 4: # 6 months expense
+                elif auto_fill_amount_to_keep_in_bank == 5: # 6 months expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 2)
                     month_msg = "6 months"
-                elif auto_fill_amount_to_keep_in_bank == 5: # 12 months expense
+                elif auto_fill_amount_to_keep_in_bank == 6: # 12 months expense
                     amount_to_keep_in_bank = avg_expense
                     month_msg = "12 months"
                     avg_expense = 0
-                elif auto_fill_amount_to_keep_in_bank == 6: # last 12 months expense
+                elif auto_fill_amount_to_keep_in_bank == 7: # last 12 months expense
                     amount_to_keep_in_bank = last_12m_expense
                     month_msg = "last 12 months"
                     last_12m_expense = 0

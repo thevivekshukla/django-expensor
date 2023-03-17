@@ -12,9 +12,10 @@ AUTO_FILL_AMOUNT_CHOICES = [
     (0, 'No'),
     (1, 'Auto from income'),
     (2, '1 Month of Expense'),
-    (3, '3 Months of Expense'),
-    (4, '6 Months of Expense'),
-    (5, '12 Months of Expense'),
-    (6, 'Last 12 Months of Expense'),
+    (3, '2 Months of Expense'),
+    (4, '3 Months of Expense'),
+    (5, '6 Months of Expense'),
+    (6, '12 Months of Expense'),
+    (7, 'Last 12 Months of Expense'),
 ]
 
