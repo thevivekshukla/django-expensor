@@ -346,7 +346,8 @@ class AccountNameAmountAddView(LoginRequiredMixin, View):
             amount = amounts.amount
         else:
             amount = None
-        context['form'] = self.form_class(initial={'amount': amount})
+        context['form'] = self.form_class()
+        context['amount'] = amount
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):

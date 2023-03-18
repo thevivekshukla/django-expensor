@@ -76,8 +76,12 @@ class AccountNameCreateForm(forms.ModelForm):
             'name',
             'type',
         ]
+        widgets = {
+            'name': forms.NumberInput(attrs={'autofocus': True}),
+        }
+        
 
 
 class AccountNameAmountForm(forms.Form):
-    amount = forms.IntegerField()
+    amount = forms.IntegerField(widget=forms.NumberInput(attrs={'autofocus': True}))
 
