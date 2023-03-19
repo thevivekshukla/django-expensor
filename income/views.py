@@ -648,18 +648,24 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
     def get_auto_income(self):
         MONTHS = 3
-        amounts = []
+        today = get_ist_datetime().date()
         incomes = self.request.user.incomes.exclude(amount=0)
-        months_list = incomes.dates('timestamp', 'month', order='DESC')
         
+        months_list = incomes.exclude(timestamp__year=today.year, timestamp__month=today.month)\
+                        .dates('timestamp', 'month', order='DESC')
+        
+        amounts = []
         for dt in months_list[:MONTHS]:
             month_income = incomes.filter(timestamp__year=dt.year, timestamp__month=dt.month)
             amounts.append(aggregate_sum(month_income))
             
+        curr_month = incomes.filter(timestamp__year=today.year, timestamp__month=today.month)
+        curr_month_amount = aggregate_sum(curr_month)
+
         if amounts:
-            return int(max(amounts[0], st.mean(amounts[:2]), st.mean(amounts)))
+            return max(curr_month_amount, int(st.mean(amounts)))
         else:
-            return 0
+            return curr_month_amount
 
     def get_income(self):
         try:
