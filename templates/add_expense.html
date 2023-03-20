@@ -159,7 +159,7 @@
           row += "<td>"+ data[i].timestamp +"</td>"
           row += '<td><a class="black-text" href="/search/?remark=%22'+ data[i].remark +'%22">'+ data[i].remark +'</td>'
           row += '<td><span class="float-right">'+ data[i].amount +'</span></td>'
-          row += '<td><a class="float-right" href="/update/'+ data[i].id +'/"><i class="fas fa-edit" title="Edit"></i></a></td>'
+          row += '<td><a class="float-right" href="/update/'+ data[i].id +'/?redirect=/"><i class="fas fa-edit" title="Edit"></i></a></td>'
           row += "</tr>"
         }
         rows.empty();
