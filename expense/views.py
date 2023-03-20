@@ -4,9 +4,14 @@ import calendar
 
 from django.shortcuts import render
 from django.db.models import Sum, Count
-from django.http import HttpResponse, Http404
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    Http404,
+)
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.urls import reverse
 
 from .forms import ExpenseForm, SelectDateRangeExpenseForm
@@ -147,6 +152,7 @@ class UpdateExpense(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         instance = self.get_object(request, *args, **kwargs)
+        redirect = request.GET.get('redirect')
 
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -165,10 +171,11 @@ class UpdateExpense(LoginRequiredMixin, View):
             
             instance.remark = rem
             instance.save()
-
-            return HttpResponse(status=200)
+            messages.success(request, "Expense updated!")
+            return HttpResponseRedirect(redirect if redirect else request.get_full_path())
         else:
-            return HttpResponse(status=400)
+            messages.warning(request, "Failed")
+            return HttpResponseRedirect(request.get_full_path())
 
 
 class ExpenseList(LoginRequiredMixin, View):

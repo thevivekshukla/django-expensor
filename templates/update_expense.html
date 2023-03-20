@@ -36,6 +36,7 @@
 
     $("#id_timestamp").datepicker();
 
+    {% comment %}
     var form = $("#id_update_expense");
 
     form.submit(function(){
@@ -58,6 +59,7 @@
       });
       return false;
     });
+    {% endcomment %}
 
   });
 

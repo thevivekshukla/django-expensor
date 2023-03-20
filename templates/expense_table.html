@@ -29,7 +29,7 @@
       <td><span class="float-right">{{ object.amount|intcomma }}</span></td>
       
       <td>
-        <a class="float-right" href="{% url "expense:update_expense" id=object.id %}">
+        <a class="float-right" href="{% url "expense:update_expense" id=object.id %}?redirect={{ request.get_full_path|urlencode }}">
           <i class="fas fa-edit" title="Edit"></i>
         </a>
       </td>
