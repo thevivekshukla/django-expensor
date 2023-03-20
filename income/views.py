@@ -16,7 +16,11 @@ from django.views.generic import (
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponse, Http404
+from django.http import (
+    HttpResponse,
+    Http404,
+    HttpResponseRedirect,
+)
 from django.urls import reverse_lazy
 from django.db.models import Sum
 
@@ -127,6 +131,7 @@ class IncomeUpdateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         pk = int(kwargs['pk'])
         income = get_object_or_404(Income, id=pk, user=request.user)
+        redirect = request.GET.get('redirect')
 
         #checking if user own the object
         if income.user != request.user:
@@ -148,10 +153,11 @@ class IncomeUpdateView(LoginRequiredMixin, View):
             income.amount = amount
             income.timestamp = timestamp
             income.save()
-
-            return HttpResponse(status=200)
+            messages.success(request, "Income updated!")
+            return HttpResponseRedirect(redirect if redirect else request.get_full_path())
         else:
-            return HttpResponse(status=400)
+            messages.warning(request, "Income update failed")
+            return HttpResponseRedirect(request.get_full_path())
 
 
 class YearWiseIncome(LoginRequiredMixin, View):
