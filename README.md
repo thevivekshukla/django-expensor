@@ -17,17 +17,20 @@ It is a simple and lite expense management web app that I developed for my perso
 ### How to install in local environment:
 
 #### Docker:
-**Run**
-```
-docker-compose up
-```
+
 **Make Migrations**
 ```
 docker-compose run --rm web python manage.py makemigrations
 ```
+
 **Apply Migrations**
 ```
 docker-compose run --rm web python manange.py migrate
+```
+
+**Run**
+```
+docker-compose up
 ```
 
 #### Manual setup:
