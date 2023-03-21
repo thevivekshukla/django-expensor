@@ -77,7 +77,7 @@ class AccountNameCreateForm(forms.ModelForm):
             'type',
         ]
         widgets = {
-            'name': forms.NumberInput(attrs={'autofocus': True}),
+            'name': forms.TextInput(attrs={'autofocus': True}),
         }
         
 
