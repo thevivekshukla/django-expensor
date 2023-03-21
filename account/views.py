@@ -152,7 +152,7 @@ class NetWorthDashboard(LoginRequiredMixin, View):
             amount = account.amounts.order_by('-date').first()
             data = {
                 'account_name': account,
-                'amount': amount,
+                'amount': amount.amount if amount and amount.amount else 0,
             }
             if account.type == 0:
                 liabilities.append(data)
@@ -162,15 +162,17 @@ class NetWorthDashboard(LoginRequiredMixin, View):
                 asset_amount += amount.amount if amount else 0
 
         total_saved_amount = aggregate_sum(user.incomes) - aggregate_sum(user.expenses)
+        # lambda function to sort by amount value
+        desc_amount_sort = lambda li: sorted(li, key=lambda x: x['amount'], reverse=True)
 
         context = {
             'title': 'NetWorth',
             'networth': networth,
             'avg_expense': avg_expense,
             'x': x,
-            'liabilities': liabilities,
+            'liabilities': desc_amount_sort(liabilities),
             'liability_amount': liability_amount,
-            'assets': assets,
+            'assets': desc_amount_sort(assets),
             'asset_amount': asset_amount,
             'total_saved_amount': total_saved_amount,
         }

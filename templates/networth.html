@@ -38,11 +38,7 @@
                 </td>
                 <td>
                     <span style="float:right;">
-                        {% if asset.amount %}
-                            {{ asset.amount.amount|intcomma }}
-                        {% else %}
-                            0
-                        {% endif %}
+                        {{ asset.amount|intcomma }}
                     </span>
                 </td>
                 <td>
@@ -65,11 +61,7 @@
                 </td>
                 <td>
                     <span style="float:right;">
-                        {% if liability.amount %}
-                            {{ liability.amount.amount|intcomma }}
-                        {% else %}
-                            0
-                        {% endif %}
+                        {{ liability.amount|intcomma }}
                     </span>
                 </td>
                 <td>
