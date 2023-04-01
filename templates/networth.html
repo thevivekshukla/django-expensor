@@ -38,6 +38,11 @@
                 </td>
                 <td>
                     <span style="float:right;">
+                        {% if not asset.updated %}
+                            <span data-toggle="tooltip" title="Outdated">
+                                <i style="color:#edbc09;" class="fa-solid fa-triangle-exclamation"></i>
+                            </span>
+                        {% endif %}
                         {{ asset.amount|intcomma }}
                     </span>
                 </td>
@@ -61,6 +66,11 @@
                 </td>
                 <td>
                     <span style="float:right;">
+                        {% if not liability.updated %}
+                            <span data-toggle="tooltip" title="Outdated">
+                                <i style="color:#edbc09;" class="fa-solid fa-triangle-exclamation"></i>
+                            </span>
+                        {% endif %}
                         {{ liability.amount|intcomma }}
                     </span>
                 </td>

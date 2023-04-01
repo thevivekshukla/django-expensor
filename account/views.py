@@ -134,6 +134,7 @@ class NetWorthDashboard(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        prev_updated_date = get_ist_datetime() - timedelta(days=90)
         networths = user.net_worth.order_by('-date')
         networth = networths.first()
         
@@ -153,6 +154,7 @@ class NetWorthDashboard(LoginRequiredMixin, View):
             data = {
                 'account_name': account,
                 'amount': amount.amount if amount and amount.amount else 0,
+                'updated': True if amount.created_at >= prev_updated_date else False,
             }
             if account.type == 0:
                 liabilities.append(data)
