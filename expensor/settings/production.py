@@ -2,9 +2,9 @@ from expensor.old_settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = config('HOST', cast=Csv())
+ALLOWED_HOSTS = config("HOST", cast=Csv())
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config("SECRET_KEY")
 
 """
 *************************** SECURITY ****************************************
@@ -18,17 +18,13 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 
 ####################### django-dbbackup ##############3
-DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 DBBACKUP_STORAGE_OPTIONS = {
-    'access_key': config('AWS_DB_ACCESS_KEY'),
-    'secret_key': config('AWS_DB_SECRET_KEY'),
-    'bucket_name': config('AWS_DB_BUCKET_NAME'),
-    'default_acl': 'private',
+    "access_key": config("AWS_DB_ACCESS_KEY"),
+    "secret_key": config("AWS_DB_SECRET_KEY"),
+    "bucket_name": config("AWS_DB_BUCKET_NAME"),
+    "default_acl": "private",
 }
 
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
+DATABASES = {"default": dj_database_url.config(default=config("DATABASE_URL"))}
