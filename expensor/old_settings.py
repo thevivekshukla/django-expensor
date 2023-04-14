@@ -21,7 +21,9 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 STATIC_DIR = os.path.join(BASE_DIR, "static_assets")
 
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap3"
 CRISPY_TEMPLATE_PACK = "bootstrap3"
+
 
 DEFAULT_DATE_FORMAT = "%d/%m/%Y"
 DATE_INPUT_FORMATS = [
@@ -44,7 +46,22 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+FIRST_PARTY_APPS = [
+    "expense",
+    "dbbackup",
+    "income",
+    "account",
+    "utils",
+]
+
+THIRD_PARTY_APPS = [
+    "django_extensions",
+    "crispy_forms",
+    "crispy_bootstrap3",
+    "storages",
+]
+
+DJANGO_DEFAULT_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -52,15 +69,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    "django_extensions",
-    "expense",
-    "crispy_forms",
-    "dbbackup",
-    "storages",
-    "income",
-    "account",
-    "utils",
 ]
+
+INSTALLED_APPS = FIRST_PARTY_APPS + THIRD_PARTY_APPS + DJANGO_DEFAULT_APPS
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
