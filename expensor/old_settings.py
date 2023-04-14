@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "django_extensions",
-    "django_minify_html",
     "expense",
     "crispy_forms",
     "dbbackup",
@@ -64,7 +63,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django_minify_html.middleware.MinifyHtmlMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
