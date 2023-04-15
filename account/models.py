@@ -34,6 +34,9 @@ class AccountName(BaseModel):
             "name",
             "type",
         )
+        indexes = [
+            models.Index(fields=["user", "name"]),
+        ]
 
 
 class AccountNameAmount(BaseModel):
@@ -55,6 +58,14 @@ class AccountNameAmount(BaseModel):
             "account_name",
             "date",
         )
+        indexes = [
+            models.Index(
+                fields=(
+                    "account_name",
+                    "-date",
+                )
+            ),
+        ]
 
 
 def _save_networth(instance, *args, **kwargs):
@@ -98,3 +109,11 @@ class NetWorth(BaseModel):
             "user",
             "date",
         )
+        indexes = [
+            models.Index(
+                fields=[
+                    "user",
+                    "-date",
+                ]
+            ),
+        ]
