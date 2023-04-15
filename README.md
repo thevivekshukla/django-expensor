@@ -11,8 +11,9 @@ It is a simple and lite expense management web app that I developed for my perso
 - and many more...
 
 ### System requirements:
-- Python 3.8
-- Redis
+- Python: 3.9.16
+- PostgreSQL: 12.14
+- Redis: 5.0.7
 
 ### How to install in local environment:
 
