@@ -1,36 +1,36 @@
-from datetime import timedelta
 from contextlib import suppress
+from datetime import timedelta
 
-from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DeleteView
-from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.cache import cache
 
-from .models import (
-    AccountName,
-    AccountNameAmount,
-    NetWorth,
-)
-from .forms import (
-    RegisterUserForm, LoginForm, ChangePasswordForm,
-    AccountNameCreateForm, AccountNameAmountForm,
-)
 from utils.helpers import (
     aggregate_sum,
-    get_ist_datetime,
-    get_client_ip,
-    get_paginator_object,
-    calculate_cagr,
     cal_avg_expense,
     cal_networth_x,
+    calculate_cagr,
+    get_client_ip,
+    get_ist_datetime,
+    get_paginator_object,
 )
+
+from .forms import (
+    AccountNameAmountForm,
+    AccountNameCreateForm,
+    ChangePasswordForm,
+    LoginForm,
+    RegisterUserForm,
+)
+from .models import AccountName, AccountNameAmount, NetWorth
 
 # Create your views here.
 
@@ -57,7 +57,7 @@ def user_register(request):
 def user_login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("expense:add_expense"))
-    
+
     # checking for invalid login count
     ip_address = get_client_ip(request)
     invalid_login_count = cache.get(ip_address, 0)
@@ -78,7 +78,7 @@ def user_login(request):
             return HttpResponseRedirect(reverse("expense:add_expense"))
         else:
             # updating invalid login count
-            cache.set(ip_address, invalid_login_count + 1, 3600*6)
+            cache.set(ip_address, invalid_login_count + 1, 3600 * 6)
             messages.warning(request, "Invalid username or password.")
 
     context = {
@@ -101,7 +101,7 @@ class ChangePassword(LoginRequiredMixin, View):
     }
 
     def get(self, request, *args, **kwargs):
-        self.context['form'] = self.form_class()
+        self.context["form"] = self.form_class()
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
@@ -119,9 +119,9 @@ class ChangePassword(LoginRequiredMixin, View):
                 form = self.form_class()
             else:
                 messages.warning(request, "The password you've entered is wrong!")
-                
+
         else:
-            context['form'] = form
+            context["form"] = form
         return render(request, self.template_name, context)
 
 
@@ -129,32 +129,33 @@ class ChangePassword(LoginRequiredMixin, View):
 ********************* Networth **************************
 """
 
+
 class NetWorthDashboard(LoginRequiredMixin, View):
     template_name = "networth.html"
 
     def get(self, request, *args, **kwargs):
         user = request.user
         prev_updated_date = get_ist_datetime() - timedelta(days=90)
-        networths = user.net_worth.order_by('-date')
+        networths = user.net_worth.order_by("-date")
         networth = networths.first()
-        
+
         if networth:
             avg_expense = cal_avg_expense(user)
             x = cal_networth_x(networth.amount, avg_expense)
         else:
             x = avg_expense = 0
-        
+
         liabilities = []
         assets = []
         liability_amount = 0
         asset_amount = 0
         account_names = user.account_names.all()
         for account in account_names:
-            amount = account.amounts.order_by('-date').first()
+            amount = account.amounts.order_by("-date").first()
             data = {
-                'account_name': account,
-                'amount': amount.amount if amount and amount.amount else 0,
-                'updated': True if amount.created_at >= prev_updated_date else False,
+                "account_name": account,
+                "amount": amount.amount if amount and amount.amount else 0,
+                "updated": True if amount.created_at >= prev_updated_date else False,
             }
             if account.type == 0:
                 liabilities.append(data)
@@ -165,45 +166,47 @@ class NetWorthDashboard(LoginRequiredMixin, View):
 
         total_saved_amount = aggregate_sum(user.incomes) - aggregate_sum(user.expenses)
         # lambda function to sort by amount value
-        desc_amount_sort = lambda li: sorted(li, key=lambda x: x['amount'], reverse=True)
+        desc_amount_sort = lambda li: sorted(
+            li, key=lambda x: x["amount"], reverse=True
+        )
 
         context = {
-            'title': 'NetWorth',
-            'networth': networth,
-            'avg_expense': avg_expense,
-            'x': x,
-            'liabilities': desc_amount_sort(liabilities),
-            'liability_amount': liability_amount,
-            'assets': desc_amount_sort(assets),
-            'asset_amount': asset_amount,
-            'total_saved_amount': total_saved_amount,
+            "title": "NetWorth",
+            "networth": networth,
+            "avg_expense": avg_expense,
+            "x": x,
+            "liabilities": desc_amount_sort(liabilities),
+            "liability_amount": liability_amount,
+            "assets": desc_amount_sort(assets),
+            "asset_amount": asset_amount,
+            "total_saved_amount": total_saved_amount,
         }
         return render(request, self.template_name, context)
 
 
 class NetworthXView(LoginRequiredMixin, View):
     template_name = "networth_x.html"
-    
+
     def fetch_networth_x(self, method, networth_amount, year_expense):
         month_expense = year_expense // 12
         data = {
-            'method': method,
-            'year_expense': year_expense,
-            'month_expense': month_expense,
-            'year_x': cal_networth_x(networth_amount, year_expense),
-            'month_x': cal_networth_x(networth_amount, month_expense),
+            "method": method,
+            "year_expense": year_expense,
+            "month_expense": month_expense,
+            "year_x": cal_networth_x(networth_amount, year_expense),
+            "month_x": cal_networth_x(networth_amount, month_expense),
         }
         return data
 
     def get(self, request, *args, **kwargs):
         user = request.user
         try:
-            networth_amount = int(request.GET['amount'].replace(',', ''))
+            networth_amount = int(request.GET["amount"].replace(",", ""))
         except (ValueError, KeyError):
-            networths = user.net_worth.order_by('-date')
+            networths = user.net_worth.order_by("-date")
             networth = networths.first()
             networth_amount = networth.amount
-        
+
         data = []
         last_12m_expense = cal_avg_expense(user, YEARS=1)
 
@@ -217,34 +220,34 @@ class NetworthXView(LoginRequiredMixin, View):
                 year_expense,
             )
             data.append(nw_data)
-            
+
         context = {
-            'title': 'Networth X',
-            'data': data,
-            'networth_amount': networth_amount,
+            "title": "Networth X",
+            "data": data,
+            "networth_amount": networth_amount,
         }
         return render(request, self.template_name, context)
 
 
 class NetWorthHistoryView(LoginRequiredMixin, View):
     template_name = "networth_history.html"
-    
+
     def get(self, request, *args, **kwargs):
         networth = NetWorth.objects.filter(user=request.user)
-        
+
         history_cagr = 0
         if networth.exists():
             final = networth.first()
             start = networth.last()
             years = (final.date - start.date).days / 365
             history_cagr = calculate_cagr(final.amount, start.amount, years)
-        
+
         objects = get_paginator_object(request, networth, 25)
         context = {
-            'title': 'NetWorth',
-            'objects': objects,
-            'is_paginated': True,
-            'history_cagr': history_cagr,
+            "title": "NetWorth",
+            "objects": objects,
+            "is_paginated": True,
+            "history_cagr": history_cagr,
         }
         return render(request, self.template_name, context)
 
@@ -257,9 +260,9 @@ class AccountNameListView(LoginRequiredMixin, View):
         liabilities = account_names.filter(type=0)
         assets = account_names.filter(type=1)
         context = {
-            'title': 'Accounts',
-            'liabilities': liabilities,
-            'assets': assets,
+            "title": "Accounts",
+            "liabilities": liabilities,
+            "assets": assets,
         }
         return render(request, self.template_name, context)
 
@@ -267,13 +270,13 @@ class AccountNameListView(LoginRequiredMixin, View):
 class AccountNameCreateView(LoginRequiredMixin, View):
     template_name = "account_name_create.html"
     form_class = AccountNameCreateForm
-    context = {'title': 'Add Account'}
-    
+    context = {"title": "Add Account"}
+
     def get(self, request, *args, **kwargs):
         context = self.context.copy()
-        context['form'] = self.form_class()
+        context["form"] = self.form_class()
         return render(request, self.template_name, context)
-    
+
     def post(self, request, *args, **kwargs):
         context = self.context.copy()
         form = self.form_class(request.POST)
@@ -282,9 +285,9 @@ class AccountNameCreateView(LoginRequiredMixin, View):
             account_name.user = request.user
             account_name.save()
             messages.success(request, "New account added!")
-            return HttpResponseRedirect(reverse('account:account-name-list'))
+            return HttpResponseRedirect(reverse("account:account-name-list"))
 
-        context['form'] = form
+        context["form"] = form
         return render(request, self.template_name, context)
 
 
@@ -292,19 +295,19 @@ class AccountNameUpdateView(LoginRequiredMixin, View):
     template_name = "account_name_create.html"
     form_class = AccountNameCreateForm
     context = {}
-    
+
     def get_object(self):
-        pk = self.kwargs.get('pk')
+        pk = self.kwargs.get("pk")
         account_name = get_object_or_404(AccountName, id=pk)
-        self.context['title'] = f'{account_name.name}'
+        self.context["title"] = f"{account_name.name}"
         return account_name
-    
+
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         context = self.context.copy()
-        context['form'] = self.form_class(instance=instance)
+        context["form"] = self.form_class(instance=instance)
         return render(request, self.template_name, context)
-    
+
     def post(self, request, *args, **kwargs):
         instance = self.get_object()
         context = self.context.copy()
@@ -312,19 +315,19 @@ class AccountNameUpdateView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, "Account updated!")
-            return HttpResponseRedirect(reverse('account:account-name-list'))
+            return HttpResponseRedirect(reverse("account:account-name-list"))
 
-        context['form'] = form
+        context["form"] = form
         return render(request, self.template_name, context)
-        
+
 
 class AccountNameDeleteView(LoginRequiredMixin, DeleteView):
     model = AccountName
-    success_url = reverse_lazy('account:account-name-list')
+    success_url = reverse_lazy("account:account-name-list")
     template_name = "entity-delete.html"
     extra_context = {
-        'title': 'Confirm Delete',
-        'success_url': success_url,
+        "title": "Confirm Delete",
+        "success_url": success_url,
     }
 
     def get_queryset(self):
@@ -335,34 +338,34 @@ class AccountNameAmountAddView(LoginRequiredMixin, View):
     template_name = "account_name_amount.html"
     form_class = AccountNameAmountForm
     context = {}
-    
+
     def get_object(self):
-        pk = self.kwargs.get('pk')
+        pk = self.kwargs.get("pk")
         account_name = get_object_or_404(AccountName, id=pk)
-        self.context['title'] = f'{account_name.name}'
+        self.context["title"] = f"{account_name.name}"
         return account_name
-    
+
     def get(self, request, *args, **kwargs):
         account_name = self.get_object()
         context = self.context.copy()
-        amounts = account_name.amounts.order_by('-date').first()
+        amounts = account_name.amounts.order_by("-date").first()
         if amounts:
             amount = amounts.amount
         else:
             amount = None
-        context['form'] = self.form_class()
-        context['amount'] = amount
+        context["form"] = self.form_class()
+        context["amount"] = amount
         return render(request, self.template_name, context)
-    
+
     def post(self, request, *args, **kwargs):
         account_name = self.get_object()
         context = self.context.copy()
         form = self.form_class(request.POST)
         if form.is_valid():
-            amount = form.cleaned_data['amount']
+            amount = form.cleaned_data["amount"]
             data = {
-                'account_name': account_name,
-                'date': get_ist_datetime().date(),
+                "account_name": account_name,
+                "date": get_ist_datetime().date(),
             }
             account_name_amount = AccountNameAmount.objects.filter(**data).first()
             if account_name_amount:
@@ -371,21 +374,21 @@ class AccountNameAmountAddView(LoginRequiredMixin, View):
             else:
                 AccountNameAmount.objects.create(amount=amount, **data)
             messages.success(request, "Account updated!")
-            return HttpResponseRedirect(reverse('account:networth-dashboard'))
+            return HttpResponseRedirect(reverse("account:networth-dashboard"))
 
-        context['form'] = form
+        context["form"] = form
         return render(request, self.template_name, context)
 
 
 class AccountNameAccountHistory(LoginRequiredMixin, View):
     template_name = "networth_history.html"
-    
+
     def get(self, request, *args, **kwargs):
-        pk = kwargs.get('pk')
+        pk = kwargs.get("pk")
         instance = AccountName.objects.get(id=pk)
-        history = instance.amounts.all().order_by('-date')
+        history = instance.amounts.all().order_by("-date")
         latest_amount = None
-        
+
         if instance.type == 1 and history.exists():
             latest = history.first()
             start = history.last()
@@ -395,17 +398,14 @@ class AccountNameAccountHistory(LoginRequiredMixin, View):
             x = cal_networth_x(latest_amount, cal_avg_expense(request.user))
         else:
             history_cagr = x = 0
-        
+
         objects = get_paginator_object(request, history, 25)
         context = {
-            'title': f'{instance.name} ({instance.get_type_display()})',
-            'objects': objects,
-            'is_paginated': True,
-            'latest_amount': latest_amount,
-            'history_cagr': history_cagr,
-            'x': x,
+            "title": f"{instance.name} ({instance.get_type_display()})",
+            "objects": objects,
+            "is_paginated": True,
+            "latest_amount": latest_amount,
+            "history_cagr": history_cagr,
+            "x": x,
         }
         return render(request, self.template_name, context)
-
-
-
