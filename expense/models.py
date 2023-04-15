@@ -78,6 +78,7 @@ class Remark(BaseModel):
             "user",
             "name",
         )
+        indexes = [models.Index(fields=("user", "name"))]
 
 
 class Expense(BaseModel):
@@ -100,6 +101,15 @@ class Expense(BaseModel):
         return "{} : {} : {}".format(self.remark, self.amount, self.timestamp)
 
     class Meta:
+        indexes = [
+            models.Index(
+                fields=(
+                    "user",
+                    "-timestamp",
+                    "-created_at",
+                )
+            ),
+        ]
         ordering = (
             "-timestamp",
             "-created_at",
