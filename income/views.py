@@ -733,10 +733,12 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
 
         try:
             savings = user.saving_calculation
+            savings_fixed_amount = savings.savings_fixed_amount
+            amount_to_keep_in_bank = savings.amount_to_keep_in_bank
             message = markdown.markdown(savings.message if savings.message else "")
-            initial_data["savings_fixed_amount"] = savings.savings_fixed_amount
+            initial_data["savings_fixed_amount"] = savings_fixed_amount
             initial_data["savings_percentage"] = savings.savings_percentage
-            initial_data["amount_to_keep_in_bank"] = savings.amount_to_keep_in_bank
+            initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
 
             avg_expense = self.return_in_multiples(helpers.cal_avg_expense(user))
             last_12m_expense = self.return_in_multiples(
@@ -753,7 +755,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     if not savings.amount_to_keep_in_bank:
                         initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
                         defaults_message.append(
-                            f'Amount to keep in bank is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>%'
+                            f'<em>Amount to keep in bank</em> is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>%'
                             f' of <span id="bank_amount">{auto_income:,}</span>'
                         )
                     else:
@@ -761,6 +763,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                             f"[Auto] Amount to keep in bank:"
                             f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
                         )
+                    savings_fixed_amount = self.return_in_multiples(
+                        auto_income * (FIXED_SAVINGS_PCT / 100)
+                    )
             elif auto_fill_amount_to_keep_in_bank in range(2, 8):
                 if auto_fill_amount_to_keep_in_bank == 2:  # 1 month expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 12)
@@ -786,7 +791,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 if not savings.amount_to_keep_in_bank:
                     initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
                     defaults_message.append(
-                        f"Amount to keep in bank is {month_msg} of expense."
+                        f"<em>Amount to keep in bank</em> is {month_msg} of expense."
                     )
                 else:
                     defaults_message.append(
@@ -794,14 +799,15 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                         f' <span id="auto_amount_to_keep_in_bank">{amount_to_keep_in_bank:,}</span>'
                     )
 
-            if income and savings.auto_fill_savings_fixed_amount:
                 savings_fixed_amount = self.return_in_multiples(
-                    income * (FIXED_SAVINGS_PCT / 100)
+                    (avg_expense / 12) * (FIXED_SAVINGS_PCT / 100)
                 )
+
+            if savings.auto_fill_savings_fixed_amount and savings_fixed_amount:
                 if not savings.savings_fixed_amount:
                     initial_data["savings_fixed_amount"] = savings_fixed_amount
                     defaults_message.append(
-                        f"Savings fixed amount is {FIXED_SAVINGS_PCT}% of {income:,}"
+                        "<em>Savings fixed amount</em> is auto generated based on amount to keep in bank."
                     )
                 else:
                     defaults_message.append(
