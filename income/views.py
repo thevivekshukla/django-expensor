@@ -766,7 +766,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     savings_fixed_amount = self.return_in_multiples(
                         auto_income * (FIXED_SAVINGS_PCT / 100)
                     )
-            elif auto_fill_amount_to_keep_in_bank in range(2, 9):
+            elif auto_fill_amount_to_keep_in_bank in range(2, 10):
                 if auto_fill_amount_to_keep_in_bank == 2:  # auto from expense
                     amount_to_keep_in_bank = self.return_in_multiples(
                         (avg_expense * 1.2) / 12
@@ -792,12 +792,27 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     amount_to_keep_in_bank = last_12m_expense
                     month_msg = "last 12 months of"
                     last_12m_expense = 0
+                elif auto_fill_amount_to_keep_in_bank == 9:  # 50:30:20 Rule
+                    amount_to_keep_in_bank = self.return_in_multiples(
+                        (avg_expense / 12) * (50 / 80)
+                    )
+                    month_msg = None
+                    if not savings.amount_to_keep_in_bank:
+                        defaults_message.append(
+                            "<strong>Amount to keep in bank</strong> is based on 50:30:20 rule."
+                        )
+                        if not savings.savings_percentage:
+                            initial_data["savings_percentage"] = 30
+                            defaults_message.append(
+                                "<strong>Savings percentage</strong> is based on 50:30:20 rule."
+                            )
 
                 if not savings.amount_to_keep_in_bank:
                     initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
-                    defaults_message.append(
-                        f"<strong>Amount to keep in bank</strong> is {month_msg} expense."
-                    )
+                    if month_msg:
+                        defaults_message.append(
+                            f"<strong>Amount to keep in bank</strong> is {month_msg} expense."
+                        )
                 else:
                     defaults_message.append(
                         f"[Auto] Amount to keep in bank:"
@@ -807,23 +822,13 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 savings_fixed_amount = self.return_in_multiples(
                     (avg_expense / 12) * (FIXED_SAVINGS_PCT / 100)
                 )
-            elif auto_fill_amount_to_keep_in_bank == 9:  # 50:30:20 Rule
-                amount_to_keep_in_bank = self.return_in_multiples(
-                    (avg_expense / 12) * (50 / 80)
-                )
-                initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
-                defaults_message.append(
-                    "<strong>Amount to keep in bank</strong> is based on 50:30:20 rule."
-                )
-                savings_fixed_amount = 0
-                initial_data["savings_fixed_amount"] = savings_fixed_amount
-                initial_data["savings_percentage"] = 30
 
             if savings.auto_fill_savings_fixed_amount and savings_fixed_amount:
                 if not savings.savings_fixed_amount:
                     initial_data["savings_fixed_amount"] = savings_fixed_amount
                     defaults_message.append(
-                        "<strong>Savings fixed amount</strong> is auto generated based on amount to keep in bank."
+                        "<strong>Savings fixed amount</strong> is auto"
+                        " generated based on amount to keep in bank."
                     )
                 else:
                     defaults_message.append(
