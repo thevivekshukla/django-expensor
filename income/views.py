@@ -755,7 +755,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     if not savings.amount_to_keep_in_bank:
                         initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
                         defaults_message.append(
-                            f'<em>Amount to keep in bank</em> is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>%'
+                            f'<strong>Amount to keep in bank</strong> is <span id="bank_amount_pct">{BANK_AMOUNT_PCT}</span>%'
                             f' of <span id="bank_amount">{auto_income:,}</span>'
                         )
                     else:
@@ -766,32 +766,37 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     savings_fixed_amount = self.return_in_multiples(
                         auto_income * (FIXED_SAVINGS_PCT / 100)
                     )
-            elif auto_fill_amount_to_keep_in_bank in range(2, 8):
-                if auto_fill_amount_to_keep_in_bank == 2:  # 1 month expense
+            elif auto_fill_amount_to_keep_in_bank in range(2, 9):
+                if auto_fill_amount_to_keep_in_bank == 2:  # auto from expense
+                    amount_to_keep_in_bank = self.return_in_multiples(
+                        (avg_expense * 1.2) / 12
+                    )
+                    month_msg = "auto generated from"
+                elif auto_fill_amount_to_keep_in_bank == 3:  # 1 month expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 12)
-                    month_msg = "1 month"
-                elif auto_fill_amount_to_keep_in_bank == 3:  # 2 months expense
+                    month_msg = "1 month of"
+                elif auto_fill_amount_to_keep_in_bank == 4:  # 2 months expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 6)
-                    month_msg = "2 months"
-                elif auto_fill_amount_to_keep_in_bank == 4:  # 3 months expense
+                    month_msg = "2 months of"
+                elif auto_fill_amount_to_keep_in_bank == 5:  # 3 months expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 4)
-                    month_msg = "3 months"
-                elif auto_fill_amount_to_keep_in_bank == 5:  # 6 months expense
+                    month_msg = "3 months of"
+                elif auto_fill_amount_to_keep_in_bank == 6:  # 6 months expense
                     amount_to_keep_in_bank = self.return_in_multiples(avg_expense / 2)
-                    month_msg = "6 months"
-                elif auto_fill_amount_to_keep_in_bank == 6:  # 12 months expense
+                    month_msg = "6 months of"
+                elif auto_fill_amount_to_keep_in_bank == 7:  # 12 months expense
                     amount_to_keep_in_bank = avg_expense
-                    month_msg = "12 months"
+                    month_msg = "12 months of"
                     avg_expense = 0
-                elif auto_fill_amount_to_keep_in_bank == 7:  # last 12 months expense
+                elif auto_fill_amount_to_keep_in_bank == 8:  # last 12 months expense
                     amount_to_keep_in_bank = last_12m_expense
-                    month_msg = "last 12 months"
+                    month_msg = "last 12 months of"
                     last_12m_expense = 0
 
                 if not savings.amount_to_keep_in_bank:
                     initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
                     defaults_message.append(
-                        f"<em>Amount to keep in bank</em> is {month_msg} of expense."
+                        f"<strong>Amount to keep in bank</strong> is {month_msg} expense."
                     )
                 else:
                     defaults_message.append(
@@ -807,7 +812,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 if not savings.savings_fixed_amount:
                     initial_data["savings_fixed_amount"] = savings_fixed_amount
                     defaults_message.append(
-                        "<em>Savings fixed amount</em> is auto generated based on amount to keep in bank."
+                        "<strong>Savings fixed amount</strong> is auto generated based on amount to keep in bank."
                     )
                 else:
                     defaults_message.append(
