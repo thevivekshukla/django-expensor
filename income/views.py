@@ -807,6 +807,17 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                 savings_fixed_amount = self.return_in_multiples(
                     (avg_expense / 12) * (FIXED_SAVINGS_PCT / 100)
                 )
+            elif auto_fill_amount_to_keep_in_bank == 9:  # 50:30:20 Rule
+                amount_to_keep_in_bank = self.return_in_multiples(
+                    (avg_expense / 12) * (50 / 80)
+                )
+                initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
+                defaults_message.append(
+                    "<strong>Amount to keep in bank</strong> is based on 50:30:20 rule."
+                )
+                savings_fixed_amount = 0
+                initial_data["savings_fixed_amount"] = savings_fixed_amount
+                initial_data["savings_percentage"] = 30
 
             if savings.auto_fill_savings_fixed_amount and savings_fixed_amount:
                 if not savings.savings_fixed_amount:
