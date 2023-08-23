@@ -17,4 +17,5 @@ AUTO_FILL_AMOUNT_CHOICES = [
     (6, "6 Months of Expense"),
     (7, "12 Months of Expense"),
     (8, "Last 12 Months of Expense"),
+    (9, "Avg of Last 12 Months Expense"),
 ]

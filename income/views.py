@@ -766,7 +766,7 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     savings_fixed_amount = self.return_in_multiples(
                         auto_income * (FIXED_SAVINGS_PCT / 100)
                     )
-            elif auto_fill_amount_to_keep_in_bank in range(2, 9):
+            elif auto_fill_amount_to_keep_in_bank in range(2, 10):
                 if auto_fill_amount_to_keep_in_bank == 2:  # auto from expense
                     amount_to_keep_in_bank = self.return_in_multiples(
                         (avg_expense * 1.2) / 12
@@ -792,6 +792,9 @@ class SavingsCalculatorView(LoginRequiredMixin, View):
                     amount_to_keep_in_bank = last_12m_expense
                     month_msg = "last 12 months of"
                     last_12m_expense = 0
+                elif auto_fill_amount_to_keep_in_bank == 9:  # Avg of Last 12 Months Expense
+                    amount_to_keep_in_bank = self.return_in_multiples(last_12m_expense / 12)
+                    month_msg = "last 12 months of average"
 
                 if not savings.amount_to_keep_in_bank:
                     initial_data["amount_to_keep_in_bank"] = amount_to_keep_in_bank
