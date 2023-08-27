@@ -221,10 +221,18 @@ class NetworthXView(LoginRequiredMixin, View):
             )
             data.append(nw_data)
 
+        mean_month_expense = data[0]["month_expense"]
+        emergency_fund = mean_month_expense * 6
+        fire_amount = mean_month_expense * 12 * 30  # 30 years
+        fire_amount_coverage = networth_amount / fire_amount
+
         context = {
             "title": "Networth X",
             "data": data,
             "networth_amount": networth_amount,
+            "emergency_fund": emergency_fund,
+            "fire_amount": fire_amount,
+            "fire_amount_coverage": fire_amount_coverage,
         }
         return render(request, self.template_name, context)
 

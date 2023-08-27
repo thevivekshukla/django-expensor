@@ -77,6 +77,20 @@
         
     </table>
   </div>
+
+  <h3>Suggestions</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <tr>
+        <td>Emergency Fund</td>
+        <td>{% multiply emergency_fund 1 0 100 %}</td>
+      </tr>
+      <tr>
+        <td>FIRE Amount</td>
+        <td>{% multiply fire_amount 1 0 1000 %} ({% multiply fire_amount_coverage 100 2 %}%)</td>
+      </tr>
+    </table>
+  </div>
   
   {% else %}
 
