@@ -1,16 +1,12 @@
+import statistics
 from datetime import timedelta
 from functools import lru_cache
-import statistics
 
 import pytz
-from django.utils import timezone
-from django.db.models import Sum, Q
-from django.core.paginator import (
-    Paginator,
-    PageNotAnInteger,
-    EmptyPage,
-)
 from django.conf import settings
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q, Sum
+from django.utils import timezone
 
 
 def get_ist_datetime(dt=None):
@@ -114,14 +110,14 @@ def calculate_cagr(final_amount, start_amount, years):
     return networth_cagr
 
 
-def cal_avg_expense(user, *, method="mean", YEARS=3):
+def fetch_year_expenses(user, *, YEARS=3):
     """
-    Returns yearly average expense
+    Returns yearly expenses
     """
     this_month = get_ist_datetime().date().replace(day=1)
     first_month = this_month.replace(year=this_month.year - YEARS)
     latest_month = (this_month - timedelta(days=1)).replace(day=1)
-    
+
     first_expense = user.expenses.dates('timestamp', 'month', order='ASC').first()
     if first_expense:
         if first_expense > first_month:
@@ -132,7 +128,7 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
     months = get_dates_list(first_month, latest_month, day=1)
     year, _ = divmod(min(len(months), YEARS * 12), 12)
     year_expenses = []
-    
+
     for i in range(0, year):
         expenses = 0
         from_range = i * 12
@@ -140,12 +136,18 @@ def cal_avg_expense(user, *, method="mean", YEARS=3):
         for dt in months[from_range:to_range]:
             expense = user.expenses.filter(timestamp__year=dt.year, timestamp__month=dt.month)
             expenses += aggregate_sum(expense)
-        if expenses:
-            year_expenses.append(expenses)
+        year_expenses.append(expenses)
 
+    return year_expenses
+
+
+def cal_avg_expense(user, *, method="mean", YEARS=3, year_expenses=[]):
+    """
+    Returns yearly average expense
+    """
     if not year_expenses:
-        return 0
-    
+        year_expenses = fetch_year_expenses(user, YEARS=YEARS)
+
     if method == "mean":
         method_func = statistics.mean
     elif method == "median":

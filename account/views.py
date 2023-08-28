@@ -18,6 +18,7 @@ from utils.helpers import (
     cal_avg_expense,
     cal_networth_x,
     calculate_cagr,
+    fetch_year_expenses,
     get_client_ip,
     get_ist_datetime,
     get_paginator_object,
@@ -209,15 +210,20 @@ class NetworthXView(LoginRequiredMixin, View):
 
         data = []
         last_12m_expense = cal_avg_expense(user, YEARS=1)
-
+        year_expenses = fetch_year_expenses(user, YEARS=3)
+        
         for method in ["mean", "median", "max", "min"]:
-            year_expense = cal_avg_expense(user, method=method)
-            if year_expense == last_12m_expense:
+            expense = cal_avg_expense(
+                user,
+                method=method,
+                year_expenses=year_expenses,
+            )
+            if expense == last_12m_expense:
                 method += " (last 12 months')"
             nw_data = self.fetch_networth_x(
                 method,
                 networth_amount,
-                year_expense,
+                expense,
             )
             data.append(nw_data)
 
