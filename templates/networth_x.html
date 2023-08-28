@@ -81,22 +81,73 @@
   <h3>Suggestions</h3>
   <div class="table-responsive">
     <table class="table table-bordered table-hover">
+
+      <thead>
+        <tr>
+          <th class="active">Purpose</th>
+
+          <th class="active">
+            <span class="float-right">Amount</span>
+          </th>
+
+          <th class="active">
+            <span class="float-right">Coverage</span>
+          </th>
+        </tr>
+      </thead>
+
       <tr>
-        <td>Emergency Fund (6x)</td>
-        <td>{% multiply emergency_fund 1 0 1000 %}</td>
+        <td>Emergency Fund</td>
+        <td>
+          <span class="float-right">
+            {% multiply emergency_fund 1 0 1000 %}
+          </span>
+        </td>
+        <td></td>
       </tr>
+
       <tr>
-        <td>Lean FIRE Amount</td>
-        <td>{% multiply lean_fire_amount 1 0 1000 %} ({% multiply lean_fire_coverage 100 2 %}%)</td>
+        <td>Lean FIRE</td>
+        <td>
+          <span class="float-right">
+            {% multiply lean_fire_amount 1 0 1000 %}
+          </span>  
+        </td>
+        <td>
+          <span class="float-right">
+            {% multiply lean_fire_coverage 100 2 %}%
+          </span>
+        </td>
       </tr>
+
       <tr>
-        <td>Regular FIRE Amount</td>
-        <td>{% multiply fire_amount 1 0 1000 %} ({% multiply fire_amount_coverage 100 2 %}%)</td>
+        <td>Regular FIRE</td>
+        <td>
+          <span class="float-right">
+            {% multiply fire_amount 1 0 1000 %}
+          </span>
+        </td>
+        <td>
+          <span class="float-right">
+            {% multiply fire_amount_coverage 100 2 %}%
+          </span>
+        </td>
       </tr>
+
       <tr>
-        <td>Fat FIRE Amount</td>
-        <td>{% multiply fat_fire_amount 1 0 1000 %} ({% multiply fat_fire_coverage 100 2 %}%)</td>
+        <td>Fat FIRE</td>
+        <td>
+          <span class="float-right">
+            {% multiply fat_fire_amount 1 0 1000 %}
+          </span>
+        </td>
+        <td>
+          <span class="float-right">
+            {% multiply fat_fire_coverage 100 2 %}%
+          </span>
+        </td>
       </tr>
+
     </table>
   </div>
   
