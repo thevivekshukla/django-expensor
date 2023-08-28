@@ -227,18 +227,30 @@ class NetworthXView(LoginRequiredMixin, View):
             )
             data.append(nw_data)
 
+        min_month_expense = data[-1]["month_expense"]
         mean_month_expense = data[0]["month_expense"]
         emergency_fund = mean_month_expense * 6
-        fire_amount = mean_month_expense * 12 * 30  # 30 years
+
+        lean_fire_amount = min_month_expense * 12 * 25  # 25 years expenses
+        lean_fire_coverage = networth_amount / lean_fire_amount
+
+        fire_amount = mean_month_expense * 12 * 30  # 30 years expenses
         fire_amount_coverage = networth_amount / fire_amount
+
+        fat_fire_amount = mean_month_expense * 12 * 100  # 100 years expenses
+        fat_fire_coverage = networth_amount / fat_fire_amount
 
         context = {
             "title": "Networth X",
             "data": data,
             "networth_amount": networth_amount,
             "emergency_fund": emergency_fund,
+            "lean_fire_amount": lean_fire_amount,
+            "lean_fire_coverage": lean_fire_coverage,
             "fire_amount": fire_amount,
             "fire_amount_coverage": fire_amount_coverage,
+            "fat_fire_amount": fat_fire_amount,
+            "fat_fire_coverage": fat_fire_coverage,
         }
         return render(request, self.template_name, context)
 
