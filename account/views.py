@@ -234,7 +234,7 @@ class NetworthXView(LoginRequiredMixin, View):
         lean_fire_amount = min_month_expense * 12 * 25  # 25 years expenses
         lean_fire_coverage = networth_amount / lean_fire_amount
 
-        fire_amount = mean_month_expense * 12 * 30  # 30 years expenses
+        fire_amount = mean_month_expense * 12 * 25  # 25 years expenses
         fire_amount_coverage = networth_amount / fire_amount
 
         fat_fire_amount = mean_month_expense * 12 * 100  # 100 years expenses
