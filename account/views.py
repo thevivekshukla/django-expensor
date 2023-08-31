@@ -211,8 +211,9 @@ class NetworthXView(LoginRequiredMixin, View):
         data = []
         last_12m_expense = cal_avg_expense(user, YEARS=1)
         year_expenses = fetch_year_expenses(user, YEARS=3)
-        
-        for method in ["mean", "median", "max", "min"]:
+
+        methods = ["mean", "median", "max", "min"]
+        for method in methods:
             expense = cal_avg_expense(
                 user,
                 method=method,
@@ -227,13 +228,13 @@ class NetworthXView(LoginRequiredMixin, View):
             )
             data.append(nw_data)
 
-        mean_month_expense = data[0]["month_expense"]
+        mean_month_expense = data[methods.index("mean")]["month_expense"]
         emergency_fund = mean_month_expense * 6
 
-        fire_amount = mean_month_expense * 12 * 30  # 30 years expenses
+        median_month_expense = data[methods.index("median")]["month_expense"]
+        fire_amount = median_month_expense * 12 * 30  # 30 years expenses
         fire_amount_coverage = networth_amount / fire_amount
-
-        fat_fire_amount = mean_month_expense * 12 * 100  # 100 years expenses
+        fat_fire_amount = fire_amount * 3
         fat_fire_coverage = networth_amount / fat_fire_amount
 
         context = {
