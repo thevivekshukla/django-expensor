@@ -231,10 +231,9 @@ class NetworthXView(LoginRequiredMixin, View):
         mean_month_expense = data[methods.index("mean")]["month_expense"]
         emergency_fund = mean_month_expense * 6
 
-        median_month_expense = data[methods.index("median")]["month_expense"]
-        fire_amount = median_month_expense * 12 * 30  # 30 years expenses
+        fire_amount = mean_month_expense * 12 * 30  # 30 years expenses
         fire_amount_coverage = networth_amount / fire_amount
-        fat_fire_amount = fire_amount * 3
+        fat_fire_amount = mean_month_expense * 12 * 100  # 100 years expenses
         fat_fire_coverage = networth_amount / fat_fire_amount
 
         context = {
