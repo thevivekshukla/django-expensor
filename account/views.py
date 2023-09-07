@@ -228,10 +228,9 @@ class NetworthXView(LoginRequiredMixin, View):
             )
             data.append(nw_data)
 
-        mean_year_expense = data[methods.index("mean")]["year_expense"]
-        emergency_fund = mean_year_expense // 2  # 6 months
-
         median_year_expense = data[methods.index("median")]["year_expense"]
+        emergency_fund = median_year_expense  # 1 year
+
         fire_amount = median_year_expense * 30
         fire_amount_coverage = networth_amount / fire_amount
         fat_fire_amount = median_year_expense * 100
