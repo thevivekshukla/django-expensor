@@ -35,7 +35,7 @@ services:
     command: celery -A expensor worker -B -l info
     depends_on:
       - db
-      - cache
+      - redis
 
 networks:
   default:
