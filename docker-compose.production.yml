@@ -19,7 +19,7 @@ services:
   web:
     build: .
     restart: unless-stopped
-    command: sh -c "gunicorn app.main:app --config ./gunicorn.conf.py"
+    command: sh -c "gunicorn expensor.wsgi:application --config ./gunicorn.conf.py"
     volumes:
       - .:/code
     ports:
