@@ -8,60 +8,48 @@ It is a simple and lite expense management web app that I developed for my perso
 - Expenses can be viewed Year-wise, Month-wise and Day-wise.
 - Stats include total expense of all time, total expense of the current year, total expenses of present day, total expense of last and current month.
 - Also a minimal income manager app comes with this app.
-- and many more...
+- and then some more features around above things...
 
 ### System requirements:
-- Python: 3.9.16
-- PostgreSQL: 12.14
-- Redis: 5.0.7
+- Docker
 
 ### How to install in local environment:
 
 #### Docker:
 
+Use `example.env` file to create .env file at root level. Update .env vars as per your deployment environment.
+
 **Make Migrations**
 ```
-docker-compose run --rm web python manage.py makemigrations
+docker compose run --rm web python manage.py makemigrations
 ```
 
 **Apply Migrations**
 ```
-docker-compose run --rm web python manange.py migrate
+docker compose run --rm web python manange.py migrate
+```
+
+**Collect Static Assets**
+```
+docker compose run --rm web python manange.py collectstatic
+```
+
+**Create Superuser**
+```
+docker compose run --rm web python manange.py createsuperuser
 ```
 
 **Run**
 ```
-docker-compose up
+docker compose up --build
 ```
+Use `--detach` to run in the background.
 
-#### Manual setup:
-* Clone the repository in your system then create a virtual envrironment (recommended), activate the virtual envrionment. Then run:
-
+**Stop**
 ```
-pip install -r requirements.txt
+docker compose down
 ```
-
-* Create a new file .env in the same directory as manage.py and set a variable with name DATABASE_URL_DEV to the database url.
-
-* In this app I have used PostgreSQL, however you can use database of your choice, but just don't forget to install the driver for the same in your virtual environment.
-
-* Create __init __.py file in *expensor > settings* and add below code in it.
-```
-from .development import *
-```
-
-* Make sure redis is up and running on you system
-
-* Then run below commands.
-```
-python manage.py makemigrations
-python manage.py migrate
-```
-
-Now your app is ready to run.
-```
-python manage.py runserver
-```
+Use `-v` to also remove the volumes data.
 
 
 #### ----------- Happy Coding -----------
