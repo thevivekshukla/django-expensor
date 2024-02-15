@@ -19,8 +19,7 @@ services:
   web:
     build: .
     restart: unless-stopped
-    # command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8001"
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "gunicorn app.main:app --config ./gunicorn.conf.py"
     volumes:
       - .:/code
     ports:

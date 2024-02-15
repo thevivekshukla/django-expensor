@@ -13,3 +13,4 @@ celerybeat**
 **/.DS_Store
 **/*.psql
 **/*.sql
+volumes
