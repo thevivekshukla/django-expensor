@@ -54,7 +54,6 @@ FIRST_PARTY_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    "django_extensions",
     "crispy_forms",
     "crispy_bootstrap3",
     "storages",
