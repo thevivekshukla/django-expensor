@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "django-expensor"
+version = "1.0.0"
+description = ""
+authors = ["Vivek Shukla <viv3kshukla@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = {extras = ["argon2"], version = "^5.0.2"}
+celery = "^5.3.6"
+dj-database-url = "^2.1.0"
+django-crispy-forms = "^2.1"
+gunicorn = "^21.2.0"
+markdown = "^3.5.2"
+django-dbbackup = "^4.1.0"
+psycopg = "^3.1.18"
+python-decouple = "^3.8"
+django-storages = {extras = ["boto3"], version = "^1.14.2"}
+crispy-bootstrap3 = "^2024.1"
+django-redis = "^5.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
