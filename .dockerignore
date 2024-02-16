@@ -1,1 +1,8 @@
 venv
+static
+**/__pycache__/
+**/*.pyc
+celerybeat**
+.vscode
+**/.DS_Store
+volumes
