@@ -41,13 +41,13 @@ docker compose run --rm web python manange.py createsuperuser
 
 **Run**
 ```
-docker compose up --build
+docker compose up --build --remove-orphans
 ```
 Use `--detach` to run in the background.
 
 **Stop**
 ```
-docker compose down
+docker compose down --remove-orphans
 ```
 Use `-v` to also remove the volumes data.
 
