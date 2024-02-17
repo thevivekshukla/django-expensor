@@ -31,15 +31,7 @@ services:
   celery:
     build: .
     restart: unless-stopped
-    command: celery -A expensor worker -c 1
-    depends_on:
-      - db
-      - redis
-  
-  celerybeat:
-    build: .
-    restart: unless-stopped
-    command: celery -A expensor beat
+    command: celery -A expensor worker -B -c 1
     depends_on:
       - db
       - redis
