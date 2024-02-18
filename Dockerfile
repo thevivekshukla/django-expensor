@@ -21,5 +21,3 @@ RUN pip install --upgrade pip && \
 
 COPY . /code
 WORKDIR /code
-
-EXPOSE 8000
