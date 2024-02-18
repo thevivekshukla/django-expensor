@@ -209,7 +209,9 @@
         data: form.serialize(),
         success: function(data) {
           $("#hint_id_amount").html("");
-          form[0].reset();
+          // form[0].reset();
+          $("#id_amount").val(null);
+          $("#id_remark").val(null);
           document.getElementById(submit_btn_id).disabled = false;
 
           $("#id_error").hide();
