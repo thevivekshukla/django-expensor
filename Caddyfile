@@ -1,0 +1,8 @@
+yourdomain.com {
+	reverse_proxy :8000
+
+	handle_path /static/* {
+		root * /<project-path>/django-expensor/static
+		file_server
+	}
+}
